@@ -1,11 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Notification from './Notification';
 import { Avatar, makeStyles, Menu, MenuItem, ListItemIcon, ListItemText, Box, IconButton } from '@material-ui/core';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import SettingsIcon from '@material-ui/icons/Settings';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import EventAvailableIcon from '@material-ui/icons/EventAvailable';
+import { AccountCircle, Settings, ExitToApp, EventAvailable } from '@material-ui/icons';
 import { useLocation } from 'react-router';
+import { NavLink } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -36,7 +34,9 @@ export default function SignedInMenu() {
     setAnchorEl(null);
   };
 
-  console.log(pathname);
+  useEffect(() => {
+    handleClose();
+  }, [pathname]);
 
   return (
     <Box>
@@ -56,27 +56,27 @@ export default function SignedInMenu() {
           horizontal: 'left',
         }}
       >
-        <MenuItem selected={pathname === '/events'}>
+        <MenuItem selected={pathname === '/createEvent'} component={NavLink} to='/createEvent'>
           <ListItemIcon>
-            <EventAvailableIcon />
+            <EventAvailable />
           </ListItemIcon>
-          <ListItemText primary='이벤트 올리기' />
+          <ListItemText primary='이벤트 작성하기' />
         </MenuItem>
         <MenuItem selected={pathname === '/profile'}>
           <ListItemIcon>
-            <AccountCircleIcon />
+            <AccountCircle />
           </ListItemIcon>
           <ListItemText primary='프로필' />
         </MenuItem>
         <MenuItem selected={pathname === '/account'}>
           <ListItemIcon>
-            <SettingsIcon />
+            <Settings />
           </ListItemIcon>
           <ListItemText primary='계정 설정' />
         </MenuItem>
         <MenuItem>
           <ListItemIcon>
-            <ExitToAppIcon />
+            <ExitToApp />
           </ListItemIcon>
           <ListItemText primary='로그아웃' />
         </MenuItem>
