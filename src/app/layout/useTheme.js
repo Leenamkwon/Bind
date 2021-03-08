@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 
 export default function useTheme() {
   const { isThemeMode } = useSelector((state) => state.theme);
-  const matches = useMediaQuery('(max-width:900px)');
+  const matches = useMediaQuery('(max-width:1190px)');
 
   const isDarkMode = useCallback(() => {
     if (!localStorage.getItem('theme') && isThemeMode === 'dark') {

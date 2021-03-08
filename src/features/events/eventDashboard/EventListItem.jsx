@@ -1,21 +1,27 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import clsx from 'clsx';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardMedia from '@material-ui/core/CardMedia';
-import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
-import Collapse from '@material-ui/core/Collapse';
-import Avatar from '@material-ui/core/Avatar';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
+import {
+  makeStyles,
+  withStyles,
+  Grid,
+  Card,
+  CardHeader,
+  CardMedia,
+  CardContent,
+  CardActions,
+  Collapse,
+  Avatar,
+  IconButton,
+  Typography,
+  Button,
+  Box,
+  Tooltip,
+  Menu,
+  MenuItem,
+  Divider,
+} from '@material-ui/core';
 import { red } from '@material-ui/core/colors';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import ShareIcon from '@material-ui/icons/Share';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import { Grid } from '@material-ui/core';
+import { Favorite, FavoriteBorderOutlined, Share, MoreVert, Group } from '@material-ui/icons';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,34 +31,68 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(0, 0, 3, 0),
   },
   media: {
-    height: 0,
+    minHeight: 190,
     paddingTop: '56.25%', // 16:9
   },
-  expand: {
-    transform: 'rotate(0deg)',
+  showDetailEventBtn: {
     marginLeft: 'auto',
-    transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.shortest,
-    }),
-  },
-  expandOpen: {
-    transform: 'rotate(180deg)',
   },
   avatar: {
     backgroundColor: red[500],
   },
+  eventGroupBox: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    '& > *': {
+      margin: theme.spacing(1),
+    },
+  },
+  menu: {
+    '& .MuiMenu-paper': theme.palette.background.default,
+  },
 }));
+
+const StyledMenu = withStyles({
+  paper: {
+    border: '1px solid #d3d4d5',
+  },
+})((props) => (
+  <Menu
+    elevation={0}
+    getContentAnchorEl={null}
+    anchorOrigin={{
+      vertical: 'bottom',
+      horizontal: 'center',
+    }}
+    transformOrigin={{
+      vertical: 'top',
+      horizontal: 'center',
+    }}
+    {...props}
+  />
+));
 
 export default function RecipeReviewCard() {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
 
-  const handleExpandClick = () => {
+  function handleExpandClick() {
     setExpanded(!expanded);
-  };
+  }
+
+  function menuOpen(e) {
+    setAnchorEl(e.currentTarget);
+  }
+
+  function menuClose() {
+    setAnchorEl(null);
+  }
 
   return (
-    <Grid className={classes.grid} item>
+    <Grid className={classes.grid} item xs={12}>
       <Card className={classes.root} raised={true}>
         <CardHeader
           avatar={
@@ -61,59 +101,60 @@ export default function RecipeReviewCard() {
             </Avatar>
           }
           action={
-            <IconButton aria-label='settings'>
-              <MoreVertIcon />
-            </IconButton>
+            <>
+              <IconButton aria-label='settings' onClick={menuOpen}>
+                <MoreVert />
+              </IconButton>
+              <StyledMenu
+                className={classes.menu}
+                id='event-menu'
+                anchorEl={anchorEl}
+                keepMounted
+                open={open}
+                onClose={menuClose}
+              >
+                <MenuItem onClick={menuClose}>수정하기</MenuItem>
+                <Divider variant='fullWidth' />
+                <MenuItem onClick={menuClose}>삭제하기</MenuItem>
+              </StyledMenu>
+            </>
           }
           title='Shrimp and Chorizo Paella'
           subheader='September 14, 2016'
         />
-        <CardMedia className={classes.media} image='/static/images/cards/paella.jpg' title='Paella dish' />
+        <CardMedia className={classes.media} image='/assets/categoryImages/travel.jpg' title='Paella dish' />
         <CardContent>
           <Typography variant='body2' color='textSecondary' component='p'>
-            This impressive paella is a perfect party dish and a fun meal to cook together with your guests. Add 1 cup of
-            frozen peas along with the mussels, if you like.
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quidem cumque minus tenetur vitae sint odio maxime
+            error quas saepe! Odit voluptatem quas saepe blanditiis officiis perferendis, necessitatibus corporis minima
+            magni!
           </Typography>
         </CardContent>
         <CardActions disableSpacing>
           <IconButton aria-label='add to favorites'>
-            <FavoriteIcon />
+            <FavoriteBorderOutlined />
           </IconButton>
           <IconButton aria-label='share'>
-            <ShareIcon />
+            <Share />
           </IconButton>
-          <IconButton
-            className={clsx(classes.expand, {
-              [classes.expandOpen]: expanded,
-            })}
-            onClick={handleExpandClick}
-            aria-expanded={expanded}
-            aria-label='show more'
-          >
-            <ExpandMoreIcon />
-          </IconButton>
+
+          <Box className={classes.showDetailEventBtn}>
+            <Button color='primary' component={Link} to={`/events/detail`}>
+              자세히 보기
+            </Button>
+            <IconButton onClick={handleExpandClick} aria-expanded={expanded} aria-label='show more' color='primary'>
+              <Group />
+            </IconButton>
+          </Box>
         </CardActions>
         <Collapse in={expanded} timeout='auto' unmountOnExit>
-          <CardContent>
-            <Typography paragraph>Method:</Typography>
-            <Typography paragraph>
-              Heat 1/2 cup of the broth in a pot until simmering, add saffron and set aside for 10 minutes.
-            </Typography>
-            <Typography paragraph>
-              Heat oil in a (14- to 16-inch) paella pan or a large, deep skillet over medium-high heat. Add chicken, shrimp
-              and chorizo, and cook, stirring occasionally until lightly browned, 6 to 8 minutes. Transfer shrimp to a large
-              plate and set aside, leaving chicken and chorizo in the pan. Add pimentón, bay leaves, garlic, tomatoes, onion,
-              salt and pepper, and cook, stirring often until thickened and fragrant, about 10 minutes. Add saffron broth and
-              remaining 4 1/2 cups chicken broth; bring to a boil.
-            </Typography>
-            <Typography paragraph>
-              Add rice and stir very gently to distribute. Top with artichokes and peppers, and cook without stirring, until
-              most of the liquid is absorbed, 15 to 18 minutes. Reduce heat to medium-low, add reserved shrimp and mussels,
-              tucking them down into the rice, and cook again without stirring, until mussels have opened and rice is just
-              tender, 5 to 7 minutes more. (Discard any mussels that don’t open.)
-            </Typography>
-            <Typography>Set aside off of the heat to let rest for 10 minutes, and then serve.</Typography>
-          </CardContent>
+          <CardActions disableSpacing>
+            <Box className={classes.eventGroupBox}>
+              <Tooltip title='robot' aria-label='robot' placement='right' arrow>
+                <Avatar component={Link} to='/' />
+              </Tooltip>
+            </Box>
+          </CardActions>
         </Collapse>
       </Card>
     </Grid>
