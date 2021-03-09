@@ -20,7 +20,7 @@ import {
   Divider,
 } from '@material-ui/core';
 import { red } from '@material-ui/core/colors';
-import { Favorite, FavoriteBorderOutlined, Share, MoreVert, Group } from '@material-ui/icons';
+import { Favorite, LocationOn, FavoriteBorderOutlined, Share, MoreVert, Group } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
@@ -50,6 +50,10 @@ const useStyles = makeStyles((theme) => ({
   },
   menu: {
     '& .MuiMenu-paper': theme.palette.background.default,
+  },
+  location: {
+    display: 'flex',
+    alignItems: 'center',
   },
 }));
 
@@ -120,11 +124,22 @@ export default function RecipeReviewCard() {
             </>
           }
           title='Shrimp and Chorizo Paella'
-          subheader='September 14, 2016'
+          subheader={
+            <Typography variant='caption' color='textSecondary'>
+              September 14, 2016
+            </Typography>
+          }
         />
         <CardMedia className={classes.media} image='/assets/categoryImages/travel.jpg' title='Paella dish' />
         <CardContent>
-          <Typography variant='body2' color='textSecondary' component='p'>
+          <Box display='flex' alignItems='center'>
+            <LocationOn />
+            <Typography variant='subtitle2' color='textSecondary' display='inline'>
+              서울 특별시 강남구 선릉대로 스타벅스 1호점
+            </Typography>
+          </Box>
+          <Divider variant='fullWidth' style={{ margin: '8px 0' }} />
+          <Typography variant='body1' color='textSecondary' component='p'>
             Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quidem cumque minus tenetur vitae sint odio maxime
             error quas saepe! Odit voluptatem quas saepe blanditiis officiis perferendis, necessitatibus corporis minima
             magni!

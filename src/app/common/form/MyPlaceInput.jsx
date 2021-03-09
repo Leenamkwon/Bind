@@ -46,7 +46,7 @@ export default function MyPlaceInput({ options, ...props }) {
   }
 
   function handleError(e) {
-    helper.setError({ noResult: '구글 맵 한도초과...' });
+    helper.setError({ noResult: '!구글 맵 일일 한도 초과!' });
   }
 
   return (

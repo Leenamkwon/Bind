@@ -1,6 +1,7 @@
 /* global google */
 import React from 'react';
-import { Button, Card, CardActions, CardHeader, Divider, makeStyles } from '@material-ui/core';
+import { Avatar, Card, CardActions, CardHeader, Divider, makeStyles } from '@material-ui/core';
+import { EventAvailable } from '@material-ui/icons';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import MytextInput from '../../../app/common/form/MytextInput';
@@ -8,8 +9,8 @@ import MySelectInput from '../../../app/common/form/MySelectInput';
 import MyTextArea from '../../../app/common/form/MyTextArea';
 import MyDateInput from '../../../app/common/form/MyDateInput';
 import MyPlaceInput from '../../../app/common/form/MyPlaceInput';
-import { categoryData, memberData } from '../../../app/api/categoryOption';
 import ButtonComponent from '../../../app/layout/ButtonComponent';
+import { categoryData, memberData } from '../../../app/api/categoryOption';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -18,6 +19,9 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiFormControl-root': {
       margin: theme.spacing(0, 0, 3, 0),
     },
+  },
+  card: {
+    boxShadow: theme.shadows[7],
   },
 }));
 
@@ -52,8 +56,17 @@ export default function EventForm() {
   });
 
   return (
-    <Card>
-      <CardHeader title={`새로운 이벤트 만들기`} className={classes.root} />
+    <Card className={classes.card}>
+      <CardHeader
+        avatar={
+          <Avatar>
+            <EventAvailable color='primary' />
+          </Avatar>
+        }
+        title={`이벤트 만들기`}
+        subheader={`사람들과 활동을 시작해보세요.`}
+        className={classes.root}
+      />
       <Divider light={true} variant='middle' />
       <CardActions>
         <Formik initialValues={initialValues} validationSchema={validationSchema}>
