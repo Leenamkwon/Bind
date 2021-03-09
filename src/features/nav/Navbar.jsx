@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppBar, Button, makeStyles, Toolbar, IconButton, Box } from '@material-ui/core';
+import { AppBar, Button, makeStyles, Toolbar, IconButton, Box, Hidden } from '@material-ui/core';
 import DonutSmallOutlinedIcon from '@material-ui/icons/DonutSmall';
 import Brightness4Icon from '@material-ui/icons/Brightness4';
 import Brightness7Icon from '@material-ui/icons/Brightness7';
@@ -57,12 +57,14 @@ export default function NavBar() {
   return (
     <AppBar className={classes.root}>
       <Toolbar className={classes.toolBar} position='static'>
-        <Box className={classes.tabs}>
-          <Button variant='text' startIcon={<HomeIcon />} color='inherit'>
-            홈
-          </Button>
-          {pathname === '/events' && <div className='indicator' aria-label='indicator'></div>}
-        </Box>
+        <Hidden smDown>
+          <Box className={classes.tabs}>
+            <Button variant='text' startIcon={<HomeIcon />} color='inherit'>
+              홈
+            </Button>
+            {pathname === '/events' && <div className='indicator' aria-label='indicator'></div>}
+          </Box>
+        </Hidden>
 
         <IconButton aria-label='logo button' color='inherit' component={Link} to='/events'>
           <DonutSmallOutlinedIcon size='large' />
@@ -71,9 +73,11 @@ export default function NavBar() {
         <Box className={classes.rightButtonSection}>
           <SignedInMenu />
           {/* Theme Mode Change */}
-          <IconButton color='inherit' onClick={changeTheme}>
-            {isThemeMode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
-          </IconButton>
+          <Hidden smDown>
+            <IconButton color='inherit' onClick={changeTheme}>
+              {isThemeMode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+            </IconButton>
+          </Hidden>
         </Box>
       </Toolbar>
     </AppBar>

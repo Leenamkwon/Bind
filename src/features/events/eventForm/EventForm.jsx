@@ -1,5 +1,6 @@
+/* global google */
 import React from 'react';
-import { Card, CardActions, CardHeader, Divider, makeStyles } from '@material-ui/core';
+import { Button, Card, CardActions, CardHeader, Divider, makeStyles } from '@material-ui/core';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import MytextInput from '../../../app/common/form/MytextInput';
@@ -8,6 +9,7 @@ import MyTextArea from '../../../app/common/form/MyTextArea';
 import MyDateInput from '../../../app/common/form/MyDateInput';
 import MyPlaceInput from '../../../app/common/form/MyPlaceInput';
 import { categoryData, memberData } from '../../../app/api/categoryOption';
+import ButtonComponent from '../../../app/layout/ButtonComponent';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,7 +27,7 @@ export default function EventForm() {
   const initialValues = {
     title: '',
     category: '',
-    member: '',
+    member: 1,
     description: '',
     city: { address: '', latLng: null },
     venue: { address: '', latLng: null },
@@ -39,19 +41,19 @@ export default function EventForm() {
     member: Yup.number(),
     description: Yup.string().required('내용은 필수 입력란 입니다.'),
     city: Yup.object().shape({
-      address: Yup.string().required('City required'),
+      address: Yup.string().required('도시는 필수 입력란 입니다.'),
       latLng: Yup.object().required('정확한 도시를 선택해주세요'),
     }),
     venue: Yup.object().shape({
-      address: Yup.string().required('Venue required'),
+      address: Yup.string().required('장소는 필수 입력란 입니다.'),
       latLng: Yup.object().required('정확한 장소를 선택해주세요'),
     }),
-    date: Yup.date().required(),
+    date: Yup.date(),
   });
 
   return (
     <Card>
-      <CardHeader title={`새로운 이벤트 만들기`} />
+      <CardHeader title={`새로운 이벤트 만들기`} className={classes.root} />
       <Divider light={true} variant='middle' />
       <CardActions>
         <Formik initialValues={initialValues} validationSchema={validationSchema}>
@@ -63,8 +65,29 @@ export default function EventForm() {
                 <MySelectInput label='카테고리' name='category' option={categoryData} />
                 <MySelectInput label='인원' name='member' option={memberData} />
                 <MyPlaceInput label='도시' name='city' />
+                <MyPlaceInput
+                  label='장소'
+                  name='venue'
+                  disabled={!values.city.latLng}
+                  options={{
+                    location: new google.maps.LatLng(values.city.latLng),
+                    radius: 500,
+                    type: ['establishment'],
+                  }}
+                />
                 <MyTextArea label='이벤트 내용' name='description' />
                 <MyDateInput label='이벤트 날짜' name='date' />
+                <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
+                  <ButtonComponent variant='contained' loading={false} content='취소' />
+                  <ButtonComponent
+                    color='primary'
+                    loading={isSubmitting}
+                    disabled={!isValid || !dirty || isSubmitting}
+                    type='submit'
+                    content='전송'
+                    variant='contained'
+                  />
+                </div>
               </Form>
             );
           }}

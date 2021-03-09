@@ -7,10 +7,10 @@ export default function MytextInput(props) {
 
   return (
     <FormControl error={meta.touched && !!meta.error} variant='outlined' fullWidth={true} size='medium' required>
-      <InputLabel htmlFor={props.label}>{props.label}</InputLabel>
-      <Input id={props.label} aria-describedby='my-helper-text' {...field} {...props} />
-      {meta.touched && meta.error ? <FormHelperText id={props.label}>{meta.error}</FormHelperText> : null}
-      {meta.touched && !meta.error && <FormHelperText id={props.label}>Success</FormHelperText>}
+      <InputLabel htmlFor={field.name}>{props.label}</InputLabel>
+      <Input id={field.name} aria-describedby='my-helper-text' {...field} {...props} />
+      {meta.touched && meta.error ? <FormHelperText>{meta.error}</FormHelperText> : null}
+      {meta.touched && !meta.error && <FormHelperText>Success</FormHelperText>}
     </FormControl>
   );
 }
