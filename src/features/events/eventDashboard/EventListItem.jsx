@@ -147,7 +147,7 @@ export default function RecipeReviewCard() {
         </CardContent>
         <CardActions disableSpacing>
           <IconButton aria-label='add to favorites'>
-            <FavoriteBorderOutlined />
+            <FavoriteBorderOutlined color='primary' />
           </IconButton>
           <IconButton aria-label='share'>
             <Share />

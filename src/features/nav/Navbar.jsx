@@ -57,7 +57,7 @@ export default function NavBar() {
   return (
     <AppBar className={classes.root}>
       <Toolbar className={classes.toolBar} position='static'>
-        <Hidden smDown>
+        <Hidden xsDown>
           <Box className={classes.tabs}>
             <Button variant='text' startIcon={<HomeIcon />} color='inherit'>
               홈
@@ -73,7 +73,7 @@ export default function NavBar() {
         <Box className={classes.rightButtonSection}>
           <SignedInMenu />
           {/* Theme Mode Change */}
-          <Hidden smDown>
+          <Hidden xsDown>
             <IconButton color='inherit' onClick={changeTheme}>
               {isThemeMode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
             </IconButton>
