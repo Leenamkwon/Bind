@@ -1,7 +1,7 @@
 /* global google */
 import React from 'react';
 import { Avatar, Card, CardActions, CardHeader, Divider, makeStyles } from '@material-ui/core';
-import { EventAvailable } from '@material-ui/icons';
+import { EventAvailable, Send } from '@material-ui/icons';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import MytextInput from '../../../app/common/form/MytextInput';
@@ -69,7 +69,7 @@ export default function EventForm() {
       />
       <Divider light={true} variant='middle' />
       <CardActions>
-        <Formik initialValues={initialValues} validationSchema={validationSchema}>
+        <Formik enableReinitialize initialValues={initialValues} validationSchema={validationSchema}>
           {({ values, handleSubmit, dirty, isValid, isSubmitting }) => {
             console.log(values);
             return (
@@ -93,6 +93,7 @@ export default function EventForm() {
                 <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
                   <ButtonComponent variant='contained' loading={false} content='취소' />
                   <ButtonComponent
+                    startIcon={<Send />}
                     color='primary'
                     loading={isSubmitting}
                     disabled={!isValid || !dirty || isSubmitting}

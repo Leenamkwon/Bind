@@ -12,7 +12,6 @@ import {
   Menu,
   makeStyles,
   CardMedia,
-  CardContent,
   Box,
 } from '@material-ui/core';
 import { FavoriteBorder, MoreVert, Share } from '@material-ui/icons';
