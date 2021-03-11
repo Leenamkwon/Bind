@@ -22,6 +22,9 @@ import {
 import { red } from '@material-ui/core/colors';
 import { Favorite, LocationOn, FavoriteBorderOutlined, Share, MoreVert, Group } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
+import Prompt from '../../../app/common/dialog/Prompt';
+import { useToggleClick } from '../../../app/hooks/useToggleClick';
+import { useTargetClick } from '../../../app/hooks/useTargetClick';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -77,26 +80,20 @@ const StyledMenu = withStyles({
   />
 ));
 
-export default function RecipeReviewCard() {
+export default function EventListItem() {
   const classes = useStyles();
-  const [expanded, setExpanded] = React.useState(false);
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
+  const [expanded, setExpanded] = useToggleClick(false);
+  const [dialogOpen, setDialogOpen] = useToggleClick(false);
+  const [anchorEl, setAnchorEl] = useTargetClick(null);
 
-  function handleExpandClick() {
-    setExpanded(!expanded);
-  }
-
-  function menuOpen(e) {
-    setAnchorEl(e.currentTarget);
-  }
-
-  function menuClose() {
+  function DialogClose() {
     setAnchorEl(null);
+    setDialogOpen();
   }
 
   return (
     <Grid className={classes.grid} item xs={12}>
+      <Prompt open={dialogOpen} setOpen={setDialogOpen} />
       <Card className={classes.root} raised={true}>
         <CardHeader
           avatar={
@@ -106,7 +103,7 @@ export default function RecipeReviewCard() {
           }
           action={
             <>
-              <IconButton aria-label='settings' onClick={menuOpen}>
+              <IconButton aria-label='settings' onClick={(e) => setAnchorEl(e.currentTarget)}>
                 <MoreVert />
               </IconButton>
               <StyledMenu
@@ -114,12 +111,12 @@ export default function RecipeReviewCard() {
                 id='event-menu'
                 anchorEl={anchorEl}
                 keepMounted
-                open={open}
-                onClose={menuClose}
+                open={Boolean(anchorEl)}
+                onClose={() => setAnchorEl(null)}
               >
-                <MenuItem onClick={menuClose}>수정하기</MenuItem>
+                <MenuItem onClick={() => setAnchorEl(null)}>수정하기</MenuItem>
                 <Divider variant='fullWidth' />
-                <MenuItem onClick={menuClose}>삭제하기</MenuItem>
+                <MenuItem onClick={DialogClose}>삭제하기</MenuItem>
               </StyledMenu>
             </>
           }
@@ -157,7 +154,7 @@ export default function RecipeReviewCard() {
             <Button color='primary' component={Link} to={`/events/detail`}>
               자세히 보기
             </Button>
-            <IconButton onClick={handleExpandClick} aria-expanded={expanded} aria-label='show more' color='primary'>
+            <IconButton onClick={setExpanded} aria-expanded={expanded} aria-label='show more' color='primary'>
               <Group />
             </IconButton>
           </Box>

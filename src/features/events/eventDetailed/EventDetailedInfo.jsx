@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import { Avatar, Card, Collapse, Divider, Grid, List, ListItem, ListItemAvatar, ListItemText } from '@material-ui/core';
 import { LocationOn, EventAvailable, Description, People, ExpandMore, ExpandLess } from '@material-ui/icons';
 import EventDetailedMap from './EventDetailedMap';
 
-export default function EventDetailedInfo() {
+export default memo(function EventDetailedInfo() {
   const [mapOpen, setMapOpen] = useState(false);
 
   function handleMapOpen() {
@@ -43,6 +43,15 @@ export default function EventDetailedInfo() {
           <ListItem>
             <ListItemAvatar>
               <Avatar>
+                <People />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary='최대 인원' secondary={'5명'}></ListItemText>
+          </ListItem>
+          <Divider variant='inset' component='li' />
+          <ListItem>
+            <ListItemAvatar>
+              <Avatar>
                 <Description />
               </Avatar>
             </ListItemAvatar>
@@ -53,17 +62,8 @@ export default function EventDetailedInfo() {
               qui veritatis velit sunt veniam autem maiores? Ipsum.
             </ListItemText>
           </ListItem>
-          <Divider variant='inset' component='li' />
-          <ListItem>
-            <ListItemAvatar>
-              <Avatar>
-                <People />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary='최대 인원' secondary={'5명'}></ListItemText>
-          </ListItem>
         </List>
       </Card>
     </Grid>
   );
-}
+});

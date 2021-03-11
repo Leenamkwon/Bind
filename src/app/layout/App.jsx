@@ -7,6 +7,7 @@ import Navbar from '../../features/nav/Navbar';
 import themeStyle from './useTheme';
 import EventForm from '../../features/events/eventForm/EventForm';
 import EventDetailedPage from '../../features/events/eventDetailed/EventDetailedPage';
+import ModalManager from '../common/modal/ModalManager';
 
 export default function App() {
   const theme = themeStyle();
@@ -15,6 +16,7 @@ export default function App() {
   return (
     <>
       <ThemeProvider theme={theme}>
+        <ModalManager />
         <Route exact path='/' component={HomePage} />
         <Route
           path={'/(.+)'}

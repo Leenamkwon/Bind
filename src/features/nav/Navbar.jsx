@@ -1,14 +1,12 @@
 import React from 'react';
 import { AppBar, Button, makeStyles, Toolbar, IconButton, Box, Hidden } from '@material-ui/core';
-import DonutSmallOutlinedIcon from '@material-ui/icons/DonutSmall';
-import Brightness4Icon from '@material-ui/icons/Brightness4';
-import Brightness7Icon from '@material-ui/icons/Brightness7';
-import HomeIcon from '@material-ui/icons/Home';
-
-import { Link, useLocation } from 'react-router-dom';
-import SignedInMenu from './SignedInMenu';
+import { DonutSmall, Brightness4, Brightness7, Home } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link, useLocation } from 'react-router-dom';
+
 import { DARK_MODE, LIGHT_MODE } from '../../app/store/themeReducer';
+import SignedInMenu from './SignedInMenu';
+import SignedOutMenu from './SignedOutMenu';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -57,9 +55,9 @@ export default function NavBar() {
   return (
     <AppBar className={classes.root}>
       <Toolbar className={classes.toolBar} position='static'>
-        <Hidden xsDown>
+        <Hidden smDown>
           <Box className={classes.tabs}>
-            <Button variant='text' startIcon={<HomeIcon />} color='inherit'>
+            <Button variant='text' startIcon={<Home />} color='inherit'>
               홈
             </Button>
             {pathname === '/events' && <div className='indicator' aria-label='indicator'></div>}
@@ -67,15 +65,16 @@ export default function NavBar() {
         </Hidden>
 
         <IconButton aria-label='logo button' color='inherit' component={Link} to='/events'>
-          <DonutSmallOutlinedIcon size='large' />
+          <DonutSmall size='large' />
         </IconButton>
 
         <Box className={classes.rightButtonSection}>
-          <SignedInMenu />
+          {/* <SignedInMenu /> */}
+          <SignedOutMenu />
           {/* Theme Mode Change */}
           <Hidden xsDown>
             <IconButton color='inherit' onClick={changeTheme}>
-              {isThemeMode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+              {isThemeMode === 'dark' ? <Brightness7 /> : <Brightness4 />}
             </IconButton>
           </Hidden>
         </Box>

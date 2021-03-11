@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import {
   Avatar,
   MenuItem,
@@ -16,6 +16,9 @@ import {
 } from '@material-ui/core';
 import { FavoriteBorder, MoreVert, Share } from '@material-ui/icons';
 import ButtonComponent from '../../../app/layout/ButtonComponent';
+import Prompt from '../../../app/common/dialog/Prompt';
+import { useTargetClick } from '../../../app/hooks/useTargetClick';
+import { useToggleClick } from '../../../app/hooks/useToggleClick';
 
 const StyledMenu = withStyles({
   paper: {
@@ -50,28 +53,26 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function EventDetailedHeader() {
+export default memo(function EventDetailedHeader() {
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
+  const [anchorEl, setAnchorEl] = useTargetClick(null);
+  const [dialogOpen, setDialogOpen] = useToggleClick(false);
 
-  function menuOpen(e) {
-    setAnchorEl(e.currentTarget);
-  }
-
-  function menuClose() {
+  function promptClose() {
     setAnchorEl(null);
+    setDialogOpen(true);
   }
 
   return (
     <Grid container>
+      <Prompt open={dialogOpen} setOpen={setDialogOpen} />
       <Grid item xs={12}>
         <Card raised={true}>
           <CardHeader
             avatar={<Avatar aria-label='recipe'>R</Avatar>}
             action={
               <>
-                <IconButton aria-label='settings' onClick={menuOpen}>
+                <IconButton aria-label='settings' onClick={(e) => setAnchorEl(e.currentTarget)}>
                   <MoreVert />
                 </IconButton>
                 <StyledMenu
@@ -79,12 +80,12 @@ export default function EventDetailedHeader() {
                   id='event-menu'
                   anchorEl={anchorEl}
                   keepMounted
-                  open={open}
-                  onClose={menuClose}
+                  open={Boolean(anchorEl)}
+                  onClose={() => setAnchorEl(null)}
                 >
-                  <MenuItem onClick={menuClose}>수정하기</MenuItem>
+                  <MenuItem onClick={() => setAnchorEl(null)}>수정하기</MenuItem>
                   <Divider variant='fullWidth' />
-                  <MenuItem onClick={menuClose}>삭제하기</MenuItem>
+                  <MenuItem onClick={promptClose}>삭제하기</MenuItem>
                 </StyledMenu>
               </>
             }
@@ -118,4 +119,4 @@ export default function EventDetailedHeader() {
       </Grid>
     </Grid>
   );
-}
+});

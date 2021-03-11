@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Card, CardHeader, Grid, Divider, CardMedia, makeStyles, Box, Typography } from '@material-ui/core';
 import EventDetailedChat from './EventDetailedChat';
 import EventDetailedChatForm from './EventDetailedChatForm';
@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function EventDetailedChatPage() {
+export default memo(function EventDetailedChatPage() {
   return (
     <Grid item style={{ margin: '15px 0 30px 0' }}>
       <Card raised>
@@ -35,7 +35,7 @@ export default function EventDetailedChatPage() {
       </Card>
     </Grid>
   );
-}
+});
 
 function EventDetailNoAuth() {
   const classes = useStyles();
