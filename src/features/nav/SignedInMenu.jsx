@@ -49,7 +49,6 @@ export default function SignedInMenu() {
         open={Boolean(anchorEl)}
         onClose={handleClose}
         anchorEl={anchorEl}
-        keepMounted
         id='customized-menu'
         transformOrigin={{
           vertical: 'bottom',

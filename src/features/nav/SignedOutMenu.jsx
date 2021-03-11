@@ -21,7 +21,12 @@ export default function SignedOutMenu() {
         >
           로그인
         </Button>
-        <Button startIcon={<PersonAdd />} color='inherit' variant='outlined'>
+        <Button
+          onClick={() => dispatch(modalOpen('RegisterForm'))}
+          startIcon={<PersonAdd />}
+          color='inherit'
+          variant='outlined'
+        >
           계정 생성
         </Button>
         <ModalWrapper />

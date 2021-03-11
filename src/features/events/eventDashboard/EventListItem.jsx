@@ -110,7 +110,6 @@ export default function EventListItem() {
                 className={classes.menu}
                 id='event-menu'
                 anchorEl={anchorEl}
-                keepMounted
                 open={Boolean(anchorEl)}
                 onClose={() => setAnchorEl(null)}
               >

@@ -79,7 +79,6 @@ export default memo(function EventDetailedHeader() {
                   className={classes.menu}
                   id='event-menu'
                   anchorEl={anchorEl}
-                  keepMounted
                   open={Boolean(anchorEl)}
                   onClose={() => setAnchorEl(null)}
                 >

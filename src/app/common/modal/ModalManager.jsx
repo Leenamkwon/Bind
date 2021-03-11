@@ -1,6 +1,7 @@
 import React, { memo, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import LoginForm from '../../../features/auth/LoginForm';
+import RegisterForm from '../../../features/auth/RegisterForm';
 
 export default memo(function ModalManager() {
   const { open, component } = useSelector((state) => state.modal);
@@ -9,6 +10,7 @@ export default memo(function ModalManager() {
   const modal = useMemo(
     () => ({
       LoginForm: LoginForm,
+      RegisterForm: RegisterForm,
     }),
     []
   );
