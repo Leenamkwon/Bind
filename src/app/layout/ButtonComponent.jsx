@@ -16,12 +16,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ButtonComponent({ loading, content, ...props }) {
+export default function ButtonComponent({ loading, content, css, ...props }) {
   const classes = useStyles();
 
   return (
-    <div className={classes.wrapper}>
-      <Button {...props}>{content}</Button>
+    <div className={classes.wrapper} style={css}>
+      <Button {...props} style={{ width: '100%' }}>
+        {content}
+      </Button>
       {loading && <CircularProgress size={24} className={classes.buttonProgress} color='primary' />}
     </div>
   );

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { Card, CardActionArea, CardHeader, CardContent, Divider, Grid, makeStyles, Typography } from '@material-ui/core';
 import { Event, FilterList } from '@material-ui/icons';
-import koLocale from 'date-fns/locale/ko';
 import DateFnsUtils from '@date-io/date-fns';
 
 const useStyles = makeStyles((theme) => ({
@@ -29,7 +28,7 @@ const StaticDatePicker = () => {
   const [date, changeDate] = useState(new Date());
 
   return (
-    <MuiPickersUtilsProvider utils={DateFnsUtils} locale={koLocale}>
+    <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Grid container spacing={3}>
         <Grid item xs>
           <Card elevation={3}>

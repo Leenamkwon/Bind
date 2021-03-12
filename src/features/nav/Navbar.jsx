@@ -37,10 +37,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function NavBar() {
-  const classes = useStyles();
-  const { pathname } = useLocation();
   const dispatch = useDispatch();
   const { isThemeMode } = useSelector((state) => state.theme);
+  const { authenticated } = useSelector((state) => state.auth);
+  const classes = useStyles();
+  const { pathname } = useLocation();
 
   function changeTheme() {
     if (isThemeMode === 'dark') {
@@ -69,9 +70,7 @@ export default function NavBar() {
         </IconButton>
 
         <Box className={classes.rightButtonSection}>
-          {/* <SignedInMenu /> */}
-          <SignedOutMenu />
-          {/* Theme Mode Change */}
+          {authenticated ? <SignedInMenu /> : <SignedOutMenu />}
           <Hidden xsDown>
             <IconButton color='inherit' onClick={changeTheme}>
               {isThemeMode === 'dark' ? <Brightness7 /> : <Brightness4 />}

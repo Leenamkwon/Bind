@@ -4,6 +4,10 @@ import { Avatar, makeStyles, Menu, MenuItem, ListItemIcon, ListItemText, Box, Ic
 import { AccountCircle, Settings, ExitToApp, EventAvailable } from '@material-ui/icons';
 import { useLocation } from 'react-router';
 import { NavLink } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
+
+// COMPONENT
+import { signOutFirebase } from '../../app/firestore/firebaseService';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SignedInMenu() {
+  const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const { pathname } = useLocation();
@@ -32,6 +37,15 @@ export default function SignedInMenu() {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleSignOut = async () => {
+    try {
+      handleClose();
+      await signOutFirebase();
+    } catch (error) {
+      enqueueSnackbar(error.message, { variant: 'error' });
+    }
   };
 
   useEffect(() => {
@@ -61,19 +75,22 @@ export default function SignedInMenu() {
           </ListItemIcon>
           <ListItemText primary='이벤트 작성하기' />
         </MenuItem>
+
         <MenuItem selected={pathname === '/profile'}>
           <ListItemIcon>
             <AccountCircle />
           </ListItemIcon>
           <ListItemText primary='프로필' />
         </MenuItem>
+
         <MenuItem selected={pathname === '/account'}>
           <ListItemIcon>
             <Settings />
           </ListItemIcon>
           <ListItemText primary='계정 설정' />
         </MenuItem>
-        <MenuItem>
+
+        <MenuItem onClick={handleSignOut}>
           <ListItemIcon>
             <ExitToApp />
           </ListItemIcon>
