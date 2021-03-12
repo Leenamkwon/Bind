@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, memo } from 'react';
 import Notification from './Notification';
 import { Avatar, makeStyles, Menu, MenuItem, ListItemIcon, ListItemText, Box, IconButton } from '@material-ui/core';
 import { AccountCircle, Settings, ExitToApp, EventAvailable } from '@material-ui/icons';
@@ -8,6 +8,7 @@ import { useSnackbar } from 'notistack';
 
 // COMPONENT
 import { signOutFirebase } from '../../app/firestore/firebaseService';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,11 +26,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignedInMenu() {
-  const { enqueueSnackbar } = useSnackbar();
-  const classes = useStyles();
+export default memo(function SignedInMenu() {
   const [anchorEl, setAnchorEl] = useState(null);
+  const { currentUserProfile } = useSelector((state) => state.profile);
+  const classes = useStyles();
   const { pathname } = useLocation();
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -56,7 +58,12 @@ export default function SignedInMenu() {
     <Box>
       <Notification />
       <IconButton onClick={handleClick}>
-        <Avatar src='/assets/user.png' className={classes.avatar} aria-controls='avatar' aria-haspopup='true' />
+        <Avatar
+          src={currentUserProfile.photoURL || null}
+          className={classes.avatar}
+          aria-controls='avatar'
+          aria-haspopup='true'
+        />
       </IconButton>
       <Menu
         className={classes.menu}
@@ -83,7 +90,7 @@ export default function SignedInMenu() {
           <ListItemText primary='프로필' />
         </MenuItem>
 
-        <MenuItem selected={pathname === '/account'}>
+        <MenuItem selected={pathname === '/account'} component={NavLink} to='/account'>
           <ListItemIcon>
             <Settings />
           </ListItemIcon>
@@ -99,4 +106,4 @@ export default function SignedInMenu() {
       </Menu>
     </Box>
   );
-}
+});

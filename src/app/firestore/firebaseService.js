@@ -44,3 +44,33 @@ export async function socialLoginFirebase(selectProvider) {
 export function findPassword(email) {
   return firebase.auth().sendPasswordResetEmail(email);
 }
+
+// 사용자 재인증
+export async function reauthFirebase(creds) {
+  const user = firebase.auth().currentUser;
+  const isCreds = firebase.auth.EmailAuthProvider.credential(creds.email, creds.password);
+
+  try {
+    return await user.reauthenticateWithCredential(isCreds);
+  } catch (error) {
+    throw error;
+  }
+}
+
+// 사용자 이메일 및 비밀번호 변경
+export async function emailAndPasswordChange(creds) {
+  const user = firebase.auth().currentUser;
+  const promise = [];
+
+  if (creds.email) {
+    promise.push(user.updateEmail(creds.email));
+  } else if (creds.password) {
+    promise.push(user.updatePassword(creds.password));
+  }
+
+  try {
+    return await Promise.all(promise);
+  } catch (error) {
+    throw error;
+  }
+}

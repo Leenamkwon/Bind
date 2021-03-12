@@ -16,5 +16,6 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 firebase.firestore();
+firebase.auth().useDeviceLanguage();
 
 export default firebase;

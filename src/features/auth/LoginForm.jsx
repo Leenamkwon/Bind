@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Box, Card, Hidden, Typography, Link as MuiLink } from '@material-ui/core';
 import { DonutSmall } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
+
+// COMPONENT
 import { modalClose, modalOpen } from '../../app/common/modal/modalReducer';
 import ModalWrapper from '../../app/common/modal/ModalWrapper';
 import LoginFormText from './LoginFormText';

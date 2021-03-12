@@ -9,6 +9,7 @@ import ButtonComponent from '../../app/layout/ButtonComponent';
 import { signInWithEmail } from '../../app/firestore/firebaseService';
 import { modalClose } from '../../app/common/modal/modalReducer';
 import SocialLogin from './SocialLogin';
+import { useHistory } from 'react-router';
 
 export default function LoginFormText() {
   const dispatch = useDispatch();
@@ -17,6 +18,7 @@ export default function LoginFormText() {
     email: Yup.string().email('이메일 양식에 맞지 않습니다.').required('이메일을 입력해주세요.'),
     password: Yup.string().min(6, '비밀번호는 최소 6자리 이상입니다.').required('패스워드를 입력해주세요.'),
   });
+  const history = useHistory();
 
   return (
     <Box mt={6} p={3}>
@@ -28,6 +30,7 @@ export default function LoginFormText() {
             await signInWithEmail(values);
             setSubmitting(false);
             dispatch(modalClose());
+            history.push('/events');
           } catch (error) {
             setErrors({ auth: '이메일 또는 비밀번호가 맞지 않습니다.' });
             setSubmitting(false);

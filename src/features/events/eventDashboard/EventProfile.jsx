@@ -1,5 +1,7 @@
 import React from 'react';
-import { makeStyles, Card, CardContent, Typography, Avatar, Box, CardActions, Divider } from '@material-ui/core';
+import { makeStyles, Card, CardContent, Typography, Avatar, CardActions, Divider } from '@material-ui/core';
+import { useSelector } from 'react-redux';
+import EventProfileFollowing from './EventProfileFollowing';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,52 +24,31 @@ const useStyles = makeStyles((theme) => ({
     border: `2px solid ${theme.palette.primary.main}`,
     margin: '0 auto',
   },
-  followingContent: {
-    display: 'flex',
-    justifyContent: 'space-around',
-  },
 }));
 
 export default function EventProfile() {
   const classes = useStyles();
+  const { currentUserProfile } = useSelector((state) => state.profile);
 
   return (
-    <Card className={classes.root}>
+    <Card className={classes.root} raised={true}>
       <div className={classes.details}>
         <CardActions>
-          <Avatar className={classes.avatar} src={null} />
+          <Avatar className={classes.avatar} src={currentUserProfile.photoURL || null} />
         </CardActions>
         <CardContent className={classes.content}>
           <Typography component='h5' variant='h5' align='center'>
-            Namkwon
+            {currentUserProfile.displayName}
           </Typography>
           <Typography variant='subtitle1' color='textSecondary' align='center'>
-            namkwon12@naver.com
+            {currentUserProfile.email}
           </Typography>
         </CardContent>
 
         <Divider />
 
-        <CardContent className={classes.followingContent}>
-          <div>
-            <Typography variant='h6' component='h5' display='block'>
-              팔로워
-            </Typography>
-            <Box />
-            <Typography variant='subtitle1' display='block' align='center'>
-              0
-            </Typography>
-          </div>
-          <div>
-            <Typography variant='h6' component='h5' display='block'>
-              팔로잉
-            </Typography>
-            <Box />
-            <Typography variant='subtitle1' display='block' align='center'>
-              0
-            </Typography>
-          </div>
-        </CardContent>
+        {/* EVENT FOLLOWING */}
+        <EventProfileFollowing />
       </div>
     </Card>
   );

@@ -19,7 +19,7 @@ export default function LoginFormText() {
     password: Yup.string().min(6, '패스워드는 최소 6자리 이상입니다.').required('패스워드를 입력해주세요.'),
     confirmPassword: Yup.string()
       .oneOf([Yup.ref('password')], '1차 패스워드와 맞지 않습니다')
-      .required('패스워드 확인은 필수입니다.'),
+      .required('패스워드 확인 양식은 필수입니다.'),
   });
 
   return (
