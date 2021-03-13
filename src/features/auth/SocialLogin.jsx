@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 
 import { modalClose } from '../../app/common/modal/modalReducer';
 import { socialLoginFirebase } from '../../app/firestore/firebaseService';
+import { useSnackbar } from 'notistack';
 
 const useStyles = makeStyles(() => ({
   button: {
@@ -16,10 +17,15 @@ const useStyles = makeStyles(() => ({
 export default function SocialLogin() {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
 
-  function handleSocialLogin(provider) {
-    dispatch(modalClose());
-    socialLoginFirebase(provider);
+  async function handleSocialLogin(provider) {
+    try {
+      await socialLoginFirebase(provider);
+      dispatch(modalClose());
+    } catch (error) {
+      enqueueSnackbar('이미 동일한 이메일이 존재합니다', { variant: 'error' });
+    }
   }
 
   return (

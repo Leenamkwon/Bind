@@ -35,10 +35,13 @@ export async function socialLoginFirebase(selectProvider) {
 
   try {
     const result = await firebase.auth().signInWithPopup(provider);
+    console.log(result);
     if (result.additionalUserInfo.isNewUser) {
       await setUserProfileData(result.user);
     }
-  } catch (error) {}
+  } catch (error) {
+    throw error;
+  }
 }
 
 export function findPassword(email) {

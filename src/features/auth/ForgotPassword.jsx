@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Box, TextField } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import { Form, Formik } from 'formik';
@@ -11,9 +11,13 @@ import { useState } from 'react';
 export default function ForgotPassword() {
   const [emailConfirm, setEmailConfirm] = useState(false);
   const initialValues = { email: '' };
-  const validation = Yup.object({
-    email: Yup.string().email('이메일 양식에 맞지 않습니다.').required('이메일을 입력해주세요.'),
-  });
+  const validation = useMemo(
+    () =>
+      Yup.object({
+        email: Yup.string().email('이메일 양식에 맞지 않습니다.').required('이메일을 입력해주세요.'),
+      }),
+    []
+  );
 
   return (
     <Box mt={6} p={3}>

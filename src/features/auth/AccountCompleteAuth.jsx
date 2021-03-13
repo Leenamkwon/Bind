@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { TextField, Typography } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import { Form, Formik } from 'formik';
@@ -11,12 +11,17 @@ import { emailAndPasswordChange, signOutFirebase } from '../../app/firestore/fir
 
 export default function AccountCompleteAuth({ setChangeCheck }) {
   const { enqueueSnackbar } = useSnackbar();
-  const initialValues = { email: '', password: '', confirmPassword: '' };
-  const validation = Yup.object({
-    email: Yup.string().email('이메일 양식에 맞지 않습니다.'),
-    password: Yup.string().min(6, '비밀번호는 최소 6자리 이상입니다.'),
-    confirmPassword: Yup.string().oneOf([Yup.ref('password')], '1차 패스워드와 맞지 않습니다'),
-  });
+
+  const initialValues = useMemo(() => ({ email: '', password: '', confirmPassword: '' }), []);
+  const validation = useMemo(
+    () =>
+      Yup.object({
+        email: Yup.string().email('이메일 양식에 맞지 않습니다.'),
+        password: Yup.string().min(6, '비밀번호는 최소 6자리 이상입니다.'),
+        confirmPassword: Yup.string().oneOf([Yup.ref('password')], '1차 패스워드와 맞지 않습니다'),
+      }),
+    []
+  );
 
   return (
     <Formik
@@ -48,6 +53,7 @@ export default function AccountCompleteAuth({ setChangeCheck }) {
             onChange={handleChange}
             onBlur={handleBlur}
             value={values.email}
+            autoComplete='off'
           />
           <TextField
             type='password'

@@ -1,14 +1,14 @@
 import React, { useEffect, useState, memo } from 'react';
-import Notification from './Notification';
 import { Avatar, makeStyles, Menu, MenuItem, ListItemIcon, ListItemText, Box, IconButton } from '@material-ui/core';
 import { AccountCircle, Settings, ExitToApp, EventAvailable } from '@material-ui/icons';
-import { useLocation } from 'react-router';
+import { useHistory, useLocation } from 'react-router';
 import { NavLink } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
+import { useSelector } from 'react-redux';
 
 // COMPONENT
+import Notification from './Notification';
 import { signOutFirebase } from '../../app/firestore/firebaseService';
-import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,6 +32,7 @@ export default memo(function SignedInMenu() {
   const classes = useStyles();
   const { pathname } = useLocation();
   const { enqueueSnackbar } = useSnackbar();
+  const history = useHistory();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -45,6 +46,7 @@ export default memo(function SignedInMenu() {
     try {
       handleClose();
       await signOutFirebase();
+      history.push('/');
     } catch (error) {
       enqueueSnackbar(error.message, { variant: 'error' });
     }
@@ -54,12 +56,14 @@ export default memo(function SignedInMenu() {
     handleClose();
   }, [pathname]);
 
+  if (!currentUserProfile) return null;
+
   return (
     <Box>
       <Notification />
       <IconButton onClick={handleClick}>
         <Avatar
-          src={currentUserProfile.photoURL || null}
+          src={currentUserProfile?.photoURL || null}
           className={classes.avatar}
           aria-controls='avatar'
           aria-haspopup='true'

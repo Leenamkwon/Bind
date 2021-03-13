@@ -30,6 +30,7 @@ export function setUserProfileData(user) {
       displayName: user.displayName,
       email: user.email,
       photoURL: user.photoURL || null,
+      providerId: user.providerData[0].providerId,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
     });
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { Card, CardActionArea, CardHeader, CardContent, Divider, Grid, makeStyles, Typography } from '@material-ui/core';
 import { Event, FilterList } from '@material-ui/icons';
@@ -80,4 +80,4 @@ const StaticDatePicker = () => {
   );
 };
 
-export default StaticDatePicker;
+export default memo(StaticDatePicker);

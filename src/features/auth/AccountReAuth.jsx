@@ -1,21 +1,31 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { TextField } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import { useSnackbar } from 'notistack';
+import { useSelector } from 'react-redux';
+import { Redirect } from 'react-router';
 
 // COMPONENT
 import ButtonComponent from '../../app/layout/ButtonComponent';
 import { reauthFirebase } from '../../app/firestore/firebaseService';
 
 export default function AccountReAuth({ setReauthCheck }) {
+  const { currentUser, authenticated } = useSelector((state) => state.auth);
   const { enqueueSnackbar } = useSnackbar();
-  const initialValues = { email: '', password: '' };
-  const validation = Yup.object({
-    email: Yup.string().email('이메일 양식에 맞지 않습니다.').required('이메일을 입력해주세요.'),
-    password: Yup.string().min(6, '비밀번호는 최소 6자리 이상입니다.').required('패스워드를 입력해주세요.'),
-  });
+
+  const initialValues = useMemo(() => ({ email: '', password: '' }), []);
+  const validation = useMemo(
+    () =>
+      Yup.object({
+        email: Yup.string().email('이메일 양식에 맞지 않습니다.').required('이메일을 입력해주세요.'),
+        password: Yup.string().min(6, '비밀번호는 최소 6자리 이상입니다.').required('패스워드를 입력해주세요.'),
+      }),
+    []
+  );
+
+  if (!currentUser && !authenticated) return <Redirect to='/' />;
 
   return (
     <Formik

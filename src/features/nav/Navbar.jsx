@@ -37,11 +37,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function NavBar() {
-  const dispatch = useDispatch();
+  const classes = useStyles();
   const { isThemeMode } = useSelector((state) => state.theme);
   const { authenticated } = useSelector((state) => state.auth);
-  const classes = useStyles();
+  const { initialized } = useSelector((state) => state.async);
   const { pathname } = useLocation();
+  const dispatch = useDispatch();
 
   function changeTheme() {
     if (isThemeMode === 'dark') {
@@ -70,7 +71,8 @@ export default function NavBar() {
         </IconButton>
 
         <Box className={classes.rightButtonSection}>
-          {authenticated ? <SignedInMenu /> : <SignedOutMenu />}
+          {authenticated && initialized && <SignedInMenu />}
+          {!authenticated && initialized && <SignedOutMenu />}
           <Hidden xsDown>
             <IconButton color='inherit' onClick={changeTheme}>
               {isThemeMode === 'dark' ? <Brightness7 /> : <Brightness4 />}

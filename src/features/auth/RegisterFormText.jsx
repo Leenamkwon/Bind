@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Box, TextField, Typography } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import { useDispatch } from 'react-redux';
@@ -6,21 +6,26 @@ import { modalClose } from '../../app/common/modal/modalReducer';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 
+// COMPONENT
 import SocialLogin from './SocialLogin';
 import { registerInFirebase } from '../../app/firestore/firebaseService';
 import ButtonComponent from '../../app/layout/ButtonComponent';
 
 export default function LoginFormText() {
   const dispatch = useDispatch();
-  const initialValues = { displayName: '', email: '', password: '', confirmPassword: '' };
-  const validation = Yup.object({
-    displayName: Yup.string().max(12, '이름은 최대 12자입니다.').required('이름 양식은 필수입니다.'),
-    email: Yup.string().email('이메일 양식에 맞지 않습니다.').required('이메일을 입력해주세요.'),
-    password: Yup.string().min(6, '패스워드는 최소 6자리 이상입니다.').required('패스워드를 입력해주세요.'),
-    confirmPassword: Yup.string()
-      .oneOf([Yup.ref('password')], '1차 패스워드와 맞지 않습니다')
-      .required('패스워드 확인 양식은 필수입니다.'),
-  });
+  const initialValues = useMemo(() => ({ displayName: '', email: '', password: '', confirmPassword: '' }), []);
+  const validation = useMemo(
+    () =>
+      Yup.object({
+        displayName: Yup.string().max(12, '이름은 최대 12자입니다.').required('이름 양식은 필수입니다.'),
+        email: Yup.string().email('이메일 양식에 맞지 않습니다.').required('이메일을 입력해주세요.'),
+        password: Yup.string().min(6, '패스워드는 최소 6자리 이상입니다.').required('패스워드를 입력해주세요.'),
+        confirmPassword: Yup.string()
+          .oneOf([Yup.ref('password')], '1차 패스워드와 맞지 않습니다')
+          .required('패스워드 확인 양식은 필수입니다.'),
+      }),
+    []
+  );
 
   return (
     <Box p={3}>
@@ -54,6 +59,7 @@ export default function LoginFormText() {
                 error={touched.displayName && Boolean(errors.displayName)}
                 helperText={touched.displayName && errors.displayName}
                 autoComplete='off'
+                style={{ margin: '10px 0' }}
               />
               <TextField
                 id='email'
@@ -68,6 +74,7 @@ export default function LoginFormText() {
                 helperText={touched.email && errors.email}
                 type='email'
                 autoComplete='off'
+                style={{ margin: '10px 0' }}
               />
               <TextField
                 id='password'
@@ -81,6 +88,7 @@ export default function LoginFormText() {
                 error={touched.password && Boolean(errors.password)}
                 helperText={touched.password && errors.password}
                 type='password'
+                style={{ margin: '10px 0' }}
               />
               <TextField
                 id='confirmPassword'
@@ -94,6 +102,7 @@ export default function LoginFormText() {
                 error={touched.confirmPassword && Boolean(errors.confirmPassword)}
                 helperText={touched.confirmPassword && errors.confirmPassword}
                 type='password'
+                style={{ margin: '10px 0' }}
               />
               {errors.auth && <Alert severity='error'>{errors.auth}</Alert>}
               <ButtonComponent

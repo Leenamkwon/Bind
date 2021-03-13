@@ -1,6 +1,7 @@
 import React from 'react';
 import { makeStyles, Card, CardContent, Typography, Avatar, CardActions, Divider } from '@material-ui/core';
-import { useSelector } from 'react-redux';
+
+// COMPONENT
 import EventProfileFollowing from './EventProfileFollowing';
 
 const useStyles = makeStyles((theme) => ({
@@ -26,29 +27,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function EventProfile() {
+export default function EventProfile({ currentUserProfile }) {
   const classes = useStyles();
-  const { currentUserProfile } = useSelector((state) => state.profile);
 
   return (
     <Card className={classes.root} raised={true}>
       <div className={classes.details}>
         <CardActions>
-          <Avatar className={classes.avatar} src={currentUserProfile.photoURL || null} />
+          <Avatar className={classes.avatar} src={currentUserProfile?.photoURL || null} />
         </CardActions>
         <CardContent className={classes.content}>
           <Typography component='h5' variant='h5' align='center'>
-            {currentUserProfile.displayName}
+            {currentUserProfile?.displayName || '익명의 유저'}
           </Typography>
           <Typography variant='subtitle1' color='textSecondary' align='center'>
-            {currentUserProfile.email}
+            {currentUserProfile?.email || null}
           </Typography>
         </CardContent>
 
         <Divider />
 
         {/* EVENT FOLLOWING */}
-        <EventProfileFollowing />
+        {currentUserProfile && <EventProfileFollowing />}
       </div>
     </Card>
   );

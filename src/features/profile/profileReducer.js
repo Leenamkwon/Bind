@@ -1,3 +1,4 @@
+import { SIGN_OUT_USER } from '../auth/authConstants';
 import {
   LISTEN_TO_CURRENT_USER_PROFILE,
   LISTEN_TO_SELECT_USER_PROFILE,
@@ -27,6 +28,8 @@ export default function profileReducer(state = initialState, { type, payload }) 
   switch (type) {
     case LISTEN_TO_CURRENT_USER_PROFILE:
       return { ...state, currentUserProfile: payload };
+    case SIGN_OUT_USER:
+      return { ...state, currentUserProfile: null };
     case LISTEN_TO_SELECT_USER_PROFILE:
       return { ...state, selectUserProfile: payload };
     case LISTEN_TO_CURRENT_USER_LIKE:
