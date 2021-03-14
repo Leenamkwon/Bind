@@ -1,12 +1,25 @@
 import React, { memo } from 'react';
-import EventListItem from './EventListItem';
 import { Grid } from '@material-ui/core';
+import InfinitScroll from 'react-infinite-scroller';
 
-export default memo(function EventList() {
+import EventListItem from './EventListItem';
+
+export default memo(function EventList({ events, getNextEvents, loading, moreEvents }) {
   return (
     <Grid container>
-      <EventListItem />
-      <EventListItem />
+      {events.length >= 1 ? (
+        <InfinitScroll
+          pageStart={0}
+          loadMore={getNextEvents}
+          hasMore={!loading && moreEvents}
+          initialLoad={false}
+          style={{ width: '100%' }}
+        >
+          {events.map((event) => (
+            <EventListItem key={event.id} event={event} />
+          ))}
+        </InfinitScroll>
+      ) : null}
     </Grid>
   );
 });

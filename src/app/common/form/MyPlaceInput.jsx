@@ -1,6 +1,16 @@
-import React from 'react';
-import { FormControl, FormHelperText, Grid, Input, InputLabel, Typography, makeStyles } from '@material-ui/core';
-import LocationOnIcon from '@material-ui/icons/LocationOn';
+import React, { memo } from 'react';
+import {
+  FormControl,
+  FormHelperText,
+  Grid,
+  Input,
+  InputLabel,
+  Typography,
+  makeStyles,
+  Box,
+  IconButton,
+} from '@material-ui/core';
+import { LocationOn, Cancel } from '@material-ui/icons';
 import { useField } from 'formik';
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 import clsx from 'clsx';
@@ -23,12 +33,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function MyPlaceInput({ options, ...props }) {
+export default memo(function MyPlaceInput({ options, ...props }) {
   const classes = useStyles();
   const [field, meta, helper] = useField(props);
+  // const [test, setTest] = useState('');
 
   function handleChange(address) {
     helper.setValue({ address });
+    // setTest(address);
   }
 
   function handleSelect(address) {
@@ -51,61 +63,70 @@ export default function MyPlaceInput({ options, ...props }) {
 
   return (
     <PlacesAutocomplete
-      searchOptions={options || null}
       value={field.value['address']}
       onChange={handleChange}
       onSelect={handleSelect}
       onError={handleError}
-      debounce={300}
+      debounce={200}
     >
-      {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
-        <FormControl error={meta.touched && !!meta.error} variant='outlined' fullWidth={true} size='medium' required>
+      {({ getInputProps, suggestions, getSuggestionItemProps }) => (
+        <FormControl error={meta.touched && !!meta.error} fullWidth={true} size='medium'>
           <InputLabel>{props.label}</InputLabel>
+
           <Input
             {...getInputProps({
-              name: field.name,
               ...props,
               onBlur: (e) => handleBlur(e),
             })}
+            endAdornment={
+              field.value['address'] ? (
+                <IconButton onClick={() => helper.setValue({ address: '', latLng: null })}>
+                  <Cancel />
+                </IconButton>
+              ) : null
+            }
           />
-
-          {suggestions?.length > 0 && (
-            <Grid container alignItems='center' className={classes.autocompleteContainer}>
-              {suggestions.map((suggestion) => {
-                return (
-                  <Grid
-                    item
-                    container
-                    key={suggestion.placeId}
-                    alignItems='center'
-                    className={clsx(classes.autocompleteItem, {
-                      [classes.autocompleteItemActive]: suggestion.active,
-                    })}
-                    {...getSuggestionItemProps(suggestion)}
-                  >
-                    <Grid item>
-                      <LocationOnIcon className={classes.icon} />
-                    </Grid>
-                    <Grid item xs={10}>
-                      <Typography variant='body1' style={{ fontWeight: suggestion.active ? 700 : 400 }}>
-                        {suggestion.formattedSuggestion.mainText}
-                      </Typography>
-                      <Typography variant='body2' color='textSecondary'>
-                        {suggestion.formattedSuggestion.secondaryText}
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                );
-              })}
-            </Grid>
-          )}
           {meta.touched && meta.error ? (
             <FormHelperText id={props.label}>
               {meta.error['address'] || meta.error['latLng'] || meta.error['noResult']}
             </FormHelperText>
           ) : null}
+
+          {suggestions.length > 0 && (
+            <Grid container alignItems='center' className={classes.autocompleteContainer}>
+              {suggestions.map((suggestion) => {
+                return (
+                  <Grid
+                    {...getSuggestionItemProps(suggestion, {
+                      alignItems: 'center',
+                      className: clsx(classes.autocompleteItem, {
+                        [classes.autocompleteItemActive]: suggestion.active,
+                      }),
+                    })}
+                    item
+                    xs={12}
+                    key={suggestion.placeId}
+                  >
+                    <Box display='flex' alignItems='center'>
+                      <Grid item>
+                        <LocationOn className={classes.icon} />
+                      </Grid>
+                      <Grid item xs={10}>
+                        <Typography variant='body1' style={{ fontWeight: suggestion.active ? 700 : 400 }}>
+                          {suggestion.formattedSuggestion.mainText}
+                        </Typography>
+                        <Typography variant='body2' color='textSecondary'>
+                          {suggestion.formattedSuggestion.secondaryText}
+                        </Typography>
+                      </Grid>
+                    </Box>
+                  </Grid>
+                );
+              })}
+            </Grid>
+          )}
         </FormControl>
       )}
     </PlacesAutocomplete>
   );
-}
+});

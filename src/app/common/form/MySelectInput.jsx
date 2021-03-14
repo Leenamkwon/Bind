@@ -8,7 +8,7 @@ export default function MySelectInput(props) {
   const menuItemStyle = { display: 'flex', alignItems: 'center' };
 
   return (
-    <FormControl error={meta.touched && !!meta.error} variant='filled' fullWidth={true} size='medium' required>
+    <FormControl error={meta.touched && !!meta.error} variant='filled' fullWidth={true} size='medium'>
       <InputLabel>{props.label}</InputLabel>
 
       <Select {...field} {...props} value={field.value}>

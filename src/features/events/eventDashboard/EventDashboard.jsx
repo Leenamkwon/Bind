@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Grid, Hidden } from '@material-ui/core';
 
 // COMPONENT
@@ -7,31 +7,49 @@ import EventList from './EventList';
 import EventProfile from './EventProfile';
 import EventProfileSkeleton from './EventProfileSkeleton';
 import EventListSkeleton from './EventListSkeleton';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { clearEvents, fetchEvents } from '../eventActions';
+import { RETAIN_STATE } from '../eventConstants';
 
 export default function EventDashboard() {
+  const dispatch = useDispatch();
+  const limit = 2;
+  const { events, moreEvents, filter, startDate, lastVisible, retainState } = useSelector((state) => state.event);
   const { currentUserProfile } = useSelector((state) => state.profile);
-  const { initialized } = useSelector((state) => state.async);
+  const { initialized, loading } = useSelector((state) => state.async);
+
   const [loadingInitial, setLoadingInitial] = useState(false);
 
   useEffect(() => {
-    setLoadingInitial(true);
-  }, []);
+    if (retainState) return;
+    dispatch(clearEvents());
+    dispatch(fetchEvents(filter, startDate, limit)).then(() => {
+      setLoadingInitial(true);
+    });
+
+    return () => {
+      dispatch({ type: RETAIN_STATE });
+    };
+  }, [dispatch, filter, retainState, startDate]);
+
+  const handleFetchNextEvents = useCallback(() => {
+    dispatch(fetchEvents(filter, startDate, limit, lastVisible));
+  }, [dispatch, filter, lastVisible, startDate]);
 
   return (
     <Grid container spacing={2}>
       <Hidden mdDown>
         <Grid item lg={3}>
-          {loadingInitial && initialized ? (
-            <EventProfile currentUserProfile={currentUserProfile} />
-          ) : (
-            <EventProfileSkeleton />
-          )}
+          {initialized ? <EventProfile currentUserProfile={currentUserProfile} /> : <EventProfileSkeleton />}
         </Grid>
       </Hidden>
 
       <Grid item sm={7} md={8} lg={5}>
-        {loadingInitial && initialized ? <EventList /> : <EventListSkeleton />}
+        {loadingInitial && initialized ? (
+          <EventList events={events} loading={loading} moreEvents={moreEvents} getNextEvents={handleFetchNextEvents} />
+        ) : (
+          <EventListSkeleton />
+        )}
       </Grid>
 
       <Hidden xsDown>

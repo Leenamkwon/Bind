@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import {
   makeStyles,
   withStyles,
@@ -25,6 +25,8 @@ import { Link } from 'react-router-dom';
 import Prompt from '../../../app/common/dialog/Prompt';
 import { useToggleClick } from '../../../app/hooks/useToggleClick';
 import { useTargetClick } from '../../../app/hooks/useTargetClick';
+import formatDate from '../../../app/util/util';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(0, 0, 3, 0),
   },
   media: {
+    width: '100%',
     minHeight: 190,
     paddingTop: '56.25%', // 16:9
   },
@@ -80,8 +83,9 @@ const StyledMenu = withStyles({
   />
 ));
 
-export default function EventListItem() {
+export default memo(function EventListItem({ event }) {
   const classes = useStyles();
+  const { currentUser } = useSelector((state) => state.auth);
   const [expanded, setExpanded] = useToggleClick(false);
   const [dialogOpen, setDialogOpen] = useToggleClick(false);
   const [anchorEl, setAnchorEl] = useTargetClick(null);
@@ -96,49 +100,49 @@ export default function EventListItem() {
       <Prompt open={dialogOpen} setOpen={setDialogOpen} />
       <Card className={classes.root} raised={true}>
         <CardHeader
-          avatar={
-            <Avatar aria-label='recipe' className={classes.avatar}>
-              R
-            </Avatar>
-          }
+          avatar={<Avatar src={event.hostPhotoURL || null} aria-label='recipe' />}
           action={
-            <>
-              <IconButton aria-label='settings' onClick={(e) => setAnchorEl(e.currentTarget)}>
-                <MoreVert />
-              </IconButton>
-              <StyledMenu
-                className={classes.menu}
-                id='event-menu'
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={() => setAnchorEl(null)}
-              >
-                <MenuItem onClick={() => setAnchorEl(null)}>수정하기</MenuItem>
-                <Divider variant='fullWidth' />
-                <MenuItem onClick={DialogClose}>삭제하기</MenuItem>
-              </StyledMenu>
-            </>
+            currentUser?.uid === event.hostUid && (
+              <>
+                <IconButton aria-label='settings' onClick={(e) => setAnchorEl(e.currentTarget)}>
+                  <MoreVert />
+                </IconButton>
+                <StyledMenu
+                  className={classes.menu}
+                  id='event-menu'
+                  anchorEl={anchorEl}
+                  open={Boolean(anchorEl)}
+                  onClose={() => setAnchorEl(null)}
+                >
+                  <MenuItem onClick={() => setAnchorEl(null)}>수정하기</MenuItem>
+                  <Divider variant='fullWidth' />
+                  <MenuItem onClick={DialogClose}>삭제하기</MenuItem>
+                </StyledMenu>
+              </>
+            )
           }
-          title='Shrimp and Chorizo Paella'
+          title={event.title}
           subheader={
             <Typography variant='caption' color='textSecondary'>
-              September 14, 2016
+              {formatDate(event.date)}
             </Typography>
           }
         />
-        <CardMedia className={classes.media} image='/assets/categoryImages/travel.jpg' title='Paella dish' />
+        <CardMedia
+          className={classes.media}
+          image={event.thumbnailURL || `assets/categoryImages/${event.category}.jpg`}
+          title='Paella dish'
+        />
         <CardContent>
           <Box display='flex' alignItems='center'>
             <LocationOn />
             <Typography variant='subtitle2' color='textSecondary' display='inline'>
-              서울 특별시 강남구 선릉대로 스타벅스 1호점
+              {event.city.address}
             </Typography>
           </Box>
           <Divider variant='fullWidth' style={{ margin: '8px 0' }} />
           <Typography variant='body1' color='textSecondary' component='p'>
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quidem cumque minus tenetur vitae sint odio maxime
-            error quas saepe! Odit voluptatem quas saepe blanditiis officiis perferendis, necessitatibus corporis minima
-            magni!
+            {event.description}
           </Typography>
         </CardContent>
         <CardActions disableSpacing>
@@ -150,7 +154,7 @@ export default function EventListItem() {
           </IconButton>
 
           <Box className={classes.showDetailEventBtn}>
-            <Button color='primary' component={Link} to={`/events/detail`}>
+            <Button color='primary' component={Link} to={`/events/${event.id}`}>
               자세히 보기
             </Button>
             <IconButton onClick={setExpanded} aria-expanded={expanded} aria-label='show more' color='primary'>
@@ -160,14 +164,16 @@ export default function EventListItem() {
         </CardActions>
         <Collapse in={expanded} timeout='auto' unmountOnExit>
           <CardActions disableSpacing>
-            <Box className={classes.eventGroupBox}>
-              <Tooltip title='robot' aria-label='robot' placement='right' arrow>
-                <Avatar component={Link} to='/' />
-              </Tooltip>
-            </Box>
+            {event.attendees.map((joinedUser) => (
+              <Box className={classes.eventGroupBox} key={joinedUser.id}>
+                <Tooltip title={joinedUser.displayName} aria-label={joinedUser.displayName} placement='right' arrow>
+                  <Avatar src={joinedUser.photoURL} component={Link} to={`/profile/${joinedUser.id}`} />
+                </Tooltip>
+              </Box>
+            ))}
           </CardActions>
         </Collapse>
       </Card>
     </Grid>
   );
-}
+});

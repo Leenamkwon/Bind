@@ -8,11 +8,11 @@ export default function MyDateInput(props) {
   const [field, meta, helper] = useField(props);
 
   return (
-    <FormControl error={meta.touched && !!meta.error} variant='outlined' fullWidth={true} size='medium' required>
+    <FormControl error={meta.touched && !!meta.error} variant='outlined' fullWidth={true} size='medium'>
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <DateTimePicker
           variant='block'
-          format='yyyy MM d, h:mm a'
+          format='yyyy년 MM월 d일, h:mm aa'
           margin='normal'
           label='날짜'
           value={field.value}

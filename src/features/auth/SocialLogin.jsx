@@ -14,7 +14,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default function SocialLogin() {
+export default function SocialLogin({ register = false }) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
@@ -39,7 +39,7 @@ export default function SocialLogin() {
         size='large'
         color='inherit'
       >
-        Login with Facebook
+        {register ? 'Register with Facebook' : 'Login with Facebook'}
       </Button>
       <Button
         className={classes.button}
@@ -50,7 +50,7 @@ export default function SocialLogin() {
         size='large'
         color='inherit'
       >
-        Login with Google
+        {register ? 'Register with Google' : 'Login with Google'}
       </Button>
       <Button
         className={classes.button}
@@ -61,7 +61,7 @@ export default function SocialLogin() {
         size='large'
         color='inherit'
       >
-        Login with Github
+        {register ? 'Register with Github' : 'Login with Github'}
       </Button>
     </>
   );

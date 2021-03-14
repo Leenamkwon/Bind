@@ -121,7 +121,7 @@ export default function LoginFormText() {
                   OR
                 </Typography>
               </Box>
-              <SocialLogin />
+              <SocialLogin register={true} />
             </Form>
           );
         }}
