@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { CircularProgress, Button, makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
@@ -16,15 +16,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ButtonComponent({ loading, content, css, ...props }) {
+export default memo(function ButtonComponent({ loading, content, css, ...props }) {
   const classes = useStyles();
 
   return (
-    <div className={classes.wrapper} style={css}>
+    <div className={classes.wrapper} style={css || {}}>
       <Button {...props} style={{ width: '100%' }}>
         {content}
       </Button>
       {loading && <CircularProgress size={24} className={classes.buttonProgress} color='primary' />}
     </div>
   );
-}
+});

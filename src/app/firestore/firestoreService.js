@@ -1,4 +1,5 @@
 import firebase from '../config/firebase';
+import { deleteStorageImage } from './fireStorageService';
 
 const db = firebase.firestore();
 
@@ -19,9 +20,8 @@ export function dataFromSnapshot(snapshot) {
     ...data,
   };
 }
-// 유틸 함수 끝 //
 
-// 이벤트 CRUD //
+// 이벤트 추가
 export function addEventToFirestore(event) {
   const user = firebase.auth().currentUser;
   return db.collection('events').add({
@@ -40,18 +40,47 @@ export function addEventToFirestore(event) {
   });
 }
 
-export function updateEventThumbImg(event, imgURL) {
-  return db.collection('events').doc(event.id).update({ thumbnailURL: imgURL });
+// 단일 이벤트 패치
+export function listenToEventFromFirestore(eventId) {
+  return db.collection('events').doc(eventId);
 }
 
+// 이벤트 썸네일 업데이트
+export function updateEventThumbImg(event, file) {
+  return db.collection('events').doc(event.id).update(file);
+}
+
+// 이벤트 업데이트
 export function updateEventInFireStore(event) {
   return db.collection('events').doc(event.id).update(event);
 }
 
-export function deleteEventInFireStore(id) {
-  return db.collection('events').doc(id).delete();
+// 이벤트 삭제
+export async function deleteEventInFireStore(eventId) {
+  try {
+    let eventDocRef = await listenToEventFromFirestore(eventId).get();
+    await deleteStorageImage(eventId, eventDocRef.data().thumbnailName);
+    return db.collection('events').doc(eventId).delete();
+  } catch (error) {
+    throw error;
+  }
 }
-// 이벤트 CRUD 끝 //
+
+// FETCH EVENT COLLECTION
+export function fetchEventsFromFirestore(filter, startDate, limit, lastDocSnapshot = null) {
+  const user = firebase.auth().currentUser;
+
+  const eventsRef = db.collection('events').orderBy('date').startAfter(lastDocSnapshot).limit(limit);
+
+  switch (filter) {
+    case 'isGoing':
+      return eventsRef.where('attendeeIds', 'array-contains', user.uid).where('date', '>=', startDate);
+    case 'isHosting':
+      return eventsRef.where('hostUid', '==', user.uid).where('date', '>=', startDate);
+    default:
+      return eventsRef.where('date', '<=', startDate);
+  }
+}
 
 // 유저 저장 //
 export function setUserProfileData(user) {
@@ -71,20 +100,4 @@ export function setUserProfileData(user) {
 // 유저 참조 //
 export function getUserProfile(userId) {
   return db.collection('users').doc(userId);
-}
-
-// FETCH EVENT //
-export function fetchEventsFromFirestore(filter, startDate, limit, lastDocSnapshot = null) {
-  const user = firebase.auth().currentUser;
-
-  const eventsRef = db.collection('events').orderBy('date').startAfter(lastDocSnapshot).limit(limit);
-
-  switch (filter) {
-    case 'isGoing':
-      return eventsRef.where('attendeeIds', 'array-contains', user.uid).where('date', '>=', startDate);
-    case 'isHosting':
-      return eventsRef.where('hostUid', '==', user.uid).where('date', '>=', startDate);
-    default:
-      return eventsRef.where('date', '<=', startDate);
-  }
 }

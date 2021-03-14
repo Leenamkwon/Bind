@@ -5,7 +5,7 @@ export function uploadEventThumbImgStorage(event, file, filename) {
   return storageRef.child(`${event.id}/event_image/${filename}`).put(file);
 }
 
-export function deleteStorageImage(event) {
-  const storageRef = firebase.storage().ref(event.id);
+export function deleteStorageImage(event, filename) {
+  const storageRef = firebase.storage().ref(`${event.id}/event_image/${filename}`);
   return storageRef.delete();
 }

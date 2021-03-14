@@ -11,10 +11,11 @@ export default function MyTextArea(props) {
       <InputLabel htmlFor={props.label}>{props.label}</InputLabel>
 
       <Input
-        multiline={true}
         id={props.label}
         {...field}
         {...props}
+        multiline={true}
+        inputComponent='textarea'
         endAdornment={
           field.value ? (
             <IconButton onClick={() => helper.setValue('')}>

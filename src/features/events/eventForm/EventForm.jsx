@@ -1,6 +1,6 @@
 /* global google */
-import React, { useMemo, useState } from 'react';
-import { Avatar, Box, Button, Card, CardActions, CardHeader, Divider, makeStyles, Fab } from '@material-ui/core';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { Avatar, Box, Card, CardActions, CardHeader, Divider, makeStyles, Fab } from '@material-ui/core';
 import { CloudUpload, EventAvailable, Send, CloudDone } from '@material-ui/icons';
 import { DropzoneDialog } from 'material-ui-dropzone';
 import { Form, Formik } from 'formik';
@@ -15,9 +15,18 @@ import MyDateInput from '../../../app/common/form/MyDateInput';
 import MyPlaceInput from '../../../app/common/form/MyPlaceInput';
 import ButtonComponent from '../../../app/layout/ButtonComponent';
 import { categoryData, memberData } from '../../../app/api/categoryOption';
-import { addEventToFirestore, updateEventThumbImg } from '../../../app/firestore/firestoreService';
-import { uploadEventThumbImgStorage } from '../../../app/firestore/fireStorageService';
+import {
+  addEventToFirestore,
+  listenToEventFromFirestore,
+  updateEventInFireStore,
+  updateEventThumbImg,
+} from '../../../app/firestore/firestoreService';
+import { deleteStorageImage, uploadEventThumbImgStorage } from '../../../app/firestore/fireStorageService';
 import { getFileExtension } from '../../../app/util/util';
+import useFirestoreDoc from '../../../app/hooks/useFirestoreDoc';
+import { useDispatch, useSelector } from 'react-redux';
+import { clearSelectedEvent, listenToSelectEvents } from '../eventActions';
+import { useSnackbar } from 'notistack';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,20 +44,35 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function EventForm() {
+export default function EventForm({ match }) {
   const classes = useStyles();
+  const { modifyEvent } = useSelector((state) => state.event);
   const [imageFile, setImageFile] = useState({ open: false, files: [] });
+  const { enqueueSnackbar } = useSnackbar();
+  const dispatch = useDispatch();
+
+  useFirestoreDoc({
+    shouldExcute: match.path !== '/createEvent',
+    query: () => listenToEventFromFirestore(match.params.id),
+    data: (event) => dispatch(listenToSelectEvents(event)),
+    deps: [dispatch, match.params.id],
+  });
+
+  useEffect(() => {
+    return () => dispatch(clearSelectedEvent());
+  }, [dispatch]);
 
   const initialValues = useMemo(
-    () => ({
-      title: '',
-      category: '',
-      member: 1,
-      description: '',
-      city: { address: '', latLng: null },
-      date: new Date(),
-    }),
-    []
+    () =>
+      modifyEvent ?? {
+        title: '',
+        category: '',
+        member: 1,
+        description: '',
+        city: { address: '', latLng: null },
+        date: new Date(),
+      },
+    [modifyEvent]
   );
 
   const validationSchema = useMemo(
@@ -67,9 +91,56 @@ export default function EventForm() {
     []
   );
 
-  function handleSaveImage(file) {
+  const handleSaveImage = (file) => {
     setImageFile({ open: false, files: file });
-  }
+  };
+
+  const handleUploadEvent = useCallback(
+    async (values, { setSubmitting }) => {
+      try {
+        const event = modifyEvent ? await updateEventInFireStore(values) : await addEventToFirestore(values);
+        const isModifyed = modifyEvent ? modifyEvent : event;
+
+        if (imageFile['files'].length > 0) {
+          const filename = cuid() + '.' + getFileExtension(imageFile['files'][0]?.['name']);
+          const uploadTask = uploadEventThumbImgStorage(isModifyed, imageFile['files'][0], filename);
+          const unsubscribe = uploadTask.on('state_changed', null, null, (complete) => {
+            uploadTask.snapshot.ref
+              .getDownloadURL()
+              .then((downloadURL) => {
+                if (modifyEvent?.thumbnailURL) {
+                  deleteStorageImage(isModifyed, modifyEvent.thumbnailName);
+                }
+                return downloadURL;
+              })
+              .then((downloadURL) => {
+                return updateEventThumbImg(isModifyed, { thumbnailURL: downloadURL, thumbnailName: filename });
+              })
+              .then((_) => {
+                unsubscribe();
+                setSubmitting(false);
+                enqueueSnackbar(modifyEvent ? '이벤트가 업데이트 되었습니다.' : '이벤트가 업로드 되었습니다', {
+                  variant: 'success',
+                });
+              })
+              .catch((error) => {
+                enqueueSnackbar(error.message, { variant: 'error' });
+              });
+          });
+          return;
+        } else {
+          enqueueSnackbar(modifyEvent ? '이벤트가 업데이트 되었습니다.' : '이벤트가 업로드 되었습니다', {
+            variant: 'success',
+          });
+          setSubmitting(false);
+        }
+      } catch (error) {
+        enqueueSnackbar(error.message, { variant: 'error' });
+        setSubmitting(false);
+      }
+    },
+    [enqueueSnackbar, imageFile, modifyEvent]
+  );
 
   return (
     <Card className={classes.card}>
@@ -79,8 +150,7 @@ export default function EventForm() {
             <EventAvailable color='primary' />
           </Avatar>
         }
-        title={`이벤트 만들기`}
-        subheader={`사람들과 활동을 시작해보세요.`}
+        title={modifyEvent ? '이벤트 업데이트' : '이벤트 게시하기'}
         className={classes.root}
       />
       <Divider light={true} variant='middle' />
@@ -89,27 +159,7 @@ export default function EventForm() {
           enableReinitialize
           initialValues={initialValues}
           validationSchema={validationSchema}
-          onSubmit={async (values, { setSubmitting }) => {
-            try {
-              const event = await addEventToFirestore(values);
-
-              if (imageFile['files'].length > 0) {
-                const filename = cuid() + '.' + getFileExtension(imageFile['files'][0]?.['name']);
-                const uploadTask = uploadEventThumbImgStorage(event, imageFile['files'][0], filename);
-                const unsubscribe = uploadTask.on('state_changed', null, null, (complete) => {
-                  uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-                    updateEventThumbImg(event, downloadURL);
-                    unsubscribe();
-                    setSubmitting(false);
-                  });
-                });
-              } else {
-                setSubmitting(false);
-              }
-            } catch (error) {
-              setSubmitting(false);
-            }
-          }}
+          onSubmit={handleUploadEvent}
         >
           {({ dirty, isValid, isSubmitting }) => {
             return (
@@ -154,9 +204,9 @@ export default function EventForm() {
                     startIcon={<Send />}
                     color='primary'
                     loading={isSubmitting}
-                    disabled={!isValid || !dirty || isSubmitting}
+                    disabled={!isValid || isSubmitting}
                     type='submit'
-                    content='올리기'
+                    content={'게시'}
                     variant='contained'
                   />
                 </Box>

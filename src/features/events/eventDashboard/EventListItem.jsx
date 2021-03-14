@@ -21,7 +21,7 @@ import {
 } from '@material-ui/core';
 import { red } from '@material-ui/core/colors';
 import { Favorite, LocationOn, FavoriteBorderOutlined, Share, MoreVert, Group } from '@material-ui/icons';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import Prompt from '../../../app/common/dialog/Prompt';
 import { useToggleClick } from '../../../app/hooks/useToggleClick';
 import { useTargetClick } from '../../../app/hooks/useTargetClick';
@@ -85,6 +85,7 @@ const StyledMenu = withStyles({
 
 export default memo(function EventListItem({ event }) {
   const classes = useStyles();
+  const history = useHistory();
   const { currentUser } = useSelector((state) => state.auth);
   const [expanded, setExpanded] = useToggleClick(false);
   const [dialogOpen, setDialogOpen] = useToggleClick(false);
@@ -93,6 +94,11 @@ export default memo(function EventListItem({ event }) {
   function DialogClose() {
     setAnchorEl(null);
     setDialogOpen();
+  }
+
+  function modifyEvent() {
+    setAnchorEl(null);
+    history.push(`/manage/${event.id}`);
   }
 
   return (
@@ -114,7 +120,7 @@ export default memo(function EventListItem({ event }) {
                   open={Boolean(anchorEl)}
                   onClose={() => setAnchorEl(null)}
                 >
-                  <MenuItem onClick={() => setAnchorEl(null)}>수정하기</MenuItem>
+                  <MenuItem onClick={modifyEvent}>수정하기</MenuItem>
                   <Divider variant='fullWidth' />
                   <MenuItem onClick={DialogClose}>삭제하기</MenuItem>
                 </StyledMenu>

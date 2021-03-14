@@ -1,9 +1,10 @@
-import { CLEAR_EVENTS, FETCH_EVENT, RETAIN_STATE } from './eventConstants';
+import { CLEAR_EVENTS, CLEAR_SELECTEVENTS, FETCH_EVENT, MODIFY_EVENT, RETAIN_STATE } from './eventConstants';
 
 const initialState = {
   events: [],
   comments: [],
   moreEvents: false,
+  modifyEvent: null,
   selectedEvent: null,
   lastVisible: null,
   filter: 'all',
@@ -20,6 +21,16 @@ export default function eventReducer(state = initialState, { type, payload }) {
         moreEvents: payload.moreEvents,
         lastVisible: payload.lastVisible,
       };
+    case RETAIN_STATE:
+      return {
+        ...state,
+        retainState: true,
+      };
+    case MODIFY_EVENT:
+      return {
+        ...state,
+        modifyEvent: payload,
+      };
     case CLEAR_EVENTS:
       return {
         ...state,
@@ -27,10 +38,10 @@ export default function eventReducer(state = initialState, { type, payload }) {
         moreEvents: false,
         lastVisible: null,
       };
-    case RETAIN_STATE:
+    case CLEAR_SELECTEVENTS:
       return {
         ...state,
-        retainState: true,
+        modifyEvent: null,
       };
     default:
       return state;

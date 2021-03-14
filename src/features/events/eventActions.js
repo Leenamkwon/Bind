@@ -1,9 +1,17 @@
 import { dataFromSnapshot, fetchEventsFromFirestore } from '../../app/firestore/firestoreService';
 import { asyncActionStart, asyncActionError, asyncActionFinish } from '../../app/async/asyncReducer';
-import { CLEAR_EVENTS, FETCH_EVENT } from './eventConstants';
+import { CLEAR_EVENTS, CLEAR_SELECTEVENTS, FETCH_EVENT, MODIFY_EVENT } from './eventConstants';
+
+export function listenToSelectEvents(event) {
+  return { type: MODIFY_EVENT, payload: event };
+}
 
 export function clearEvents() {
   return { type: CLEAR_EVENTS };
+}
+
+export function clearSelectedEvent() {
+  return { type: CLEAR_SELECTEVENTS };
 }
 
 export function fetchEvents(filter, startDate, limit, lastDocSnapshot = null) {

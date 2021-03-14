@@ -22,9 +22,10 @@ export default function EventDashboard() {
 
   useEffect(() => {
     if (retainState) return;
+    setLoadingInitial(true);
     dispatch(clearEvents());
     dispatch(fetchEvents(filter, startDate, limit)).then(() => {
-      setLoadingInitial(true);
+      setLoadingInitial(false);
     });
 
     return () => {
@@ -45,7 +46,7 @@ export default function EventDashboard() {
       </Hidden>
 
       <Grid item sm={7} md={8} lg={5}>
-        {loadingInitial && initialized ? (
+        {!loadingInitial && initialized ? (
           <EventList events={events} loading={loading} moreEvents={moreEvents} getNextEvents={handleFetchNextEvents} />
         ) : (
           <EventListSkeleton />
