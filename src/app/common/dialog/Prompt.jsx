@@ -1,9 +1,18 @@
 import React, { memo } from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
+import { useDispatch } from 'react-redux';
+import { deleteEventInFireStore } from '../../firestore/firestoreService';
+import { deleteSelectEvent } from '../../../features/events/eventActions';
 
-export default memo(function Prompt({ open, setOpen }) {
+export default memo(function Prompt({ open, setOpen, eventId }) {
+  const dispatch = useDispatch();
   const handleClose = () => setOpen(false);
-  const handleAccept = () => setOpen(false);
+  const handleAccept = () => {
+    deleteEventInFireStore(eventId).then((_) => {
+      dispatch(deleteSelectEvent(eventId));
+      setOpen(false);
+    });
+  };
 
   return (
     <>

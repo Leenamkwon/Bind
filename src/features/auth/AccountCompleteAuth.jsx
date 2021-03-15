@@ -93,7 +93,7 @@ export default function AccountCompleteAuth({ setChangeCheck }) {
             content='업데이트'
             fullWidth
           />
-          <Typography color='textSecondary' variant='subtitle2'>
+          <Typography color='textSecondary' variant='subtitle1'>
             변경하고 싶지 않은 양식은 빈 상태로 하시면 됩니다.
           </Typography>
         </Form>

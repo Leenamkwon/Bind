@@ -98,7 +98,6 @@ export default memo(function MyPlaceInput({ options, ...props }) {
                 return (
                   <Grid
                     {...getSuggestionItemProps(suggestion, {
-                      alignItems: 'center',
                       className: clsx(classes.autocompleteItem, {
                         [classes.autocompleteItemActive]: suggestion.active,
                       }),

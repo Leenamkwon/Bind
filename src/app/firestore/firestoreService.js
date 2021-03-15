@@ -59,11 +59,45 @@ export function updateEventInFireStore(event) {
 export async function deleteEventInFireStore(eventId) {
   try {
     let eventDocRef = await listenToEventFromFirestore(eventId).get();
-    await deleteStorageImage(eventId, eventDocRef.data().thumbnailName);
+    if (eventDocRef.data().thumbnailURL) {
+      await deleteStorageImage(eventId, eventDocRef.data().thumbnailName);
+    }
     return db.collection('events').doc(eventId).delete();
   } catch (error) {
     throw error;
   }
+}
+
+// 좋아요 추가
+export async function likesEvent(eventId) {
+  const user = firebase.auth().currentUser;
+  await db
+    .collection('events')
+    .doc(eventId)
+    .update({
+      likes: firebase.firestore.FieldValue.increment(1),
+      likesPeople: firebase.firestore.FieldValue.arrayUnion(user.uid),
+    });
+  return await db
+    .collection('users')
+    .doc(user.uid)
+    .update({ likesEvent: firebase.firestore.FieldValue.arrayUnion(eventId) });
+}
+
+// 좋아요 삭제
+export async function deleteLikesEvent(eventId) {
+  const user = firebase.auth().currentUser;
+  await db
+    .collection('events')
+    .doc(eventId)
+    .update({
+      likes: firebase.firestore.FieldValue.increment(-1),
+      likesPeople: firebase.firestore.FieldValue.arrayRemove(user.uid),
+    });
+  return await db
+    .collection('users')
+    .doc(user.uid)
+    .update({ likesEvent: firebase.firestore.FieldValue.arrayRemove(eventId) });
 }
 
 // FETCH EVENT COLLECTION
@@ -94,6 +128,7 @@ export function setUserProfileData(user) {
       photoURL: user.photoURL || null,
       providerId: user.providerData[0].providerId,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      likesEvent: [],
     });
 }
 

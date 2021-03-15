@@ -29,6 +29,17 @@ export default function AccountPage() {
     [changeCheck, reauthCheck]
   );
 
+  const reAuthenticatedOrder = useCallback((order) => {
+    switch (order) {
+      case 'authChange':
+        break;
+      case 'authComplete':
+        break;
+      default:
+        return <AccountReAuth />;
+    }
+  }, []);
+
   return (
     <Grid container justify='center'>
       <Grid item xs={8}>
@@ -37,7 +48,7 @@ export default function AccountPage() {
             title={nestedControlFlow('본인 인증', '개인 정보 업데이트', '개인정보 업데이트 완료', '개인 정보 업데이트')}
           />
           <CardContent>
-            {!currentUser && <Typography>자신의 계정을 업데이트 하고 싶으시다면 로그인을 진행해 주세요.</Typography>}
+            {!currentUser && <Typography>다시 로그인을 진행해 주세요.</Typography>}
 
             {currentUser?.providerId === 'password' &&
               (reauthCheck ? (

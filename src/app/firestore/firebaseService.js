@@ -63,10 +63,12 @@ export async function reauthFirebase(creds) {
 // 사용자 이메일 및 비밀번호 변경
 export async function emailAndPasswordChange(creds) {
   const user = firebase.auth().currentUser;
+  const userDocRef = firebase.firestore().collection('users').doc(user.uid);
   const promise = [];
 
   if (creds.email) {
     promise.push(user.updateEmail(creds.email));
+    promise.push(userDocRef.update({ email: creds.email }));
   } else if (creds.password) {
     promise.push(user.updatePassword(creds.password));
   }

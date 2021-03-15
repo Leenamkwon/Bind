@@ -6,11 +6,11 @@ import 'firebase/storage';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_KEY,
-  authDomain: 'bind-5d6a6.firebaseapp.com',
-  projectId: 'bind-5d6a6',
-  storageBucket: 'bind-5d6a6.appspot.com',
-  messagingSenderId: '142762092613',
-  appId: '1:142762092613:web:055943428614ffa8de1b2c',
+  authDomain: process.env.REACT_APP_FIREBASE_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGE_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
 };
 
 // Initialize Firebase

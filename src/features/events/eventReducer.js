@@ -1,4 +1,12 @@
-import { CLEAR_EVENTS, CLEAR_SELECTEVENTS, FETCH_EVENT, MODIFY_EVENT, RETAIN_STATE } from './eventConstants';
+import {
+  CLEAR_EVENTS,
+  CLEAR_SELECTEVENTS,
+  DELETE_EVENT,
+  FETCH_EVENT,
+  LIKE_EVENT,
+  MODIFY_EVENT,
+  RETAIN_STATE,
+} from './eventConstants';
 
 const initialState = {
   events: [],
@@ -14,6 +22,13 @@ const initialState = {
 
 export default function eventReducer(state = initialState, { type, payload }) {
   switch (type) {
+    case DELETE_EVENT:
+      return {
+        ...state,
+        events: state.events.filter((event) => event.id !== payload),
+        moreEvents: false,
+        lastVisible: null,
+      };
     case FETCH_EVENT:
       return {
         ...state,

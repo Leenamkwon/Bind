@@ -117,11 +117,11 @@ export default function EventForm({ match }) {
                 return updateEventThumbImg(isModifyed, { thumbnailURL: downloadURL, thumbnailName: filename });
               })
               .then((_) => {
-                unsubscribe();
                 setSubmitting(false);
                 enqueueSnackbar(modifyEvent ? '이벤트가 업데이트 되었습니다.' : '이벤트가 업로드 되었습니다', {
                   variant: 'success',
                 });
+                unsubscribe();
               })
               .catch((error) => {
                 enqueueSnackbar(error.message, { variant: 'error' });

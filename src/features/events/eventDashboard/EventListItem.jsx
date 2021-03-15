@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useCallback } from 'react';
 import {
   makeStyles,
   withStyles,
@@ -20,13 +20,15 @@ import {
   Divider,
 } from '@material-ui/core';
 import { red } from '@material-ui/core/colors';
-import { Favorite, LocationOn, FavoriteBorderOutlined, Share, MoreVert, Group } from '@material-ui/icons';
+import { Favorite, LocationOn, FavoriteBorderOutlined, Share, MoreVert, Group, ClassRounded } from '@material-ui/icons';
 import { Link, useHistory } from 'react-router-dom';
 import Prompt from '../../../app/common/dialog/Prompt';
 import { useToggleClick } from '../../../app/hooks/useToggleClick';
 import { useTargetClick } from '../../../app/hooks/useTargetClick';
 import formatDate from '../../../app/util/util';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { modalOpen } from '../../../app/common/modal/modalReducer';
+import { deleteLikesEvent, likesEvent } from '../../../app/firestore/firestoreService';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -61,6 +63,9 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
   },
+  icon: {
+    marginRight: theme.spacing(1),
+  },
 }));
 
 const StyledMenu = withStyles({
@@ -86,29 +91,39 @@ const StyledMenu = withStyles({
 export default memo(function EventListItem({ event }) {
   const classes = useStyles();
   const history = useHistory();
-  const { currentUser } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const { currentUserProfile } = useSelector((state) => state.profile);
   const [expanded, setExpanded] = useToggleClick(false);
   const [dialogOpen, setDialogOpen] = useToggleClick(false);
   const [anchorEl, setAnchorEl] = useTargetClick(null);
 
-  function DialogClose() {
+  const DialogClose = useCallback(() => {
     setAnchorEl(null);
     setDialogOpen();
-  }
+  }, [setAnchorEl, setDialogOpen]);
 
   function modifyEvent() {
     setAnchorEl(null);
     history.push(`/manage/${event.id}`);
   }
 
+  const handleLike = useCallback(async () => {
+    if (!currentUserProfile) return dispatch(modalOpen('LoginForm'));
+    if (currentUserProfile && currentUserProfile?.likesEvent.indexOf(event.id) !== -1) {
+      await deleteLikesEvent(event.id);
+    } else {
+      await likesEvent(event.id);
+    }
+  }, [currentUserProfile, dispatch, event.id]);
+
   return (
     <Grid className={classes.grid} item xs={12}>
-      <Prompt open={dialogOpen} setOpen={setDialogOpen} />
+      <Prompt open={dialogOpen} setOpen={setDialogOpen} eventId={event.id} />
       <Card className={classes.root} raised={true}>
         <CardHeader
           avatar={<Avatar src={event.hostPhotoURL || null} aria-label='recipe' />}
           action={
-            currentUser?.uid === event.hostUid && (
+            currentUserProfile?.id === event.hostUid && (
               <>
                 <IconButton aria-label='settings' onClick={(e) => setAnchorEl(e.currentTarget)}>
                   <MoreVert />
@@ -137,13 +152,19 @@ export default memo(function EventListItem({ event }) {
         <CardMedia
           className={classes.media}
           image={event.thumbnailURL || `assets/categoryImages/${event.category}.jpg`}
-          title='Paella dish'
+          title={event.thumbnailURL || `${event.category}`}
         />
         <CardContent>
           <Box display='flex' alignItems='center'>
-            <LocationOn />
+            <LocationOn className={classes.icon} />
             <Typography variant='subtitle2' color='textSecondary' display='inline'>
               {event.city.address}
+            </Typography>
+          </Box>
+          <Box display='flex' alignItems='center' pt={1}>
+            <ClassRounded className={classes.icon} />
+            <Typography variant='subtitle2' color='textSecondary' display='inline'>
+              {event.category}
             </Typography>
           </Box>
           <Divider variant='fullWidth' style={{ margin: '8px 0' }} />
@@ -151,9 +172,14 @@ export default memo(function EventListItem({ event }) {
             {event.description}
           </Typography>
         </CardContent>
+
         <CardActions disableSpacing>
-          <IconButton aria-label='add to favorites'>
-            <FavoriteBorderOutlined color='primary' />
+          <IconButton aria-label='add to favorites' onClick={handleLike}>
+            {currentUserProfile && currentUserProfile.likesEvent.indexOf(event.id) !== -1 ? (
+              <Favorite color='primary' />
+            ) : (
+              <FavoriteBorderOutlined />
+            )}
           </IconButton>
           <IconButton aria-label='share'>
             <Share />

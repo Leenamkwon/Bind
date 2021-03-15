@@ -1,6 +1,10 @@
 import { dataFromSnapshot, fetchEventsFromFirestore } from '../../app/firestore/firestoreService';
 import { asyncActionStart, asyncActionError, asyncActionFinish } from '../../app/async/asyncReducer';
-import { CLEAR_EVENTS, CLEAR_SELECTEVENTS, FETCH_EVENT, MODIFY_EVENT } from './eventConstants';
+import { CLEAR_EVENTS, CLEAR_SELECTEVENTS, DELETE_EVENT, FETCH_EVENT, MODIFY_EVENT } from './eventConstants';
+
+export function deleteSelectEvent(eventId) {
+  return { type: DELETE_EVENT, payload: eventId };
+}
 
 export function listenToSelectEvents(event) {
   return { type: MODIFY_EVENT, payload: event };

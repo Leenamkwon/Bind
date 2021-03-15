@@ -54,6 +54,7 @@ export default function LoginFormText() {
               error={touched.email && !!errors.email}
               onChange={handleChange}
               onBlur={handleBlur}
+              autoComplete='off'
             />
             <TextField
               type='password'
@@ -67,6 +68,7 @@ export default function LoginFormText() {
               error={touched.password && !!errors.password}
               onChange={handleChange}
               onBlur={handleBlur}
+              autoComplete='off'
             />
             {errors.auth && <Alert severity='error'>{errors.auth}</Alert>}
             <ButtonComponent
