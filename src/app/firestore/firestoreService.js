@@ -100,7 +100,7 @@ export async function deleteLikesEvent(eventId) {
     .update({ likesEvent: firebase.firestore.FieldValue.arrayRemove(eventId) });
 }
 
-// FETCH EVENT COLLECTION
+// 패치 이벤트
 export function fetchEventsFromFirestore(filter, startDate, limit, lastDocSnapshot = null) {
   const user = firebase.auth().currentUser;
 
@@ -112,7 +112,7 @@ export function fetchEventsFromFirestore(filter, startDate, limit, lastDocSnapsh
     case 'isHosting':
       return eventsRef.where('hostUid', '==', user.uid).where('date', '>=', startDate);
     default:
-      return eventsRef.where('date', '<=', startDate);
+      return eventsRef.where('date', '>=', startDate);
   }
 }
 
@@ -135,4 +135,32 @@ export function setUserProfileData(user) {
 // 유저 참조 //
 export function getUserProfile(userId) {
   return db.collection('users').doc(userId);
+}
+
+// 유저 삭제 //
+export async function deleteUser() {
+  const user = firebase.auth().currentUser;
+  const batch = db.batch();
+
+  try {
+    const hostedEvents = await db.collection('events').where('hostUid', '==', user.uid).get();
+    const joinedEvents = await db.collection('events').where('attendeeIds', 'array-contains', user.uid).get();
+
+    // 호스팅한 이벤트 삭제
+    hostedEvents.forEach((hostEvent) => batch.delete(hostEvent.ref));
+
+    // 참여한 attendees, attendeeIds 삭제
+    joinedEvents.forEach((joinedEvent) => {
+      const data = joinedEvent.data();
+      batch.update(joinedEvent.ref, {
+        attendeeIds: firebase.firestore.FieldValue.arrayRemove(user.uid),
+        attendees: data.attendees.filter((attendee) => attendee.id !== user.uid),
+      });
+    });
+
+    await batch.commit();
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 }

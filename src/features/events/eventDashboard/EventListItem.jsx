@@ -18,10 +18,11 @@ import {
   Menu,
   MenuItem,
   Divider,
+  CardActionArea,
 } from '@material-ui/core';
 import { red } from '@material-ui/core/colors';
 import { Favorite, LocationOn, FavoriteBorderOutlined, Share, MoreVert, Group, ClassRounded } from '@material-ui/icons';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import Prompt from '../../../app/common/dialog/Prompt';
 import { useToggleClick } from '../../../app/hooks/useToggleClick';
 import { useTargetClick } from '../../../app/hooks/useTargetClick';
@@ -91,6 +92,7 @@ const StyledMenu = withStyles({
 export default memo(function EventListItem({ event }) {
   const classes = useStyles();
   const history = useHistory();
+  const location = useLocation();
   const dispatch = useDispatch();
   const { currentUserProfile } = useSelector((state) => state.profile);
   const [expanded, setExpanded] = useToggleClick(false);
@@ -149,11 +151,21 @@ export default memo(function EventListItem({ event }) {
             </Typography>
           }
         />
-        <CardMedia
-          className={classes.media}
-          image={event.thumbnailURL || `assets/categoryImages/${event.category}.jpg`}
-          title={event.thumbnailURL || `${event.category}`}
-        />
+        <CardActionArea
+          component={Link}
+          to={{
+            pathname: `/img/${event.id}`,
+            // This is the trick! This link sets
+            // the `background` in location state.
+            state: { background: location },
+          }}
+        >
+          <CardMedia
+            className={classes.media}
+            image={event.thumbnailURL || `/assets/categoryImages/${event.category}.jpg`}
+            title={event.title}
+          />
+        </CardActionArea>
         <CardContent>
           <Box display='flex' alignItems='center'>
             <LocationOn className={classes.icon} />
@@ -186,15 +198,16 @@ export default memo(function EventListItem({ event }) {
           </IconButton>
 
           <Box className={classes.showDetailEventBtn}>
-            <Button color='primary' component={Link} to={`/events/${event.id}`}>
-              자세히 보기
-            </Button>
-            <IconButton onClick={setExpanded} aria-expanded={expanded} aria-label='show more' color='primary'>
+            <IconButton onClick={setExpanded} aria-expanded={expanded} aria-label='show more'>
               <Group />
             </IconButton>
+            <Button color='primary' component={Link} to={`/events/${event.id}`} variant='outlined'>
+              자세히 보기
+            </Button>
           </Box>
         </CardActions>
         <Collapse in={expanded} timeout='auto' unmountOnExit>
+          <Divider variant='middle' style={{ margin: '8px 0' }} />
           <CardActions disableSpacing>
             {event.attendees.map((joinedUser) => (
               <Box className={classes.eventGroupBox} key={joinedUser.id}>

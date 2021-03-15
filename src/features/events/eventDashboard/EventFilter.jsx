@@ -1,8 +1,11 @@
-import React, { useState, memo } from 'react';
+import React, { memo } from 'react';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { Card, CardActionArea, CardHeader, CardContent, Divider, Grid, makeStyles, Typography } from '@material-ui/core';
 import { Event, FilterList } from '@material-ui/icons';
 import DateFnsUtils from '@date-io/date-fns';
+import { useDispatch, useSelector } from 'react-redux';
+import { setFilter, setStartDate } from '../eventActions';
+import clsx from 'clsx';
 
 const useStyles = makeStyles((theme) => ({
   calendar: {
@@ -23,45 +26,58 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const StaticDatePicker = () => {
+const EventFilter = ({ loadingInitial }) => {
   const classes = useStyles();
-  const [date, changeDate] = useState(new Date());
+  const dispatch = useDispatch();
+  const { startDate, filter } = useSelector((state) => state.event);
+  const { authenticated } = useSelector((state) => state.auth);
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Grid container spacing={3}>
-        <Grid item xs>
-          <Card elevation={3}>
-            <CardHeader avatar={<FilterList color='primary' />} title='필터링' />
-            <Divider variant='fullWidth' />
+        {authenticated && (
+          <Grid item xs>
+            <Card elevation={3}>
+              <CardHeader avatar={<FilterList color='primary' />} title='필터링' />
+              <Divider variant='fullWidth' />
 
-            <CardActionArea className={classes.active}>
-              <CardContent>
-                <Typography gutterBottom variant='subtitle2' component='h4'>
-                  모든 이벤트
-                </Typography>
-              </CardContent>
-            </CardActionArea>
+              <CardActionArea
+                className={clsx({ [classes.active]: filter === 'all' })}
+                onClick={() => dispatch(setFilter('all'))}
+              >
+                <CardContent>
+                  <Typography gutterBottom variant='subtitle2' component='h4'>
+                    모든 이벤트
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
 
-            <CardActionArea>
-              <CardContent>
-                <Typography gutterBottom variant='subtitle2' component='h4'>
-                  내가 참가한 이벤트
-                </Typography>
-              </CardContent>
-            </CardActionArea>
+              <CardActionArea
+                className={clsx({ [classes.active]: filter === 'isGoing' })}
+                onClick={() => dispatch(setFilter('isGoing'))}
+              >
+                <CardContent>
+                  <Typography gutterBottom variant='subtitle2' component='h4'>
+                    내가 참가한 이벤트
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
 
-            <CardActionArea>
-              <CardContent>
-                <Typography gutterBottom variant='subtitle2' component='h4'>
-                  내가 게시한 이벤트
-                </Typography>
-              </CardContent>
-            </CardActionArea>
-          </Card>
-        </Grid>
+              <CardActionArea
+                className={clsx({ [classes.active]: filter === 'isHosting' })}
+                onClick={() => dispatch(setFilter('isHosting'))}
+              >
+                <CardContent>
+                  <Typography gutterBottom variant='subtitle2' component='h4'>
+                    내가 게시한 이벤트
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </Grid>
+        )}
 
-        <Grid item xs>
+        <Grid item xs={12}>
           <Card elevation={3}>
             <CardHeader avatar={<Event color='primary' />} title='캘린더' subheader='원하는 날을 선택해보세요' />
             <DatePicker
@@ -70,8 +86,9 @@ const StaticDatePicker = () => {
               autoOk
               variant='static'
               openTo='date'
-              value={date}
-              onChange={changeDate}
+              value={startDate}
+              disabled={loadingInitial}
+              onChange={(date) => dispatch(setStartDate(date))}
             />
           </Card>
         </Grid>
@@ -80,4 +97,4 @@ const StaticDatePicker = () => {
   );
 };
 
-export default memo(StaticDatePicker);
+export default memo(EventFilter);

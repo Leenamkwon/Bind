@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Container, ThemeProvider } from '@material-ui/core';
-import { Route, useLocation } from 'react-router-dom';
+import { Route, Switch, useLocation } from 'react-router-dom';
 import { SnackbarProvider } from 'notistack';
 import themeStyle from './useTheme';
 
@@ -13,10 +13,13 @@ import EventDetailedPage from '../../features/events/eventDetailed/EventDetailed
 import ModalManager from '../common/modal/ModalManager';
 // import LoadingComponent from './LoadingComponent';
 import AccountPage from '../../features/auth/AccountPage';
+import ProfilePage from '../../features/profile/profilepage/ProfilePage';
+import LightBox from './LightBox';
 
 export default function App() {
   const theme = themeStyle();
-  const { key } = useLocation();
+  const location = useLocation();
+  let background = location.state && location.state.background;
 
   return (
     <>
@@ -31,17 +34,21 @@ export default function App() {
                 style={{
                   background: theme.palette.background.default,
                   width: '100vw',
-                  height: '100vh',
-                  overflow: 'scroll',
+                  minHeight: '100vh',
                 }}
               >
                 <Navbar />
-                <Container maxWidth='lg' style={{ height: 'auto', marginTop: '7em', padding: '0 10px' }}>
-                  <Route exact path='/events' component={EventDashboard} />
-                  <Route path='/events/:id' component={EventDetailedPage} />
-                  <Route exact path={['/createEvent', '/manage/:id']} key={key} component={EventForm} />
-                  <Route path='/account' component={AccountPage} />
+                <Container maxWidth='lg' style={{ height: '100%', paddingTop: '7rem' }}>
+                  <Switch location={background || location}>
+                    <Route exact path='/events' component={EventDashboard} />
+                    <Route path='/events/:id' component={EventDetailedPage} />
+                    <Route exact path={['/createEvent', '/manage/:id']} key={location.key} component={EventForm} />
+                    <Route path='/profile/:id' component={ProfilePage} />
+                    <Route path='/account' component={AccountPage} />
+                  </Switch>
                 </Container>
+
+                {background && <Route path='/img/:id' children={<LightBox />} />}
               </Box>
             )}
           />

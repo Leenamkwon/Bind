@@ -11,3 +11,7 @@ export const MODIFY_EVENT = 'MODIFY_EVENT';
 // 리덕스 메모리 대청소
 export const CLEAR_EVENTS = 'CLEAR_EVENTS';
 export const CLEAR_SELECTEVENTS = 'CLEAR_SELECTEVENTS';
+
+// 이벤트 필터링
+export const SET_FILTER = 'SET_FILTER';
+export const SET_START_DATE = 'SET_START_DATE';

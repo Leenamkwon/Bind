@@ -1,11 +1,13 @@
+import { set } from 'date-fns';
 import {
   CLEAR_EVENTS,
   CLEAR_SELECTEVENTS,
   DELETE_EVENT,
   FETCH_EVENT,
-  LIKE_EVENT,
   MODIFY_EVENT,
   RETAIN_STATE,
+  SET_FILTER,
+  SET_START_DATE,
 } from './eventConstants';
 
 const initialState = {
@@ -16,7 +18,7 @@ const initialState = {
   selectedEvent: null,
   lastVisible: null,
   filter: 'all',
-  startDate: new Date(),
+  startDate: set(new Date(), { hours: 0 }),
   retainState: false,
 };
 
@@ -45,6 +47,20 @@ export default function eventReducer(state = initialState, { type, payload }) {
       return {
         ...state,
         modifyEvent: payload,
+      };
+    case SET_FILTER:
+      return {
+        ...state,
+        filter: payload,
+        retainState: false,
+        moreEvents: true,
+      };
+    case SET_START_DATE:
+      return {
+        ...state,
+        startDate: set(payload, { hours: 0 }),
+        retainState: false,
+        moreEvents: true,
       };
     case CLEAR_EVENTS:
       return {

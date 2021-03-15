@@ -27,12 +27,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default memo(function SignedInMenu() {
+  const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const { currentUserProfile } = useSelector((state) => state.profile);
-  const classes = useStyles();
   const { pathname } = useLocation();
-  const { enqueueSnackbar } = useSnackbar();
   const history = useHistory();
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -87,7 +87,7 @@ export default memo(function SignedInMenu() {
           <ListItemText primary='이벤트 작성하기' />
         </MenuItem>
 
-        <MenuItem selected={pathname === '/profile'}>
+        <MenuItem selected={pathname === '/profile'} component={NavLink} to={`/profile/${currentUserProfile.id}`}>
           <ListItemIcon>
             <AccountCircle />
           </ListItemIcon>

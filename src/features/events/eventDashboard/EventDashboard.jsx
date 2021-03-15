@@ -55,7 +55,7 @@ export default function EventDashboard() {
 
       <Hidden xsDown>
         <Grid item sm={5} md={4} lg={4}>
-          <EventFilter />
+          <EventFilter loadingInitial={loadingInitial} />
         </Grid>
       </Hidden>
     </Grid>

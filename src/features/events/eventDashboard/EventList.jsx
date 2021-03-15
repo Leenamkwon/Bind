@@ -7,12 +7,12 @@ import EventListItem from './EventListItem';
 export default memo(function EventList({ events, getNextEvents, loading, moreEvents }) {
   return (
     <Grid container>
-      {events.length >= 1 ? (
+      {events.length > 0 ? (
         <InfinitScroll
           pageStart={0}
-          loadMore={getNextEvents}
+          loadMore={() => getNextEvents()}
           hasMore={!loading && moreEvents}
-          initialLoad={false}
+          initialLoad={true}
           style={{ width: '100%' }}
         >
           {events.map((event) => (
