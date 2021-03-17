@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { Avatar, Card, CardHeader, CardMedia, Dialog, IconButton, makeStyles, Typography } from '@material-ui/core';
 import { ArrowBackIos, ArrowForwardIos } from '@material-ui/icons';
-import { useHistory, useLocation, useParams } from 'react-router';
+import { Redirect, useHistory, useLocation, useParams } from 'react-router';
 import { useSelector } from 'react-redux';
 import clsx from 'clsx';
 import { Link } from 'react-router-dom';
@@ -36,6 +36,8 @@ export default memo(function LightBox() {
   let back = () => {
     history.push('/events');
   };
+
+  if (!events[currentIdx]) return <Redirect to='/error' />;
 
   return (
     <Dialog fullWidth={true} maxWidth='lg' onClose={back} open={true}>

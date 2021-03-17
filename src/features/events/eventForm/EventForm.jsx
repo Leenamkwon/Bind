@@ -6,6 +6,8 @@ import { DropzoneDialog } from 'material-ui-dropzone';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import cuid from 'cuid';
+import { useDispatch, useSelector } from 'react-redux';
+import { useSnackbar } from 'notistack';
 
 // COMPONENT
 import MytextInput from '../../../app/common/form/MytextInput';
@@ -24,9 +26,7 @@ import {
 import { deleteStorageImage, uploadEventThumbImgStorage } from '../../../app/firestore/fireStorageService';
 import { getFileExtension } from '../../../app/util/util';
 import useFirestoreDoc from '../../../app/hooks/useFirestoreDoc';
-import { useDispatch, useSelector } from 'react-redux';
-import { clearSelectedEvent, listenToSelectEvents } from '../eventActions';
-import { useSnackbar } from 'notistack';
+import { clearModifyEvent, listenToModifyEvent } from '../eventActions';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -54,12 +54,12 @@ export default function EventForm({ match }) {
   useFirestoreDoc({
     shouldExcute: match.path !== '/createEvent',
     query: () => listenToEventFromFirestore(match.params.id),
-    data: (event) => dispatch(listenToSelectEvents(event)),
+    data: (event) => dispatch(listenToModifyEvent(event)),
     deps: [dispatch, match.params.id],
   });
 
   useEffect(() => {
-    return () => dispatch(clearSelectedEvent());
+    return () => dispatch(clearModifyEvent());
   }, [dispatch]);
 
   const initialValues = useMemo(
@@ -171,7 +171,7 @@ export default function EventForm({ match }) {
                 </Box>
 
                 <MyTextArea label='이벤트 내용' name='description' />
-                <MyPlaceInput label='도시' name='city' />
+                <MyPlaceInput label='장소' name='city' />
                 <MyDateInput label='이벤트 날짜' name='date' />
 
                 <Fab

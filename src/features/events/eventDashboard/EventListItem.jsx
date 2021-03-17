@@ -20,14 +20,15 @@ import {
   Divider,
   CardActionArea,
 } from '@material-ui/core';
-import { red } from '@material-ui/core/colors';
-import { Favorite, LocationOn, FavoriteBorderOutlined, Share, MoreVert, Group, ClassRounded } from '@material-ui/icons';
+import { Favorite, LocationOn, FavoriteBorderOutlined, Share, MoreVert, Group } from '@material-ui/icons';
 import { Link, useHistory, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+
+// COMPONENT
 import Prompt from '../../../app/common/dialog/Prompt';
 import { useToggleClick } from '../../../app/hooks/useToggleClick';
 import { useTargetClick } from '../../../app/hooks/useTargetClick';
 import formatDate from '../../../app/util/util';
-import { useDispatch, useSelector } from 'react-redux';
 import { modalOpen } from '../../../app/common/modal/modalReducer';
 import { deleteLikesEvent, likesEvent } from '../../../app/firestore/firestoreService';
 
@@ -45,9 +46,6 @@ const useStyles = makeStyles((theme) => ({
   },
   showDetailEventBtn: {
     marginLeft: 'auto',
-  },
-  avatar: {
-    backgroundColor: red[500],
   },
   eventGroupBox: {
     display: 'flex',
@@ -123,7 +121,9 @@ export default memo(function EventListItem({ event }) {
       <Prompt open={dialogOpen} setOpen={setDialogOpen} eventId={event.id} />
       <Card className={classes.root} raised={true}>
         <CardHeader
-          avatar={<Avatar src={event.hostPhotoURL || null} aria-label='recipe' />}
+          avatar={
+            <Avatar component={Link} to={`/profile/${event.hostUid}`} src={event.hostPhotoURL || null} aria-label='avatar' />
+          }
           action={
             currentUserProfile?.id === event.hostUid && (
               <>
@@ -155,8 +155,6 @@ export default memo(function EventListItem({ event }) {
           component={Link}
           to={{
             pathname: `/img/${event.id}`,
-            // This is the trick! This link sets
-            // the `background` in location state.
             state: { background: location },
           }}
         >
@@ -173,12 +171,7 @@ export default memo(function EventListItem({ event }) {
               {event.city.address}
             </Typography>
           </Box>
-          <Box display='flex' alignItems='center' pt={1}>
-            <ClassRounded className={classes.icon} />
-            <Typography variant='subtitle2' color='textSecondary' display='inline'>
-              {event.category}
-            </Typography>
-          </Box>
+
           <Divider variant='fullWidth' style={{ margin: '8px 0' }} />
           <Typography variant='body1' color='textSecondary' component='p'>
             {event.description}
@@ -190,7 +183,7 @@ export default memo(function EventListItem({ event }) {
             {currentUserProfile && currentUserProfile.likesEvent.indexOf(event.id) !== -1 ? (
               <Favorite color='primary' />
             ) : (
-              <FavoriteBorderOutlined />
+              <FavoriteBorderOutlined color='primary' />
             )}
           </IconButton>
           <IconButton aria-label='share'>
@@ -201,7 +194,7 @@ export default memo(function EventListItem({ event }) {
             <IconButton onClick={setExpanded} aria-expanded={expanded} aria-label='show more'>
               <Group />
             </IconButton>
-            <Button color='primary' component={Link} to={`/events/${event.id}`} variant='outlined'>
+            <Button color='primary' component={Link} to={`/events/${event.id}`} variant='contained'>
               자세히 보기
             </Button>
           </Box>

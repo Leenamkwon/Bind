@@ -20,7 +20,7 @@ export default memo(function EventDetailedInfo() {
                 <LocationOn />
               </Avatar>
             </ListItemAvatar>
-            <ListItemText primary='위치' secondary={`서울특별시 서초1동 카페베네`} />
+            <ListItemText primary='장소' secondary={`서울특별시 서초1동 카페베네`} />
             {mapOpen ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
           <Collapse in={mapOpen} timeout='auto' unmountOnExit>

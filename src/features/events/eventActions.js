@@ -2,29 +2,14 @@ import { dataFromSnapshot, fetchEventsFromFirestore } from '../../app/firestore/
 import { asyncActionStart, asyncActionError, asyncActionFinish } from '../../app/async/asyncReducer';
 import {
   CLEAR_EVENTS,
-  CLEAR_SELECTEVENTS,
+  CLEAR_MODIFY_EVENT,
   DELETE_EVENT,
   FETCH_EVENT,
   MODIFY_EVENT,
+  SELECT_EVENT,
   SET_FILTER,
   SET_START_DATE,
 } from './eventConstants';
-
-export function deleteSelectEvent(eventId) {
-  return { type: DELETE_EVENT, payload: eventId };
-}
-
-export function listenToSelectEvents(event) {
-  return { type: MODIFY_EVENT, payload: event };
-}
-
-export function clearEvents() {
-  return { type: CLEAR_EVENTS };
-}
-
-export function clearSelectedEvent() {
-  return { type: CLEAR_SELECTEVENTS };
-}
 
 export function fetchEvents(filter, startDate, limit, lastDocSnapshot) {
   return async function (dispatch) {
@@ -46,6 +31,27 @@ export function fetchEvents(filter, startDate, limit, lastDocSnapshot) {
   };
 }
 
+export function deleteSelectEvent(eventId) {
+  return { type: DELETE_EVENT, payload: eventId };
+}
+
+export function listenToModifyEvent(event) {
+  return { type: MODIFY_EVENT, payload: event };
+}
+
+export function clearModifyEvent() {
+  return { type: CLEAR_MODIFY_EVENT };
+}
+
+export function clearEvents() {
+  return { type: CLEAR_EVENTS };
+}
+
+export function listenToSelectEvent(selectEvt) {
+  return { type: SELECT_EVENT, payload: selectEvt };
+}
+
+// 필터 액션 ------------- //
 export function setFilter(value) {
   return function (dispatch) {
     dispatch(clearEvents());

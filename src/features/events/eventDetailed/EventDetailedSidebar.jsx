@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import {
   makeStyles,
   List,
@@ -12,7 +12,6 @@ import {
   IconButton,
   fade,
   InputBase,
-  CardContent,
 } from '@material-ui/core';
 import { Search } from '@material-ui/icons';
 
@@ -52,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function AlignItemsList() {
+export default memo(function AlignItemsList() {
   const classes = useStyles();
 
   return (
@@ -82,4 +81,4 @@ export default function AlignItemsList() {
       </List>
     </Card>
   );
-}
+});

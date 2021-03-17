@@ -1,11 +1,12 @@
 import { set } from 'date-fns';
 import {
   CLEAR_EVENTS,
-  CLEAR_SELECTEVENTS,
+  CLEAR_MODIFY_EVENT,
   DELETE_EVENT,
   FETCH_EVENT,
   MODIFY_EVENT,
   RETAIN_STATE,
+  SELECT_EVENT,
   SET_FILTER,
   SET_START_DATE,
 } from './eventConstants';
@@ -24,13 +25,6 @@ const initialState = {
 
 export default function eventReducer(state = initialState, { type, payload }) {
   switch (type) {
-    case DELETE_EVENT:
-      return {
-        ...state,
-        events: state.events.filter((event) => event.id !== payload),
-        moreEvents: false,
-        lastVisible: null,
-      };
     case FETCH_EVENT:
       return {
         ...state,
@@ -38,30 +32,26 @@ export default function eventReducer(state = initialState, { type, payload }) {
         moreEvents: payload.moreEvents,
         lastVisible: payload.lastVisible,
       };
-    case RETAIN_STATE:
+    case DELETE_EVENT:
       return {
         ...state,
-        retainState: true,
+        events: state.events.filter((event) => event.id !== payload),
+        moreEvents: false,
+        lastVisible: null,
       };
+
+    case SELECT_EVENT:
+      return {
+        ...state,
+        selectedEvent: payload,
+      };
+
     case MODIFY_EVENT:
       return {
         ...state,
         modifyEvent: payload,
       };
-    case SET_FILTER:
-      return {
-        ...state,
-        filter: payload,
-        retainState: false,
-        moreEvents: true,
-      };
-    case SET_START_DATE:
-      return {
-        ...state,
-        startDate: set(payload, { hours: 0 }),
-        retainState: false,
-        moreEvents: true,
-      };
+
     case CLEAR_EVENTS:
       return {
         ...state,
@@ -69,10 +59,33 @@ export default function eventReducer(state = initialState, { type, payload }) {
         moreEvents: false,
         lastVisible: null,
       };
-    case CLEAR_SELECTEVENTS:
+
+    case CLEAR_MODIFY_EVENT:
       return {
         ...state,
         modifyEvent: null,
+      };
+
+    case SET_FILTER:
+      return {
+        ...state,
+        filter: payload,
+        retainState: false,
+        moreEvents: true,
+      };
+
+    case SET_START_DATE:
+      return {
+        ...state,
+        startDate: set(payload, { hours: 0 }),
+        retainState: false,
+        moreEvents: true,
+      };
+
+    case RETAIN_STATE:
+      return {
+        ...state,
+        retainState: true,
       };
     default:
       return state;

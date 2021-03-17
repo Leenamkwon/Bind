@@ -19,6 +19,7 @@ import ButtonComponent from '../../../app/layout/ButtonComponent';
 import Prompt from '../../../app/common/dialog/Prompt';
 import { useTargetClick } from '../../../app/hooks/useTargetClick';
 import { useToggleClick } from '../../../app/hooks/useToggleClick';
+import { Link } from 'react-router-dom';
 
 const StyledMenu = withStyles({
   paper: {
@@ -53,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default memo(function EventDetailedHeader() {
+export default memo(function EventDetailedHeader({ event, isHost, isGoing }) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useTargetClick(null);
   const [dialogOpen, setDialogOpen] = useToggleClick(false);
@@ -69,32 +70,45 @@ export default memo(function EventDetailedHeader() {
       <Grid item xs={12}>
         <Card raised={true}>
           <CardHeader
-            avatar={<Avatar aria-label='recipe'>R</Avatar>}
+            avatar={
+              <Avatar
+                src={event.hostPhotoURL || null}
+                component={Link}
+                to={`/profile/${event.hostUid}`}
+                aria-label='avatar'
+              />
+            }
             action={
-              <>
-                <IconButton aria-label='settings' onClick={(e) => setAnchorEl(e.currentTarget)}>
-                  <MoreVert />
-                </IconButton>
-                <StyledMenu
-                  className={classes.menu}
-                  id='event-menu'
-                  anchorEl={anchorEl}
-                  open={Boolean(anchorEl)}
-                  onClose={() => setAnchorEl(null)}
-                >
-                  <MenuItem onClick={() => setAnchorEl(null)}>수정하기</MenuItem>
-                  <Divider variant='fullWidth' />
-                  <MenuItem onClick={promptClose}>삭제하기</MenuItem>
-                </StyledMenu>
-              </>
+              isHost && (
+                <>
+                  <IconButton aria-label='settings' onClick={(e) => setAnchorEl(e.currentTarget)}>
+                    <MoreVert />
+                  </IconButton>
+                  <StyledMenu
+                    className={classes.menu}
+                    id='event-menu'
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={() => setAnchorEl(null)}
+                  >
+                    <MenuItem onClick={() => setAnchorEl(null)}>수정하기</MenuItem>
+                    <Divider variant='fullWidth' />
+                    <MenuItem onClick={promptClose}>삭제하기</MenuItem>
+                  </StyledMenu>
+                </>
+              )
             }
             title={
               <Typography variant='subtitle1' component='h2'>
-                Shrimp and Chorizo Paella
+                {event.title}
               </Typography>
             }
           />
-          <CardMedia className={classes.media} image='/assets/categoryImages/culture.jpg' title='Paella dish' />
+          <CardMedia
+            className={classes.media}
+            image={event.thumbnailURL || `/assets/categoryImages/${event.category}.jpg`}
+            title={event.title}
+          />
           <Box p={1}>
             <Box display='flex' flexDirection='row-reverse' justifyContent='space-between'>
               <Box display='flex' alignItems='center'>
@@ -102,15 +116,18 @@ export default memo(function EventDetailedHeader() {
                   <IconButton aria-label='add to favorites'>
                     <FavoriteBorder color='primary' />
                   </IconButton>
-                  2
+                  {event.likes > 0 ? event.likes : ''}
                 </Box>
                 <IconButton aria-label='share'>
                   <Share />
                 </IconButton>
               </Box>
               <Box>
-                <ButtonComponent color='primary' variant='outlined' loading={false} content='이벤트 참가하기' />
-                <ButtonComponent variant='outlined' loading={false} content='이벤트 나가기' />
+                {isGoing ? (
+                  <ButtonComponent variant='contained' loading={false} content='이벤트 나가기' />
+                ) : (
+                  <ButtonComponent color='primary' variant='contained' loading={false} content='이벤트 참가하기' />
+                )}
               </Box>
             </Box>
           </Box>
