@@ -2,8 +2,9 @@ import React, { useState, memo } from 'react';
 import { Avatar, Card, Collapse, Divider, Grid, List, ListItem, ListItemAvatar, ListItemText } from '@material-ui/core';
 import { LocationOn, EventAvailable, Description, People, ExpandMore, ExpandLess } from '@material-ui/icons';
 import EventDetailedMap from './EventDetailedMap';
+import formatDate from '../../../app/util/util';
 
-export default memo(function EventDetailedInfo() {
+export default memo(function EventDetailedInfo({ event }) {
   const [mapOpen, setMapOpen] = useState(false);
 
   function handleMapOpen() {
@@ -20,13 +21,13 @@ export default memo(function EventDetailedInfo() {
                 <LocationOn />
               </Avatar>
             </ListItemAvatar>
-            <ListItemText primary='장소' secondary={`서울특별시 서초1동 카페베네`} />
+            <ListItemText primary='장소' secondary={event.city.address} />
             {mapOpen ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
           <Collapse in={mapOpen} timeout='auto' unmountOnExit>
             <List component='div' disablePadding>
               <ListItem>
-                <EventDetailedMap />
+                <EventDetailedMap latlng={event.city} />
               </ListItem>
             </List>
           </Collapse>
@@ -37,7 +38,7 @@ export default memo(function EventDetailedInfo() {
                 <EventAvailable />
               </Avatar>
             </ListItemAvatar>
-            <ListItemText primary={'날짜'} secondary={`2011-21-12 01:15 AM`} />
+            <ListItemText primary={'날짜'} secondary={formatDate(event.date)} />
           </ListItem>
           <Divider variant='inset' component='li' />
           <ListItem>
@@ -46,7 +47,7 @@ export default memo(function EventDetailedInfo() {
                 <People />
               </Avatar>
             </ListItemAvatar>
-            <ListItemText primary='최대 인원' secondary={'5명'}></ListItemText>
+            <ListItemText primary='인원' secondary={event.member}></ListItemText>
           </ListItem>
           <Divider variant='inset' component='li' />
           <ListItem>
@@ -55,12 +56,7 @@ export default memo(function EventDetailedInfo() {
                 <Description />
               </Avatar>
             </ListItemAvatar>
-            <ListItemText>
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sint expedita maxime iure perferendis ullam
-              voluptatum tenetur exercitationem debitis enim nam tempore quod nesciunt officia totam, quibusdam consectetur,
-              excepturi similique, itaque impedit sed dolor aliquid quos? Vel sunt tempora nisi pariatur aliquam! Eligendi
-              qui veritatis velit sunt veniam autem maiores? Ipsum.
-            </ListItemText>
+            <ListItemText>{event.description}</ListItemText>
           </ListItem>
         </List>
       </Card>

@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
-import { Avatar, Box, IconButton, Input, makeStyles } from '@material-ui/core';
+import React, { useState, memo } from 'react';
+import { Avatar, Box, Button, IconButton, Input, makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import ButtonComponent from '../../../app/layout/ButtonComponent';
+import { addEventChatComment } from '../../../app/firestore/firebaseEventChat';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     height: 'auto',
     padding: theme.spacing(1),
+    width: '100%',
   },
   small: {
     width: theme.spacing(3),
@@ -25,12 +27,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function EventDetailedChatForm({ parentId = 0 }) {
+export default memo(function EventDetailedChatForm({ eventId, parentId, setReply }) {
   const classes = useStyles();
   const [focus, setFocus] = useState(false);
 
   function handleFocus() {
     setFocus(true);
+  }
+
+  function closeChatForm() {
+    if (parentId === 0) {
+      setFocus(false);
+    } else {
+      setReply({ target: null, open: false });
+    }
   }
 
   return (
@@ -40,7 +50,14 @@ export default function EventDetailedChatForm({ parentId = 0 }) {
         validationSchema={Yup.object({
           comment: Yup.string().min(1, '1').required(),
         })}
-        onSubmit={(value, { setSubmitting, resetForm }) => {}}
+        onSubmit={async (value, { setSubmitting, resetForm }) => {
+          try {
+            await addEventChatComment(eventId, value);
+            resetForm({ comment: '' });
+            setFocus(false);
+            setSubmitting(false);
+          } catch (error) {}
+        }}
       >
         {({ isSubmitting, handleSubmit, isValid, handleChange, values, handleBlur }) => {
           return (
@@ -51,6 +68,7 @@ export default function EventDetailedChatForm({ parentId = 0 }) {
                 </IconButton>
                 <Input
                   name='comment'
+                  value={values.comment}
                   className={classes.input}
                   placeholder='공개 댓글 추가...'
                   autoComplete='off'
@@ -58,7 +76,6 @@ export default function EventDetailedChatForm({ parentId = 0 }) {
                   onFocus={handleFocus}
                   onBlur={(e) => {
                     handleBlur(e);
-                    setFocus(false);
                   }}
                   onKeyPress={(e) => {
                     if (e.key === 'Enter' && e.shiftKey) {
@@ -73,28 +90,27 @@ export default function EventDetailedChatForm({ parentId = 0 }) {
                 />
               </Box>
 
-              {focus && (
-                <Box display='flex' justifyContent='flex-end' mt={1}>
-                  <ButtonComponent
-                    onClick={() => setFocus(false)}
-                    loading={false}
-                    content='취소'
-                    type='button'
-                    color='inherit'
-                  />
-                  <ButtonComponent
-                    loading={isSubmitting}
-                    disabled={isSubmitting}
-                    content='전송'
-                    type='submit'
-                    variant='contained'
-                  />
-                </Box>
-              )}
+              <Box display='flex' justifyContent='flex-end' mt={1} style={{ display: focus ? 'flex' : 'none' }}>
+                <ButtonComponent
+                  onClick={() => closeChatForm()}
+                  loading={false}
+                  content='취소'
+                  type='button'
+                  color='inherit'
+                />
+                <ButtonComponent
+                  onClick={() => handleSubmit()}
+                  loading={isSubmitting}
+                  disabled={isSubmitting}
+                  content='전송'
+                  type='submit'
+                  variant='contained'
+                />
+              </Box>
             </Form>
           );
         }}
       </Formik>
     </Box>
   );
-}
+});

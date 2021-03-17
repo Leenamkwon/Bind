@@ -17,3 +17,6 @@ export const SET_START_DATE = 'SET_START_DATE';
 // 이벤트 상세 페이지
 export const SELECT_EVENT = 'SELECT_EVENT';
 export const CLEAR_SELECT_EVENT = 'CLEAR_SELECT_EVENT';
+
+// 이벤트 댓글
+export const LISTEN_TO_EVENT_CHAT = 'LISTEN_TO_EVENT_CHAT';

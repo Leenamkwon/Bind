@@ -25,8 +25,8 @@ const AnyReactComponent = ({ address }) => {
     <HtmlTooltip
       title={
         <>
-          <Typography color='inherit'>Tooltip with HTML</Typography>
-          <em>{"And here's"}</em> <b>{'some'}</b> <u>{'amazing content'}</u>. {"It's very engaging. Right?"}
+          <Typography color='inherit'>장소 위치</Typography>
+          {address}
         </>
       }
       arrow
@@ -38,11 +38,12 @@ const AnyReactComponent = ({ address }) => {
   );
 };
 
-export default memo(function EventDetailedMap() {
+export default memo(function EventDetailedMap({ latlng }) {
+  const { address, latLng } = latlng;
   const defaultProps = {
     center: {
-      lat: 59.95,
-      lng: 30.33,
+      lat: latLng.lat,
+      lng: latLng.lng,
     },
     zoom: 14,
   };
@@ -54,7 +55,7 @@ export default memo(function EventDetailedMap() {
         defaultCenter={defaultProps.center}
         defaultZoom={defaultProps.zoom}
       >
-        <AnyReactComponent lat={59.955413} lng={30.337844} address='My Marker' />
+        <AnyReactComponent lat={latLng.lat} lng={latLng.lng} address={address} />
       </GoogleMapReact>
     </div>
   );

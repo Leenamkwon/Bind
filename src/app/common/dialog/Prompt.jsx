@@ -3,14 +3,19 @@ import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialog
 import { useDispatch } from 'react-redux';
 import { deleteEventInFireStore } from '../../firestore/firestoreService';
 import { deleteSelectEvent } from '../../../features/events/eventActions';
+import { useHistory } from 'react-router';
 
 export default memo(function Prompt({ open, setOpen, eventId }) {
   const dispatch = useDispatch();
+  const history = useHistory();
+
   const handleClose = () => setOpen(false);
+
   const handleAccept = () => {
     deleteEventInFireStore(eventId).then((_) => {
       dispatch(deleteSelectEvent(eventId));
       setOpen(false);
+      history.push('/events');
     });
   };
 

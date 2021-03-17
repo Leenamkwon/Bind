@@ -5,6 +5,7 @@ import {
   CLEAR_MODIFY_EVENT,
   DELETE_EVENT,
   FETCH_EVENT,
+  LISTEN_TO_EVENT_CHAT,
   MODIFY_EVENT,
   SELECT_EVENT,
   SET_FILTER,
@@ -63,5 +64,12 @@ export function setStartDate(date) {
   return function (dispatch) {
     dispatch(clearEvents());
     dispatch({ type: SET_START_DATE, payload: date });
+  };
+}
+
+export function listenToEventChat(comments) {
+  return {
+    type: LISTEN_TO_EVENT_CHAT,
+    payload: comments || [],
   };
 }

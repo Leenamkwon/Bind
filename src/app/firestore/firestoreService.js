@@ -55,7 +55,7 @@ export function updateEventInFireStore(event) {
   return db.collection('events').doc(event.id).update(event);
 }
 
-// 이벤트 삭제
+// 이벤트 삭제 -- todo: 나중에 유저 데이터 클라우드 기능 이용하여 삭제할 것
 export async function deleteEventInFireStore(eventId) {
   try {
     let eventDocRef = await listenToEventFromFirestore(eventId).get();
@@ -113,6 +113,39 @@ export function fetchEventsFromFirestore(filter, startDate, limit, lastDocSnapsh
       return eventsRef.where('hostUid', '==', user.uid).where('date', '>=', startDate);
     default:
       return eventsRef.where('date', '>=', startDate);
+  }
+}
+
+// 호스팅 이벤트 참가
+export function eventParticipateFirestore(eventId) {
+  const user = firebase.auth().currentUser;
+  return db
+    .collection('events')
+    .doc(eventId)
+    .update({
+      attendeeIds: firebase.firestore.FieldValue.arrayUnion(user.uid),
+      attendees: firebase.firestore.FieldValue.arrayUnion({
+        displayName: user.displayName,
+        id: user.uid,
+        photoURL: user.photoURL,
+      }),
+    });
+}
+
+export async function eventOutFirestore(eventId) {
+  const user = firebase.auth().currentUser;
+  try {
+    const selectEvent = await db.collection('events').doc(eventId).get();
+
+    return await db
+      .collection('events')
+      .doc(eventId)
+      .update({
+        attendeeIds: firebase.firestore.FieldValue.arrayRemove(user.uid),
+        attendees: selectEvent.data().attendees.filter((attendee) => attendee.id !== user.uid),
+      });
+  } catch (error) {
+    throw error;
   }
 }
 

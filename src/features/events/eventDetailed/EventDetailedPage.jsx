@@ -20,6 +20,12 @@ export default function EventDetailedPage({ match }) {
   const { currentUser } = useSelector((state) => state.auth);
   const { selectedEvent } = useSelector((state) => state.event);
 
+  useFirestoreDoc({
+    query: () => listenToEventFromFirestore(match.params.id),
+    data: (event) => dispatch(listenToSelectEvent(event)),
+    deps: [dispatch, match.params.id],
+  });
+
   const isHost = useMemo(() => selectedEvent && selectedEvent?.hostUid === currentUser?.uid, [
     currentUser?.uid,
     selectedEvent,
@@ -29,12 +35,6 @@ export default function EventDetailedPage({ match }) {
     selectedEvent?.attendees,
   ]);
 
-  useFirestoreDoc({
-    query: () => listenToEventFromFirestore(match.params.id),
-    data: (event) => dispatch(listenToSelectEvent(event)),
-    deps: [dispatch, match.params.id],
-  });
-
   if (loading || (!selectedEvent && !error)) return <LoadingComponent content='Loading...' />;
   if (error) return <Redirect to='/error' />;
 
@@ -42,11 +42,11 @@ export default function EventDetailedPage({ match }) {
     <Grid container spacing={2}>
       <Grid item container direction='column' xs={12} sm={8} md={9}>
         <EventDetailedHeader event={selectedEvent} isGoing={isGoing} isHost={isHost} />
-        <EventDetailedInfo />
-        <EventDetailedChatPage />
+        <EventDetailedInfo event={selectedEvent} />
+        <EventDetailedChatPage eventId={selectedEvent.id} />
       </Grid>
       <Grid item xs={12} sm={4} md={3} style={{ marginBottom: matches ? '4em' : 0 }}>
-        <EventDetailedSidebar />
+        <EventDetailedSidebar event={selectedEvent} />
       </Grid>
     </Grid>
   );

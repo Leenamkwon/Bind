@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import { format, formatDistance } from 'date-fns';
 import { ko } from 'date-fns/locale';
 
 export function a11yProps(index) {
@@ -14,4 +14,26 @@ export function getFileExtension(filename) {
 
 export default function formatDate(date, formatStr = 'yyyy년 MM월 dd일, hh:mm aaa') {
   return format(date, formatStr, { locale: ko });
+}
+
+export function formatDateDistance(date) {
+  return formatDistance(date, new Date(), { locale: ko });
+}
+
+export function makeChatTree(chat) {
+  const hashTable = {};
+  chat.forEach((item) => (hashTable[item.id] = { ...item, childNodes: [] }));
+
+  const dataTree = [];
+
+  chat.forEach((item) => {
+    if (item.parentId === 0) {
+      dataTree.push(hashTable[item.id]);
+    } else {
+      const child = hashTable[item.id];
+      hashTable[item.parentId]['childNodes'].push(child);
+    }
+  });
+
+  return dataTree;
 }

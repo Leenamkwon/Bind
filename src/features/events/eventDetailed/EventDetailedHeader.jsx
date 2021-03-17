@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import {
   Avatar,
   MenuItem,
@@ -14,12 +14,23 @@ import {
   CardMedia,
   Box,
 } from '@material-ui/core';
-import { FavoriteBorder, MoreVert, Share } from '@material-ui/icons';
+import { Favorite, FavoriteBorderOutlined, MoreVert, Share } from '@material-ui/icons';
+import { Link, useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+
+// COMPONENT
 import ButtonComponent from '../../../app/layout/ButtonComponent';
 import Prompt from '../../../app/common/dialog/Prompt';
 import { useTargetClick } from '../../../app/hooks/useTargetClick';
 import { useToggleClick } from '../../../app/hooks/useToggleClick';
-import { Link } from 'react-router-dom';
+import { modalOpen } from '../../../app/common/modal/modalReducer';
+import {
+  deleteLikesEvent,
+  eventParticipateFirestore,
+  eventOutFirestore,
+  likesEvent,
+} from '../../../app/firestore/firestoreService';
+import { useSnackbar } from 'notistack';
 
 const StyledMenu = withStyles({
   paper: {
@@ -55,18 +66,65 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default memo(function EventDetailedHeader({ event, isHost, isGoing }) {
+  const dispatch = useDispatch();
   const classes = useStyles();
+  const history = useHistory();
+  const { currentUserProfile } = useSelector((state) => state.profile);
+  const { authenticated } = useSelector((state) => state.auth);
   const [anchorEl, setAnchorEl] = useTargetClick(null);
   const [dialogOpen, setDialogOpen] = useToggleClick(false);
+  const [loading, setLoading] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
 
-  function promptClose() {
+  const DialogClose = useCallback(() => {
     setAnchorEl(null);
     setDialogOpen(true);
+  }, [setAnchorEl, setDialogOpen]);
+
+  function modifyEvent() {
+    setAnchorEl(null);
+    history.push(`/manage/${event.id}`);
   }
+
+  const handleLike = useCallback(async () => {
+    if (!currentUserProfile) return dispatch(modalOpen('LoginForm'));
+
+    if (currentUserProfile && currentUserProfile?.likesEvent.indexOf(event.id) !== -1) {
+      await deleteLikesEvent(event.id);
+    } else {
+      await likesEvent(event.id);
+    }
+  }, [currentUserProfile, dispatch, event.id]);
+
+  const eventParticapate = useCallback(async () => {
+    if (!authenticated) return dispatch(modalOpen('LoginForm'));
+
+    setLoading(true);
+    try {
+      await eventParticipateFirestore(event.id);
+      enqueueSnackbar('이벤트에 참가하였습니다.', { variant: 'success' });
+    } catch (error) {
+      enqueueSnackbar('이벤트 참가에 실패하였습니다.', { variant: 'error' });
+    } finally {
+      setLoading(false);
+    }
+  }, [authenticated, dispatch, enqueueSnackbar, event.id]);
+
+  const eventOut = useCallback(async () => {
+    setLoading(true);
+    try {
+      await eventOutFirestore(event.id);
+      enqueueSnackbar('이벤트에 나갔습니다.', { variant: 'warning' });
+    } catch (error) {
+      enqueueSnackbar('이벤트 참가에 실패하였습니다.', { variant: 'error' });
+    } finally {
+      setLoading(false);
+    }
+  }, [enqueueSnackbar, event.id]);
 
   return (
     <Grid container>
-      <Prompt open={dialogOpen} setOpen={setDialogOpen} />
+      <Prompt open={dialogOpen} setOpen={setDialogOpen} eventId={event.id} />
       <Grid item xs={12}>
         <Card raised={true}>
           <CardHeader
@@ -91,9 +149,9 @@ export default memo(function EventDetailedHeader({ event, isHost, isGoing }) {
                     open={Boolean(anchorEl)}
                     onClose={() => setAnchorEl(null)}
                   >
-                    <MenuItem onClick={() => setAnchorEl(null)}>수정하기</MenuItem>
+                    <MenuItem onClick={modifyEvent}>수정하기</MenuItem>
                     <Divider variant='fullWidth' />
-                    <MenuItem onClick={promptClose}>삭제하기</MenuItem>
+                    <MenuItem onClick={DialogClose}>삭제하기</MenuItem>
                   </StyledMenu>
                 </>
               )
@@ -113,8 +171,12 @@ export default memo(function EventDetailedHeader({ event, isHost, isGoing }) {
             <Box display='flex' flexDirection='row-reverse' justifyContent='space-between'>
               <Box display='flex' alignItems='center'>
                 <Box>
-                  <IconButton aria-label='add to favorites'>
-                    <FavoriteBorder color='primary' />
+                  <IconButton onClick={handleLike}>
+                    {currentUserProfile && currentUserProfile.likesEvent.indexOf(event.id) !== -1 ? (
+                      <Favorite color='primary' />
+                    ) : (
+                      <FavoriteBorderOutlined color='primary' />
+                    )}
                   </IconButton>
                   {event.likes > 0 ? event.likes : ''}
                 </Box>
@@ -124,9 +186,22 @@ export default memo(function EventDetailedHeader({ event, isHost, isGoing }) {
               </Box>
               <Box>
                 {isGoing ? (
-                  <ButtonComponent variant='contained' loading={false} content='이벤트 나가기' />
+                  <ButtonComponent
+                    variant='contained'
+                    loading={loading}
+                    content='이벤트 나가기'
+                    onClick={eventOut}
+                    disabled={isHost}
+                  />
                 ) : (
-                  <ButtonComponent color='primary' variant='contained' loading={false} content='이벤트 참가하기' />
+                  <ButtonComponent
+                    color='primary'
+                    variant='contained'
+                    loading={loading}
+                    content={event.attendeeIds === event.member ? '이벤트 만석' : '이벤트 참가하기'}
+                    onClick={eventParticapate}
+                    disabled={event.attendeeIds === event.member}
+                  />
                 )}
               </Box>
             </Box>

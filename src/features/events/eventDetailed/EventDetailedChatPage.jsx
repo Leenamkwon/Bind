@@ -13,7 +13,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default memo(function EventDetailedChatPage() {
+export default memo(function EventDetailedChatPage({ eventId }) {
+  if (!eventId) return <div></div>;
+
   return (
     <Grid item style={{ margin: '15px 0 30px 0' }}>
       <Card raised>
@@ -26,9 +28,9 @@ export default memo(function EventDetailedChatPage() {
         />
         <Divider variant='fullWidth' component='div' />
         {/* CHAT */}
-        <EventDetailedChatForm />
+        <EventDetailedChatForm parentId={0} eventId={eventId} />
         <Divider variant='fullWidth' component='div' />
-        <EventDetailedChat />
+        <EventDetailedChat eventId={eventId} />
 
         {/* No AUTH */}
         {/* <EventDetailNoAuth /> */}

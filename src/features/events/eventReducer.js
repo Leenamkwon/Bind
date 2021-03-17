@@ -4,6 +4,7 @@ import {
   CLEAR_MODIFY_EVENT,
   DELETE_EVENT,
   FETCH_EVENT,
+  LISTEN_TO_EVENT_CHAT,
   MODIFY_EVENT,
   RETAIN_STATE,
   SELECT_EVENT,
@@ -86,6 +87,12 @@ export default function eventReducer(state = initialState, { type, payload }) {
       return {
         ...state,
         retainState: true,
+      };
+
+    case LISTEN_TO_EVENT_CHAT:
+      return {
+        ...state,
+        comments: payload,
       };
     default:
       return state;

@@ -14,6 +14,7 @@ import {
   InputBase,
 } from '@material-ui/core';
 import { Search } from '@material-ui/icons';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -51,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default memo(function AlignItemsList() {
+export default memo(function AlignItemsList({ event }) {
   const classes = useStyles();
 
   return (
@@ -69,15 +70,19 @@ export default memo(function AlignItemsList() {
       />
       <Divider />
       <List className={classes.root}>
-        <ListItem alignItems='center'>
-          <ListItemAvatar>
-            <IconButton size='small'>
-              <Avatar alt='Remy Sharp' src='/static/images/avatar/1.jpg' />
-            </IconButton>
-          </ListItemAvatar>
-          <ListItemText primary='이남권' />
-        </ListItem>
-        <Divider variant='inset' component='li' />
+        {event.attendees.map((attendee) => (
+          <div key={attendee.id}>
+            <ListItem alignItems='center'>
+              <ListItemAvatar>
+                <IconButton size='small' component={Link} to={`/profile/${attendee.id}`}>
+                  <Avatar alt={attendee.displayName} src={attendee.photoURL || null} />
+                </IconButton>
+              </ListItemAvatar>
+              <ListItemText primary={attendee.displayName} />
+            </ListItem>
+            <Divider variant='inset' component='li' />
+          </div>
+        ))}
       </List>
     </Card>
   );
