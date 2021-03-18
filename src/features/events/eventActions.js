@@ -2,6 +2,7 @@ import { dataFromSnapshot, fetchEventsFromFirestore } from '../../app/firestore/
 import { asyncActionStart, asyncActionError, asyncActionFinish } from '../../app/async/asyncReducer';
 import {
   CLEAR_EVENTS,
+  CLEAR_EVENT_CHAT,
   CLEAR_MODIFY_EVENT,
   DELETE_EVENT,
   FETCH_EVENT,
@@ -67,9 +68,17 @@ export function setStartDate(date) {
   };
 }
 
+// 이벤트 채팅
 export function listenToEventChat(comments) {
   return {
     type: LISTEN_TO_EVENT_CHAT,
     payload: comments || [],
+  };
+}
+
+// 이벤트 채팅 대청소
+export function clearEventChat() {
+  return {
+    type: CLEAR_EVENT_CHAT,
   };
 }

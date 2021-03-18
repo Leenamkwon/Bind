@@ -1,10 +1,10 @@
-import React, { useState, memo } from 'react';
-import { Avatar, Box, Button, IconButton, Input, makeStyles } from '@material-ui/core';
+import React, { useState, memo, useCallback } from 'react';
+import { Avatar, Box, IconButton, Input, makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
+import { addEventChatComment, updateChatComment } from '../../../app/firestore/firebaseEventChat';
 import ButtonComponent from '../../../app/layout/ButtonComponent';
-import { addEventChatComment } from '../../../app/firestore/firebaseEventChat';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,37 +27,56 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default memo(function EventDetailedChatForm({ eventId, parentId, setReply }) {
+export default memo(function EventDetailedChatForm({ eventId, parentId, setReply, reply }) {
   const classes = useStyles();
-  const [focus, setFocus] = useState(false);
+  const [focus, setFocus] = useState(() => (parentId ? true : false));
+
+  function test() {
+    switch (reply?.type) {
+      case 'edit':
+        return reply.text;
+      default:
+        return '';
+    }
+  }
 
   function handleFocus() {
     setFocus(true);
   }
 
-  function closeChatForm() {
+  const closeChatForm = useCallback(() => {
     if (parentId === 0) {
       setFocus(false);
     } else {
-      setReply({ target: null, open: false });
+      setReply({ target: null, open: false, type: 'write', text: '' });
     }
-  }
+  }, [parentId, setReply]);
+
+  const handleSubmitChat = useCallback(
+    async (value, { setSubmitting, resetForm }) => {
+      try {
+        if (parentId !== 0 && reply.type === 'edit') {
+          await updateChatComment(eventId, reply.target, value.comment);
+        } else {
+          await addEventChatComment(eventId, value);
+          resetForm({ comment: '' });
+        }
+        closeChatForm();
+        setFocus(false);
+        setSubmitting(false);
+      } catch (error) {}
+    },
+    [closeChatForm, eventId, parentId, reply]
+  );
 
   return (
     <Box className={classes.root}>
       <Formik
-        initialValues={{ comment: '', parentId }}
+        initialValues={{ comment: test(), parentId }}
         validationSchema={Yup.object({
           comment: Yup.string().min(1, '1').required(),
         })}
-        onSubmit={async (value, { setSubmitting, resetForm }) => {
-          try {
-            await addEventChatComment(eventId, value);
-            resetForm({ comment: '' });
-            setFocus(false);
-            setSubmitting(false);
-          } catch (error) {}
-        }}
+        onSubmit={handleSubmitChat}
       >
         {({ isSubmitting, handleSubmit, isValid, handleChange, values, handleBlur }) => {
           return (
@@ -105,6 +124,7 @@ export default memo(function EventDetailedChatForm({ eventId, parentId, setReply
                   content='전송'
                   type='submit'
                   variant='contained'
+                  color='primary'
                 />
               </Box>
             </Form>

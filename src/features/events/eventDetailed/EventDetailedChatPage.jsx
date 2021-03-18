@@ -13,27 +13,27 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default memo(function EventDetailedChatPage({ eventId }) {
-  if (!eventId) return <div></div>;
-
+export default memo(function EventDetailedChatPage({ eventId, currentUser }) {
   return (
     <Grid item style={{ margin: '15px 0 30px 0' }}>
       <Card raised>
         <CardHeader
           title={
             <Typography variant='h6' component='h3'>
-              {true ? '댓글' : '로그인을 하여 사람들과 소통을 해보세요'}
+              {currentUser ? '댓글' : '로그인을 하여 사람들과 소통을 해보세요.'}
             </Typography>
           }
         />
         <Divider variant='fullWidth' component='div' />
-        {/* CHAT */}
-        <EventDetailedChatForm parentId={0} eventId={eventId} />
-        <Divider variant='fullWidth' component='div' />
-        <EventDetailedChat eventId={eventId} />
-
-        {/* No AUTH */}
-        {/* <EventDetailNoAuth /> */}
+        {currentUser ? (
+          <>
+            <EventDetailedChatForm parentId={0} eventId={eventId} />
+            <Divider variant='fullWidth' component='div' />
+            <EventDetailedChat eventId={eventId} />
+          </>
+        ) : (
+          <EventDetailNoAuth />
+        )}
       </Card>
     </Grid>
   );
@@ -45,7 +45,7 @@ function EventDetailNoAuth() {
   return (
     <Box display='flex' justifyContent='center' p={2}>
       <div className={classes.box}>
-        <CardMedia className={classes.cardMedia} image='/assets/svgImages/none.svg' component='img' alt='채팅을 해보세요!' />
+        <CardMedia className={classes.cardMedia} image='/assets/svgImages/none.svg' component='img' alt='chat' />
       </div>
     </Box>
   );

@@ -43,7 +43,7 @@ export default function EventDetailedPage({ match }) {
       <Grid item container direction='column' xs={12} sm={8} md={9}>
         <EventDetailedHeader event={selectedEvent} isGoing={isGoing} isHost={isHost} />
         <EventDetailedInfo event={selectedEvent} />
-        <EventDetailedChatPage eventId={selectedEvent.id} />
+        <EventDetailedChatPage eventId={selectedEvent.id} currentUser={currentUser} />
       </Grid>
       <Grid item xs={12} sm={4} md={3} style={{ marginBottom: matches ? '4em' : 0 }}>
         <EventDetailedSidebar event={selectedEvent} />

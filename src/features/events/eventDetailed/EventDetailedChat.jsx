@@ -1,4 +1,4 @@
-import React, { useEffect, memo, useState, useRef } from 'react';
+import React, { useEffect, memo, useState, useRef, useCallback } from 'react';
 import {
   List,
   ListItem,
@@ -10,12 +10,15 @@ import {
   makeStyles,
   IconButton,
 } from '@material-ui/core';
-import EventDetailedChatForm from './EventDetailedChatForm';
-import { firebaseObjectToArray, getEventChatRef } from '../../../app/firestore/firebaseEventChat';
 import { useDispatch, useSelector } from 'react-redux';
-import { listenToEventChat } from '../eventActions';
-import { formatDateDistance, makeChatTree } from '../../../app/util/util';
 import { Link } from 'react-router-dom';
+
+// COMPONENT
+import EventDetailedChatForm from './EventDetailedChatForm';
+import { firebaseObjectToArray, getEventChatRef, deleteChatComment } from '../../../app/firestore/firebaseEventChat';
+import { clearEventChat, listenToEventChat } from '../eventActions';
+import { formatDateDistance, makeChatTree } from '../../../app/util/util';
+import EventDetailedChildChat from './EventDetailedChildChat';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,17 +40,17 @@ export default memo(function EventDetailedChat({ eventId }) {
   const dispatch = useDispatch();
   const { comments } = useSelector((state) => state.event);
   const { currentUser } = useSelector((state) => state.auth);
-  const [reply, setReply] = useState({ open: false, target: null, type: null });
+  const [reply, setReply] = useState({ target: null, open: false, type: 'write', text: '' });
   const chatContainer = useRef(null);
 
   useEffect(() => {
     const unsubscribe = getEventChatRef(eventId).on('value', (snapshot) => {
-      if (!snapshot.exists()) return;
       dispatch(listenToEventChat(firebaseObjectToArray(snapshot.val())));
     });
 
     return () => {
       getEventChatRef(eventId).off('value', unsubscribe);
+      dispatch(clearEventChat());
     };
   }, [dispatch, eventId]);
 
@@ -62,6 +65,15 @@ export default memo(function EventDetailedChat({ eventId }) {
     return () => window.removeEventListener('click', outsideClose);
   }, [reply]);
 
+  const deleteChat = useCallback(
+    (eventId, childChat) => async () => {
+      try {
+        await deleteChatComment(eventId, childChat);
+      } catch (error) {}
+    },
+    []
+  );
+
   return (
     <List className={classes.root} ref={chatContainer}>
       {makeChatTree(comments)
@@ -70,7 +82,7 @@ export default memo(function EventDetailedChat({ eventId }) {
           <List key={chat.id} disablePadding>
             <ListItem alignItems='center'>
               <ListItemAvatar>
-                <IconButton size='small' component={Link} to={`/profile/${chat?.uid}`}>
+                <IconButton size='small' component={Link} to={`/profile/${chat.uid}`}>
                   <Avatar alt={chat.displayName} src={chat?.photoURL ?? null} />
                 </IconButton>
               </ListItemAvatar>
@@ -87,7 +99,8 @@ export default memo(function EventDetailedChat({ eventId }) {
                 }
                 secondary={
                   <>
-                    <Typography component='span' variant='body2' className={classes.inline} color='textPrimary'>
+                    {chat.isUpdate && <em style={{ marginRight: 10 }}>수정됨</em>}
+                    <Typography component='span' variant='body2' display='inline' color='textPrimary'>
                       {chat.text.split('\n').map((chatTxt, i) => (
                         <span key={i}>
                           {chatTxt}
@@ -95,16 +108,25 @@ export default memo(function EventDetailedChat({ eventId }) {
                         </span>
                       ))}
                     </Typography>
-                    <Typography variant='caption' display='inline' onClick={() => setReply({ open: true, target: chat.id })}>
+                    <Typography
+                      variant='caption'
+                      display='inline'
+                      onClick={() => setReply({ open: true, target: chat.id, type: 'write', text: null })}
+                    >
                       답글
                     </Typography>
                     {chat.uid === currentUser.uid && (
                       <>
-                        <Typography variant='caption' display='inline' style={{ margin: '0 5px' }}>
-                          삭제
-                        </Typography>
-                        <Typography variant='caption' display='inline'>
+                        <Typography
+                          variant='caption'
+                          display='inline'
+                          style={{ margin: '0 5px' }}
+                          onClick={() => setReply({ open: true, target: chat.id, type: 'edit', text: chat.text })}
+                        >
                           수정
+                        </Typography>
+                        <Typography variant='caption' display='inline' onClick={deleteChat(eventId, chat)}>
+                          삭제
                         </Typography>
                       </>
                     )}
@@ -114,90 +136,28 @@ export default memo(function EventDetailedChat({ eventId }) {
             </ListItem>
             {reply.open && reply.target === chat.id && (
               <ListItem>
-                <EventDetailedChatForm eventId={eventId} parentId={chat.id} setReply={setReply} />
+                <EventDetailedChatForm eventId={eventId} parentId={chat.id} reply={reply} setReply={setReply} />
               </ListItem>
             )}
-
             {/* event chat child */}
+            {chat.childNodes.length > 0 && (
+              <List disablePadding className={classes.nested}>
+                {chat.childNodes.map((childChat) => {
+                  return (
+                    <EventDetailedChildChat
+                      childChat={childChat}
+                      eventId={eventId}
+                      chatId={chat.id}
+                      currentUser={currentUser}
+                      key={childChat.id}
+                    />
+                  );
+                })}
+              </List>
+            )}
             <Divider />
           </List>
         ))}
     </List>
   );
 });
-
-{
-  /* <List disablePadding>
-        <ListItem alignItems='center'>
-          <ListItemAvatar>
-            <IconButton size='small'>
-              <Avatar alt='Remy Sharp' src='/static/images/avatar/1.jpg' />
-            </IconButton>
-          </ListItemAvatar>
-          <ListItemText
-            style={{ display: 'block' }}
-            primary={
-              <>
-                <Typography component='span' variant='body2' className={classes.inline} color='textSecondary'>
-                  이남권
-                </Typography>{' '}
-                <Typography component='span' variant='caption' color='textSecondary'>{`2021-03-10`}</Typography>
-              </>
-            }
-            secondary={
-              <Typography component='span' variant='body2' className={classes.inline} color='textPrimary'>
-                to Scott, Alex, Jennifer
-              </Typography>
-            }
-          />
-        </ListItem>
-
-        <List disablePadding className={classes.nested}>
-          <ListItem alignItems='center' disableGutters>
-            <ListItemAvatar>
-              <IconButton size='small'>
-                <Avatar alt='Remy Sharp' src='/static/images/avatar/1.jpg' />
-              </IconButton>
-            </ListItemAvatar>
-            <ListItemText
-              primary={
-                <>
-                  <Typography component='span' variant='body2' className={classes.inline} color='textSecondary'>
-                    이남권
-                  </Typography>{' '}
-                  <Typography component='span' variant='caption' color='textSecondary'>{`2021-03-10`}</Typography>
-                </>
-              }
-              secondary={
-                <Typography component='span' variant='body2' className={classes.inline} color='textPrimary'>
-                  to Scott, Alex, Jennifer
-                </Typography>
-              }
-            />
-          </ListItem>
-          <EventDetailedChatForm parentId={1} />
-          <ListItem alignItems='center' disableGutters>
-            <ListItemAvatar>
-              <IconButton size='small'>
-                <Avatar alt='Remy Sharp' src='/static/images/avatar/1.jpg' />
-              </IconButton>
-            </ListItemAvatar>
-            <ListItemText
-              primary={
-                <>
-                  <Typography component='span' variant='body2' className={classes.inline} color='textSecondary'>
-                    트레비스 스캇
-                  </Typography>{' '}
-                  <Typography component='span' variant='caption' color='textSecondary'>{`2021-03-10`}</Typography>
-                </>
-              }
-              secondary={
-                <Typography component='span' variant='body2' className={classes.inline} color='textPrimary'>
-                  스캇!
-                </Typography>
-              }
-            />
-          </ListItem>
-        </List>
-      </List> */
-}

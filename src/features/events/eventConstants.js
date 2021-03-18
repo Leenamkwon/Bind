@@ -20,3 +20,4 @@ export const CLEAR_SELECT_EVENT = 'CLEAR_SELECT_EVENT';
 
 // 이벤트 댓글
 export const LISTEN_TO_EVENT_CHAT = 'LISTEN_TO_EVENT_CHAT';
+export const CLEAR_EVENT_CHAT = 'CLEAR_EVENT_CHAT';
