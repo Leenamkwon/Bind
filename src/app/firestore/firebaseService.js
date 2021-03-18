@@ -1,6 +1,8 @@
 import firebase from '../config/firebase';
 import { setUserProfileData } from './firestoreService';
 
+const db = firebase.firestore();
+
 export function signInWithEmail(creds) {
   return firebase.auth().signInWithEmailAndPassword(creds.email, creds.password);
 }
@@ -75,6 +77,54 @@ export async function emailAndPasswordChange(creds) {
 
   try {
     return await Promise.all(promise);
+  } catch (error) {
+    throw error;
+  }
+}
+
+// 회원 탈퇴
+export async function userBye() {
+  const user = firebase.auth().currentUser;
+  const batch = firebase.firestore().batch();
+  const promise = [];
+
+  const userDocRef = await db.collection('events').where('hostUid', '==', user.uid).get();
+  const userParticipateEvents = await db.collection('events').where('attendeeIds', 'array-contains', user.uid).get();
+
+  try {
+    // step 01. 이벤트, 스토리지 이미지 파일 전부 삭제
+    userDocRef.docs.forEach(async (docRef) => {
+      if (!docRef.exists) return;
+
+      const userEvent = docRef.data();
+
+      if (userEvent.thumbnailURL !== null) {
+        promise.push(firebase.storage().refFromURL(userEvent.thumbnailURL).delete());
+      }
+      batch.delete(docRef);
+    });
+
+    await Promise.all(promise);
+
+    // step 02. 모든 참여한 이벤트에서 유저 자신 삭제
+    userParticipateEvents.docs.forEach((joinedUserDocRef) => {
+      if (!joinedUserDocRef.exists) return;
+
+      const event = joinedUserDocRef.data();
+
+      batch.update(joinedUserDocRef, {
+        attendeeIds: firebase.firestore.FieldValue.arrayRemove(user.uid),
+        attendees: event.attendees.filter((attendee) => attendee.id !== user.uid),
+      });
+    });
+
+    // step 03. 팔로잉 팔로워 삭제
+
+    // step 04. 호스팅 이미지 모두 삭제
+
+    // step 05. 유저 스토리지 삭제
+
+    // stop 06. 유저 Auth 삭제
   } catch (error) {
     throw error;
   }

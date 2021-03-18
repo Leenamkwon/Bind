@@ -20,7 +20,7 @@ export function formatDateDistance(date) {
   return formatDistance(date, new Date(), { locale: ko });
 }
 
-export function makeChatTree(chat) {
+export function makeChatTree(sort = 'recent', chat) {
   const hashTable = {};
   chat.forEach((item) => (hashTable[item.id] = { ...item, childNodes: [] }));
 
@@ -35,5 +35,9 @@ export function makeChatTree(chat) {
     }
   });
 
-  return dataTree;
+  if (sort === 'recent') {
+    return dataTree.reverse();
+  } else if (sort === 'oldest') {
+    return dataTree;
+  }
 }

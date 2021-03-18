@@ -65,6 +65,9 @@ const useStyles = makeStyles((theme) => ({
   icon: {
     marginRight: theme.spacing(1),
   },
+  subIcon: {
+    color: theme.palette.text.secondary,
+  },
 }));
 
 const StyledMenu = withStyles({
@@ -187,12 +190,12 @@ export default memo(function EventListItem({ event }) {
             )}
           </IconButton>
           <IconButton aria-label='share'>
-            <Share />
+            <Share className={classes.subIcon} />
           </IconButton>
 
           <Box className={classes.showDetailEventBtn}>
             <IconButton onClick={setExpanded} aria-expanded={expanded} aria-label='show more'>
-              <Group />
+              <Group className={classes.subIcon} />
             </IconButton>
             <Button color='primary' component={Link} to={`/events/${event.id}`} variant='contained'>
               자세히 보기

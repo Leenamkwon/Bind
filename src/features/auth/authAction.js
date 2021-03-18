@@ -1,8 +1,8 @@
 import { SIGN_IN_USER, SIGN_OUT_USER } from './authConstants';
 import firebase from '../../app/config/firebase';
 import { APP_LOADED } from '../../app/async/asyncReducer';
-import { listenToCurrentUserProfile, listenToLikeUserProfile } from '../profile/profileActions';
-import { dataFromSnapshot, getEventLikeCollection, getUserProfile } from '../../app/firestore/firestoreService';
+import { listenToCurrentUserProfile } from '../profile/profileActions';
+import { dataFromSnapshot, getUserProfile } from '../../app/firestore/firestoreService';
 
 export function signInUser(user) {
   return {
@@ -24,10 +24,6 @@ export function verifyAuth() {
           dispatch(listenToCurrentUserProfile(dataFromSnapshot(snapshot)));
           dispatch({ type: APP_LOADED });
         });
-        // getEventLikeCollection(user).onSnapshot((snapshot) => {
-        //   const result = snapshot.docs.map(dataFromSnapshot);
-        //   dispatch(listenToLikeUserProfile(result));
-        // });
       } else {
         dispatch(signOutUser());
         dispatch({ type: APP_LOADED });

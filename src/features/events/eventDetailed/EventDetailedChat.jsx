@@ -1,4 +1,4 @@
-import React, { useEffect, memo, useState, useRef, useCallback } from 'react';
+import React, { useEffect, memo, useState, useRef } from 'react';
 import {
   List,
   ListItem,
@@ -15,10 +15,11 @@ import { Link } from 'react-router-dom';
 
 // COMPONENT
 import EventDetailedChatForm from './EventDetailedChatForm';
-import { firebaseObjectToArray, getEventChatRef, deleteChatComment } from '../../../app/firestore/firebaseEventChat';
+import { firebaseObjectToArray, getEventChatRef } from '../../../app/firestore/firebaseEventChat';
 import { clearEventChat, listenToEventChat } from '../eventActions';
 import { formatDateDistance, makeChatTree } from '../../../app/util/util';
 import EventDetailedChildChat from './EventDetailedChildChat';
+import EventChatDelete from '../../../app/common/dialog/EventChatDelete';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default memo(function EventDetailedChat({ eventId }) {
+export default memo(function EventDetailedChat({ eventId, sort }) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { comments } = useSelector((state) => state.event);
@@ -65,99 +66,86 @@ export default memo(function EventDetailedChat({ eventId }) {
     return () => window.removeEventListener('click', outsideClose);
   }, [reply]);
 
-  const deleteChat = useCallback(
-    (eventId, childChat) => async () => {
-      try {
-        await deleteChatComment(eventId, childChat);
-      } catch (error) {}
-    },
-    []
-  );
-
   return (
     <List className={classes.root} ref={chatContainer}>
-      {makeChatTree(comments)
-        .reverse()
-        .map((chat) => (
-          <List key={chat.id} disablePadding>
-            <ListItem alignItems='center'>
-              <ListItemAvatar>
-                <IconButton size='small' component={Link} to={`/profile/${chat.uid}`}>
-                  <Avatar alt={chat.displayName} src={chat?.photoURL ?? null} />
-                </IconButton>
-              </ListItemAvatar>
-              <ListItemText
-                primary={
-                  <>
-                    <Typography component='span' variant='body1' className={classes.inline} color='textPrimary'>
-                      {chat.displayName}
-                    </Typography>{' '}
-                    <Typography component='span' variant='caption' color='textSecondary'>
-                      {formatDateDistance(chat.date) + ' 전'}
-                    </Typography>
-                  </>
-                }
-                secondary={
-                  <>
-                    {chat.isUpdate && <em style={{ marginRight: 10 }}>수정됨</em>}
-                    <Typography component='span' variant='body2' display='inline' color='textPrimary'>
-                      {chat.text.split('\n').map((chatTxt, i) => (
-                        <span key={i}>
-                          {chatTxt}
-                          <br />
-                        </span>
-                      ))}
-                    </Typography>
-                    <Typography
-                      variant='caption'
-                      display='inline'
-                      onClick={() => setReply({ open: true, target: chat.id, type: 'write', text: null })}
-                    >
-                      답글
-                    </Typography>
-                    {chat.uid === currentUser.uid && (
-                      <>
-                        <Typography
-                          variant='caption'
-                          display='inline'
-                          style={{ margin: '0 5px' }}
-                          onClick={() => setReply({ open: true, target: chat.id, type: 'edit', text: chat.text })}
-                        >
-                          수정
-                        </Typography>
-                        <Typography variant='caption' display='inline' onClick={deleteChat(eventId, chat)}>
-                          삭제
-                        </Typography>
-                      </>
-                    )}
-                  </>
-                }
-              />
+      {makeChatTree(sort, comments).map((chat) => (
+        <List key={chat.id} disablePadding>
+          <ListItem alignItems='center'>
+            <ListItemAvatar>
+              <IconButton size='small' component={Link} to={`/profile/${chat.uid}`}>
+                <Avatar alt={chat.displayName} src={chat?.photoURL ?? null} />
+              </IconButton>
+            </ListItemAvatar>
+            <ListItemText
+              primary={
+                <>
+                  <Typography component='span' variant='body1' className={classes.inline} color='textPrimary'>
+                    {chat.displayName}
+                  </Typography>{' '}
+                  <Typography component='span' variant='caption' color='textSecondary'>
+                    {formatDateDistance(chat.date) + ' 전'}
+                  </Typography>
+                </>
+              }
+              secondary={
+                <>
+                  {chat.isUpdate && <em style={{ marginRight: 10 }}>수정됨</em>}
+                  <Typography component='span' variant='body2' display='inline' color='textPrimary'>
+                    {chat.text.split('\n').map((chatTxt, i) => (
+                      <span key={i}>
+                        {chatTxt}
+                        <br />
+                      </span>
+                    ))}
+                  </Typography>
+                  <Typography
+                    variant='caption'
+                    display='inline'
+                    onClick={() => setReply({ open: true, target: chat.id, type: 'write', text: '' })}
+                  >
+                    답글
+                  </Typography>
+                  {chat.uid === currentUser.uid && (
+                    <>
+                      <Typography
+                        variant='caption'
+                        display='inline'
+                        style={{ margin: '0 5px' }}
+                        onClick={() => setReply({ open: true, target: chat.id, type: 'edit', text: chat.text })}
+                      >
+                        수정
+                      </Typography>
+                      <EventChatDelete eventId={eventId} childChat={chat} />
+                    </>
+                  )}
+                </>
+              }
+            />
+          </ListItem>
+          {reply.open && reply.target === chat.id && (
+            <ListItem>
+              <EventDetailedChatForm eventId={eventId} parentId={chat.id} reply={reply} setReply={setReply} />
             </ListItem>
-            {reply.open && reply.target === chat.id && (
-              <ListItem>
-                <EventDetailedChatForm eventId={eventId} parentId={chat.id} reply={reply} setReply={setReply} />
-              </ListItem>
-            )}
-            {/* event chat child */}
-            {chat.childNodes.length > 0 && (
-              <List disablePadding className={classes.nested}>
-                {chat.childNodes.map((childChat) => {
-                  return (
-                    <EventDetailedChildChat
-                      childChat={childChat}
-                      eventId={eventId}
-                      chatId={chat.id}
-                      currentUser={currentUser}
-                      key={childChat.id}
-                    />
-                  );
-                })}
-              </List>
-            )}
-            <Divider />
-          </List>
-        ))}
+          )}
+          {/* event chat child */}
+          {chat.childNodes.length > 0 && (
+            <List disablePadding className={classes.nested}>
+              {chat.childNodes.map((childChat) => {
+                return (
+                  <EventDetailedChildChat
+                    childChat={childChat}
+                    eventId={eventId}
+                    chatId={chat.id}
+                    currentUser={currentUser}
+                    key={childChat.id}
+                  />
+                );
+              })}
+            </List>
+          )}
+          <Divider />
+        </List>
+      ))}
     </List>
   );
 });
