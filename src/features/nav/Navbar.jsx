@@ -4,6 +4,7 @@ import { DonutSmall, Brightness4, Brightness7, Home } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 
+// COMPONENT
 import { DARK_MODE, LIGHT_MODE } from '../../app/store/themeReducer';
 import SignedInMenu from './SignedInMenu';
 import SignedOutMenu from './SignedOutMenu';
@@ -57,7 +58,7 @@ export default function NavBar() {
   return (
     <AppBar className={classes.root}>
       <Toolbar className={classes.toolBar} position='static'>
-        <Hidden smDown>
+        <Hidden mdDown>
           <Box className={classes.tabs} display='flex'>
             <Button variant='text' startIcon={<Home />} color='inherit'>
               홈{pathname === '/events' && <div className='indicator' aria-label='indicator'></div>}

@@ -92,14 +92,17 @@ export default function AccountCompleteAuth({ setAuthstep }) {
             disabled={isSubmitting || !dirty || !values}
             loading={isSubmitting}
             content='업데이트'
-            fullWidth
           />
 
-          <Box display='flex' alignItems='center' mt={1}>
-            <InfoIcon style={{ marginRight: 5 }} />
-            <Typography color='textSecondary' variant='subtitle1'>
-              변경하고 싶지 않은 양식은 빈 상태로 하시면 됩니다.
-            </Typography>
+          <Box display='flex' justifyContent='space-between' alignItems='center' mt={2}>
+            <Box display='flex' alignItems='center'>
+              <InfoIcon style={{ marginRight: 5 }} />
+              <Typography color='textSecondary' variant='subtitle1'>
+                변경하고 싶지 않은 양식은 빈 상태로 하시면 됩니다.
+              </Typography>
+            </Box>
+
+            <ButtonComponent color='primary' type='button' content='회원 탈퇴' />
           </Box>
         </Form>
       )}

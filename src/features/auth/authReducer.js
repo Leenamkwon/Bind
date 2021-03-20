@@ -19,6 +19,8 @@ export default function authReducer(state = initialState, { type, payload }) {
           photoURL: payload.photoURL || null,
           displayName: payload.displayName,
           providerId: payload.providerData[0].providerId,
+          createdAt: payload.metadata.creationTime,
+          lastSigninTime: payload.metadata.lastSignInTime,
           uid: payload.uid,
         },
       };

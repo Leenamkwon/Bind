@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Notification() {
-  const [invisible, setInvisible] = useState(false);
+  // const [invisible, setInvisible] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const classes = useStyles();
 

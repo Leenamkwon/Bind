@@ -43,7 +43,7 @@ export default function App() {
                 }}
               >
                 <Navbar />
-                <Container maxWidth='lg' style={{ height: '100%', paddingTop: '7rem' }}>
+                <Container maxWidth='lg' style={{ height: '100%', paddingTop: '6rem', marginBottom: '3rem' }}>
                   <Switch location={background || location}>
                     <Route exact path='/events' component={EventDashboard} />
                     <Route path='/events/:id' component={EventDetailedPage} />

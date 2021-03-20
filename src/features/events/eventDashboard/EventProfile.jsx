@@ -38,7 +38,7 @@ export default function EventProfile({ currentUserProfile }) {
         </CardActions>
         <CardContent className={classes.content}>
           <Typography component='h5' variant='h5' align='center'>
-            {currentUserProfile?.displayName || '익명의 유저'}
+            {currentUserProfile?.displayName || '로그인을 이용해주세요.'}
           </Typography>
           <Typography variant='subtitle1' color='textSecondary' align='center'>
             {currentUserProfile?.email || null}

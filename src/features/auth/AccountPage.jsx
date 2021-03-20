@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { Box, Button, Card, CardContent, CardHeader, Grid, Typography } from '@material-ui/core';
 import { useSelector } from 'react-redux';
+import { Box, Button, Card, CardContent, CardHeader, Grid, Typography } from '@material-ui/core';
+import { VpnKey, Update, CheckCircle } from '@material-ui/icons';
 
 // COMPONENT
 import AccountReAuth from './AccountReAuth';
@@ -13,9 +14,17 @@ export default function AccountPage() {
 
   const step = useMemo(
     () => ({
-      reauth: { Component: <AccountReAuth setAuthstep={setAuthstep} />, title: '본인 인증' },
-      authcomplete: { Component: <AccountCompleteAuth setAuthstep={setAuthstep} />, title: '계정 업데이트' },
-      authrelogin: { Component: <AccountChangeSuc />, title: '업데이트 완료' },
+      reauth: {
+        Component: <AccountReAuth setAuthstep={setAuthstep} />,
+        title: '본인 인증',
+        icon: <VpnKey color='primary' />,
+      },
+      authcomplete: {
+        Component: <AccountCompleteAuth setAuthstep={setAuthstep} />,
+        title: '개인 정보 업데이트',
+        icon: <Update color='primary' />,
+      },
+      authrelogin: { Component: <AccountChangeSuc />, title: '업데이트 완료', icon: <CheckCircle color='primary' /> },
     }),
     []
   );
@@ -38,7 +47,10 @@ export default function AccountPage() {
     <Grid container justify='center'>
       <Grid item xs={8}>
         <Card raised={true}>
-          <CardHeader title={reAuthenticatedOrder(authStep, 'title')} />
+          <CardHeader
+            avatar={reAuthenticatedOrder(authStep, 'icon')}
+            title={<Typography variant='h6'>{reAuthenticatedOrder(authStep, 'title')}</Typography>}
+          />
           <CardContent>
             {currentUser?.providerId === 'password' && reAuthenticatedOrder(authStep, 'Component')}
 
