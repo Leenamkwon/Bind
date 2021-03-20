@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux';
 // COMPONENT
 import Notification from './Notification';
 import { signOutFirebase } from '../../app/firestore/firebaseService';
+import UserSearch from './UserSearch';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -59,7 +60,8 @@ export default memo(function SignedInMenu() {
   if (!currentUserProfile) return null;
 
   return (
-    <Box>
+    <Box display='flex' alignItems='center'>
+      <UserSearch />
       <Notification />
       <IconButton onClick={handleClick}>
         <Avatar

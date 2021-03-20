@@ -57,17 +57,7 @@ export default memo(function AlignItemsList({ event }) {
 
   return (
     <Card raised={true}>
-      <CardHeader
-        title={<div>이벤트 참가자</div>}
-        subheader={
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <Search />
-            </div>
-            <InputBase className={classes.searchInput} placeholder='참가자 검색...' />
-          </div>
-        }
-      />
+      <CardHeader title={<div>이벤트 참가자</div>} />
       <Divider />
       <List className={classes.root}>
         {event.attendees.map((attendee) => (
@@ -87,3 +77,12 @@ export default memo(function AlignItemsList({ event }) {
     </Card>
   );
 });
+
+// subheader={
+//   <div className={classes.search}>
+//     <div className={classes.searchIcon}>
+//       <Search />
+//     </div>
+//     <InputBase className={classes.searchInput} placeholder='참가자 검색...' />
+//   </div>
+// }

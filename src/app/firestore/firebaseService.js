@@ -46,6 +46,7 @@ export async function socialLoginFirebase(selectProvider) {
   }
 }
 
+// 비밀번호 재설정 보내기
 export function findPassword(email) {
   return firebase.auth().sendPasswordResetEmail(email);
 }

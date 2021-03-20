@@ -27,6 +27,7 @@ import { deleteStorageImage, uploadEventThumbImgStorage } from '../../../app/fir
 import { getFileExtension } from '../../../app/util/util';
 import useFirestoreDoc from '../../../app/hooks/useFirestoreDoc';
 import { clearModifyEvent, listenToModifyEvent } from '../eventActions';
+import { useHistory } from 'react-router';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -47,8 +48,10 @@ const useStyles = makeStyles((theme) => ({
 export default function EventForm({ match }) {
   const classes = useStyles();
   const { modifyEvent } = useSelector((state) => state.event);
+  const { prevLocation } = useSelector((state) => state.auth);
   const [imageFile, setImageFile] = useState({ open: false, files: [] });
   const { enqueueSnackbar } = useSnackbar();
+  const history = useHistory();
   const dispatch = useDispatch();
 
   useFirestoreDoc({
@@ -122,6 +125,7 @@ export default function EventForm({ match }) {
                   variant: 'success',
                 });
                 unsubscribe();
+                history.push(prevLocation);
               })
               .catch((error) => {
                 enqueueSnackbar(error.message, { variant: 'error' });
@@ -129,17 +133,18 @@ export default function EventForm({ match }) {
           });
           return;
         } else {
+          setSubmitting(false);
           enqueueSnackbar(modifyEvent ? '이벤트가 업데이트 되었습니다.' : '이벤트가 업로드 되었습니다', {
             variant: 'success',
           });
-          setSubmitting(false);
+          history.push(prevLocation);
         }
       } catch (error) {
         enqueueSnackbar(error.message, { variant: 'error' });
         setSubmitting(false);
       }
     },
-    [enqueueSnackbar, imageFile, modifyEvent]
+    [enqueueSnackbar, history, imageFile, modifyEvent, prevLocation]
   );
 
   return (

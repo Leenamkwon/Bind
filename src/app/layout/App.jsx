@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Box, Container, ThemeProvider } from '@material-ui/core';
 import { Route, Switch, useLocation } from 'react-router-dom';
 import { SnackbarProvider } from 'notistack';
+
+// Mui Custom Theme
 import themeStyle from './useTheme';
 
 // COMPONENT
@@ -11,7 +13,6 @@ import Navbar from '../../features/nav/Navbar';
 import EventForm from '../../features/events/eventForm/EventForm';
 import EventDetailedPage from '../../features/events/eventDetailed/EventDetailedPage';
 import ModalManager from '../common/modal/ModalManager';
-// import LoadingComponent from './LoadingComponent';
 import AccountPage from '../../features/auth/AccountPage';
 import ProfilePage from '../../features/profile/profilepage/ProfilePage';
 import LightBox from './LightBox';
@@ -20,6 +21,10 @@ export default function App() {
   const theme = themeStyle();
   const location = useLocation();
   let background = location.state && location.state.background;
+
+  useEffect(() => {
+    document.querySelector('body').style.backgroundColor = theme.palette.background.default;
+  }, [theme.palette.background.default]);
 
   return (
     <>

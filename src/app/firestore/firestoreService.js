@@ -57,11 +57,18 @@ export function updateEventInFireStore(event) {
 
 // 이벤트 삭제 -- todo: 나중에 유저 데이터 클라우드 기능 이용하여 삭제할 것
 export async function deleteEventInFireStore(eventId) {
+  const chat = firebase.database().ref(`/chat/${eventId}`);
   try {
     let eventDocRef = await listenToEventFromFirestore(eventId).get();
+
+    // 업로드 사진 삭제
     if (eventDocRef.data().thumbnailURL) {
       await deleteStorageImage(eventId, eventDocRef.data().thumbnailName);
     }
+
+    // 채팅 삭제
+    await chat.remove();
+
     return db.collection('events').doc(eventId).delete();
   } catch (error) {
     throw error;
@@ -196,4 +203,25 @@ export async function deleteUser() {
     console.log(error);
     throw error;
   }
+}
+
+// 유저 검색
+export async function searchUserFirebase(query) {
+  const user = firebase.auth().currentUser;
+
+  if (query === '') return;
+
+  const allUser = await db.collection('users').where('displayName', 'in', [query]).limit(5).get();
+
+  const userMap = allUser.docs.map((user) => {
+    const userInfo = user.data();
+    return {
+      uid: userInfo.id,
+      displayName: userInfo.displayName,
+      photoURL: userInfo.photoURL,
+    };
+  });
+
+  const filtering = userMap.filter((item) => item.displayName.indexOf(query) !== -1 && item.uid !== user.uid);
+  return filtering;
 }

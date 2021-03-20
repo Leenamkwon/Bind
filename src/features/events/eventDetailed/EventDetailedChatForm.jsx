@@ -86,6 +86,7 @@ export default memo(function EventDetailedChatForm({ eventId, parentId, setReply
                   <Avatar className={clsx({ [classes.small]: parentId })} />
                 </IconButton>
                 <Input
+                  autoFocus={!!parentId}
                   name='comment'
                   value={values.comment}
                   className={classes.input}

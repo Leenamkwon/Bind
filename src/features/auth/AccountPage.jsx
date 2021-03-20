@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Box, Button, Card, CardContent, CardHeader, Grid, Typography } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 
@@ -9,57 +9,38 @@ import AccountChangeSuc from './AccountChangeSuc';
 
 export default function AccountPage() {
   const { currentUser } = useSelector((state) => state.auth);
-  const [reauthCheck, setReauthCheck] = useState(false);
-  const [changeCheck, setChangeCheck] = useState(false);
+  const [authStep, setAuthstep] = useState('reauth');
 
-  const nestedControlFlow = useCallback(
-    (...params) => {
-      const [Com1, Com2, Com3, Com4] = params;
-      if (reauthCheck) {
-        if (changeCheck) {
-          return Com3;
-        } else if (!changeCheck) {
-          return Com4;
-        }
-        return Com2;
-      } else {
-        return Com1;
-      }
-    },
-    [changeCheck, reauthCheck]
+  const step = useMemo(
+    () => ({
+      reauth: { Component: <AccountReAuth setAuthstep={setAuthstep} />, title: '본인 인증' },
+      authcomplete: { Component: <AccountCompleteAuth setAuthstep={setAuthstep} />, title: '계정 업데이트' },
+      authrelogin: { Component: <AccountChangeSuc />, title: '업데이트 완료' },
+    }),
+    []
   );
 
-  const reAuthenticatedOrder = useCallback((order) => {
-    switch (order) {
-      case 'authChange':
-        break;
-      case 'authComplete':
-        break;
-      default:
-        return <AccountReAuth />;
-    }
-  }, []);
+  const reAuthenticatedOrder = useCallback(
+    (order, type) => {
+      switch (order) {
+        case 'authcomplete':
+          return step[order][type];
+        case 'authrelogin':
+          return step[order][type];
+        default:
+          return step[order][type];
+      }
+    },
+    [step]
+  );
 
   return (
     <Grid container justify='center'>
       <Grid item xs={8}>
         <Card raised={true}>
-          <CardHeader
-            title={nestedControlFlow('본인 인증', '개인 정보 업데이트', '개인정보 업데이트 완료', '개인 정보 업데이트')}
-          />
+          <CardHeader title={reAuthenticatedOrder(authStep, 'title')} />
           <CardContent>
-            {!currentUser && <Typography>다시 로그인을 진행해 주세요.</Typography>}
-
-            {currentUser?.providerId === 'password' &&
-              (reauthCheck ? (
-                changeCheck ? (
-                  <AccountChangeSuc />
-                ) : (
-                  <AccountCompleteAuth setChangeCheck={setChangeCheck} />
-                )
-              ) : (
-                <AccountReAuth setReauthCheck={setReauthCheck} />
-              ))}
+            {currentUser?.providerId === 'password' && reAuthenticatedOrder(authStep, 'Component')}
 
             {currentUser?.providerId === 'google.com' && (
               <Box>

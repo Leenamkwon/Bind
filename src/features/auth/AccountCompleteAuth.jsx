@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
-import { TextField, Typography } from '@material-ui/core';
+import { Box, TextField, Typography } from '@material-ui/core';
+import InfoIcon from '@material-ui/icons/Info';
 import Alert from '@material-ui/lab/Alert';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
@@ -9,7 +10,7 @@ import { useSnackbar } from 'notistack';
 import ButtonComponent from '../../app/layout/ButtonComponent';
 import { emailAndPasswordChange, signOutFirebase } from '../../app/firestore/firebaseService';
 
-export default function AccountCompleteAuth({ setChangeCheck }) {
+export default function AccountCompleteAuth({ setAuthstep }) {
   const { enqueueSnackbar } = useSnackbar();
 
   const initialValues = useMemo(() => ({ email: '', password: '', confirmPassword: '' }), []);
@@ -32,8 +33,8 @@ export default function AccountCompleteAuth({ setChangeCheck }) {
           await emailAndPasswordChange(values);
           enqueueSnackbar('계정이 업데이트 되었습니다', { variant: 'success' });
           setSubmitting(false);
-          setChangeCheck(true);
           resetForm();
+          setAuthstep('authrelogin');
           signOutFirebase();
         } catch (error) {
           setErrors({ auth: error.message });
@@ -93,9 +94,13 @@ export default function AccountCompleteAuth({ setChangeCheck }) {
             content='업데이트'
             fullWidth
           />
-          <Typography color='textSecondary' variant='subtitle1'>
-            변경하고 싶지 않은 양식은 빈 상태로 하시면 됩니다.
-          </Typography>
+
+          <Box display='flex' alignItems='center' mt={1}>
+            <InfoIcon style={{ marginRight: 5 }} />
+            <Typography color='textSecondary' variant='subtitle1'>
+              변경하고 싶지 않은 양식은 빈 상태로 하시면 됩니다.
+            </Typography>
+          </Box>
         </Form>
       )}
     </Formik>

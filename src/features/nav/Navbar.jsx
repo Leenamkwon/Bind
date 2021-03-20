@@ -58,11 +58,10 @@ export default function NavBar() {
     <AppBar className={classes.root}>
       <Toolbar className={classes.toolBar} position='static'>
         <Hidden smDown>
-          <Box className={classes.tabs}>
+          <Box className={classes.tabs} display='flex'>
             <Button variant='text' startIcon={<Home />} color='inherit'>
-              홈
+              홈{pathname === '/events' && <div className='indicator' aria-label='indicator'></div>}
             </Button>
-            {pathname === '/events' && <div className='indicator' aria-label='indicator'></div>}
           </Box>
         </Hidden>
 

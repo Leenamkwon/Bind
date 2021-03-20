@@ -1,10 +1,12 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import { Button, DialogActions, DialogContent, DialogContentText, Typography } from '@material-ui/core';
 import PromptWrapper from './PromptWrapper';
 import { deleteChatComment } from '../../firestore/firebaseEventChat';
+import { useSnackbar } from 'notistack';
 
 export default memo(function EventChatDelete({ eventId, childChat }) {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -16,12 +18,12 @@ export default memo(function EventChatDelete({ eventId, childChat }) {
 
   const deleteChat = useCallback(async () => {
     try {
-      await deleteChatComment(eventId, childChat);
       setOpen(false);
+      await deleteChatComment(eventId, childChat);
     } catch (error) {
-      console.log(error);
+      enqueueSnackbar(error.message, { variant: 'error' });
     }
-  }, [childChat, eventId]);
+  }, [childChat, enqueueSnackbar, eventId]);
 
   return (
     <>

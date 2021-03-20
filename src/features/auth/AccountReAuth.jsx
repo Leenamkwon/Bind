@@ -11,7 +11,7 @@ import { Redirect } from 'react-router';
 import ButtonComponent from '../../app/layout/ButtonComponent';
 import { reauthFirebase } from '../../app/firestore/firebaseService';
 
-export default function AccountReAuth({ setReauthCheck }) {
+export default function AccountReAuth({ setAuthstep }) {
   const { currentUser, authenticated } = useSelector((state) => state.auth);
   const { enqueueSnackbar } = useSnackbar();
 
@@ -36,9 +36,8 @@ export default function AccountReAuth({ setReauthCheck }) {
           const user = await reauthFirebase(values);
           if (user && user.operationType === 'reauthenticate') {
             enqueueSnackbar('본인 인증을 완료하였습니다.', { variant: 'success' });
-            setReauthCheck(true);
+            setAuthstep('authcomplete');
           }
-
           setSubmitting(false);
         } catch (error) {
           setErrors({ auth: '이메일 또는 비밀번호가 맞지 않습니다.' });
@@ -49,6 +48,7 @@ export default function AccountReAuth({ setReauthCheck }) {
       {({ handleChange, handleBlur, isSubmitting, errors, touched }) => (
         <Form>
           <TextField
+            autoComplete='off'
             type='email'
             name='email'
             variant='outlined'
