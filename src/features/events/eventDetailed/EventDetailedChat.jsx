@@ -34,6 +34,9 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     display: 'block',
   },
+  action: {
+    cursor: 'pointer',
+  },
 }));
 
 export default memo(function EventDetailedChat({ eventId, sort }) {
@@ -101,6 +104,7 @@ export default memo(function EventDetailedChat({ eventId, sort }) {
                   <Typography
                     variant='caption'
                     display='inline'
+                    className={classes.action}
                     onClick={() => setReply({ open: true, target: chat.id, type: 'write', text: '' })}
                   >
                     답글
@@ -111,6 +115,7 @@ export default memo(function EventDetailedChat({ eventId, sort }) {
                         variant='caption'
                         display='inline'
                         style={{ margin: '0 5px' }}
+                        className={classes.action}
                         onClick={() => setReply({ open: true, target: chat.id, type: 'edit', text: chat.text })}
                       >
                         수정

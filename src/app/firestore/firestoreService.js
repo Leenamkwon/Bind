@@ -28,7 +28,7 @@ export function addEventToFirestore(event) {
     ...event,
     likesNumber: 0,
     thumbnailURL: null,
-    hostedBy: user.displayName,
+    hostedBy: user.displayName || user.email.split('@')[0],
     hostUid: user.uid,
     hostPhotoURL: user.photoURL || null,
     attendees: firebase.firestore.FieldValue.arrayUnion({
@@ -163,7 +163,7 @@ export function setUserProfileData(user) {
     .doc(user.uid)
     .set({
       id: user.uid,
-      displayName: user.displayName,
+      displayName: user.displayName || user.email.split('@')[0],
       email: user.email,
       photoURL: user.photoURL || null,
       providerId: user.providerData[0].providerId,

@@ -27,7 +27,7 @@ export default memo(function EventChatDelete({ eventId, childChat }) {
 
   return (
     <>
-      <Typography variant='caption' display='inline' onClick={handleClickOpen}>
+      <Typography variant='caption' display='inline' onClick={handleClickOpen} style={{ cursor: 'pointer' }}>
         삭제
       </Typography>
       <PromptWrapper open={open} handleClose={handleClose}>

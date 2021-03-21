@@ -11,9 +11,8 @@ import {
   CardHeader,
   IconButton,
   fade,
-  InputBase,
+  Typography,
 } from '@material-ui/core';
-import { Search } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
@@ -57,7 +56,7 @@ export default memo(function AlignItemsList({ event }) {
 
   return (
     <Card raised={true}>
-      <CardHeader title={<div>이벤트 참가자</div>} />
+      <CardHeader title={<Typography variant='h4'>이벤트 참가자</Typography>} />
       <Divider />
       <List className={classes.root}>
         {event.attendees.map((attendee) => (
@@ -68,7 +67,7 @@ export default memo(function AlignItemsList({ event }) {
                   <Avatar alt={attendee.displayName} src={attendee.photoURL || null} />
                 </IconButton>
               </ListItemAvatar>
-              <ListItemText primary={attendee.displayName} />
+              <ListItemText primary={attendee.displayName || attendee.email} />
             </ListItem>
             <Divider variant='inset' component='li' />
           </div>
@@ -77,12 +76,3 @@ export default memo(function AlignItemsList({ event }) {
     </Card>
   );
 });
-
-// subheader={
-//   <div className={classes.search}>
-//     <div className={classes.searchIcon}>
-//       <Search />
-//     </div>
-//     <InputBase className={classes.searchInput} placeholder='참가자 검색...' />
-//   </div>
-// }

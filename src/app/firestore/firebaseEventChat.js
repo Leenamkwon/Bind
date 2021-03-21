@@ -11,7 +11,8 @@ export function addEventChatComment(eventId, values) {
   const user = firebase.auth().currentUser;
   const newComment = {
     uid: user.uid,
-    displayName: user.displayName,
+    displayName: user.displayName || user.email.split('@')[0],
+    photoURL: user.photoURL,
     date: Date.now(),
     text: values.comment,
     parentId: values.parentId,

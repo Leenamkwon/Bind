@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
-import TextField from '@material-ui/core/TextField';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import { searchUserFirebase } from '../../app/firestore/firestoreService';
-import { Avatar } from '@material-ui/core';
-import useDebounce from '../../app/hooks/useDebounce';
-import { useHistory } from 'react-router';
+import { TextField, Grid, Typography, makeStyles, Avatar } from '@material-ui/core';
 import { SearchRounded } from '@material-ui/icons';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import { useHistory } from 'react-router';
+
+// COMPONENT
+import useDebounce from '../../app/hooks/useDebounce';
+import { searchUserFirebase } from '../../app/firestore/firestoreService';
 
 const useStyles = makeStyles((theme) => ({
   icon: {

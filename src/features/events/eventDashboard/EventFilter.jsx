@@ -2,10 +2,12 @@ import React, { memo } from 'react';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { Card, CardActionArea, CardHeader, CardContent, Divider, Grid, makeStyles, Typography } from '@material-ui/core';
 import { Event, FilterList } from '@material-ui/icons';
-import DateFnsUtils from '@date-io/date-fns';
 import { useDispatch, useSelector } from 'react-redux';
-import { setFilter, setStartDate } from '../eventActions';
+import DateFnsUtils from '@date-io/date-fns';
+import { ko } from 'date-fns/locale';
 import clsx from 'clsx';
+
+import { setFilter, setStartDate } from '../eventActions';
 
 const useStyles = makeStyles((theme) => ({
   calendar: {
@@ -33,7 +35,7 @@ const EventFilter = ({ loadingInitial }) => {
   const { authenticated } = useSelector((state) => state.auth);
 
   return (
-    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+    <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ko}>
       <Grid container spacing={3}>
         {authenticated && (
           <Grid item xs>

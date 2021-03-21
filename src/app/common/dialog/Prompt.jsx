@@ -1,10 +1,11 @@
 import React, { memo } from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
-import { deleteEventInFireStore } from '../../firestore/firestoreService';
-import { deleteSelectEvent } from '../../../features/events/eventActions';
 import { useHistory } from 'react-router';
 import { useSnackbar } from 'notistack';
+
+import { deleteEventInFireStore } from '../../firestore/firestoreService';
+import { deleteSelectEvent } from '../../../features/events/eventActions';
 
 export default memo(function Prompt({ open, setOpen, eventId }) {
   const dispatch = useDispatch();

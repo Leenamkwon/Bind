@@ -5,6 +5,7 @@ import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import { addEventChatComment, updateChatComment } from '../../../app/firestore/firebaseEventChat';
 import ButtonComponent from '../../../app/layout/ButtonComponent';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
 export default memo(function EventDetailedChatForm({ eventId, parentId, setReply, reply }) {
   const classes = useStyles();
   const [focus, setFocus] = useState(() => (parentId ? true : false));
+  const { currentUserProfile } = useSelector((state) => state.profile);
 
   function test() {
     switch (reply?.type) {
@@ -83,7 +85,7 @@ export default memo(function EventDetailedChatForm({ eventId, parentId, setReply
             <Form>
               <Box display='flex' alignItems='center'>
                 <IconButton size='small'>
-                  <Avatar className={clsx({ [classes.small]: parentId })} />
+                  <Avatar src={currentUserProfile?.photoURL || null} className={clsx({ [classes.small]: parentId })} />
                 </IconButton>
                 <Input
                   autoFocus={!!parentId}

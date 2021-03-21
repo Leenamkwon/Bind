@@ -37,8 +37,8 @@ export default function EventProfile({ currentUserProfile }) {
           <Avatar className={classes.avatar} src={currentUserProfile?.photoURL || null} />
         </CardActions>
         <CardContent className={classes.content}>
-          <Typography component='h5' variant='h5' align='center'>
-            {currentUserProfile?.displayName || '로그인을 이용해주세요.'}
+          <Typography variant='h6' align='center'>
+            {currentUserProfile?.displayName || currentUserProfile?.email || ''}
           </Typography>
           <Typography variant='subtitle1' color='textSecondary' align='center'>
             {currentUserProfile?.email || null}

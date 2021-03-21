@@ -37,7 +37,6 @@ export default function useTheme() {
         overrides: {
           MuiPickersToolbar: {
             toolbar: {
-              width: '98px',
               backgroundColor: '#d02a6c',
               display: matches ? 'none' : 'block',
             },

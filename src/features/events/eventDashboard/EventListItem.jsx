@@ -207,7 +207,12 @@ export default memo(function EventListItem({ event }) {
           <CardActions disableSpacing>
             {event.attendees.map((joinedUser) => (
               <Box className={classes.eventGroupBox} key={joinedUser.id}>
-                <Tooltip title={joinedUser.displayName} aria-label={joinedUser.displayName} placement='right' arrow>
+                <Tooltip
+                  title={joinedUser?.displayName ?? '알 수 없음'}
+                  aria-label={joinedUser.displayName}
+                  placement='right'
+                  arrow
+                >
                   <Avatar src={joinedUser.photoURL} component={Link} to={`/profile/${joinedUser.id}`} />
                 </Tooltip>
               </Box>
