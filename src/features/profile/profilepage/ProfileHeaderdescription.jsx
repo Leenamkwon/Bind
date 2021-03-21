@@ -11,7 +11,7 @@ const useStyle = makeStyles((theme) => ({
   },
 }));
 
-export default function ProfileHeaderdescription({ edit, handleEdit }) {
+export default function ProfileHeaderdescription({ edit, handleEdit, userIsMe }) {
   const classes = useStyle();
 
   return (
@@ -79,10 +79,12 @@ export default function ProfileHeaderdescription({ edit, handleEdit }) {
                 팔로워
               </Typography>
             </Box>
-            <Box>
-              <ButtonComponent css={{ width: 200 }} variant='contained' color='primary' content='팔로잉' />
-              <ButtonComponent css={{ width: 200 }} variant='outlined' content='언팔로우' />
-            </Box>
+            {!userIsMe && (
+              <Box>
+                <ButtonComponent css={{ width: 200 }} variant='contained' color='primary' content='팔로잉' />
+                <ButtonComponent css={{ width: 200 }} variant='outlined' content='언팔로우' />
+              </Box>
+            )}
           </Box>
         </>
       )}

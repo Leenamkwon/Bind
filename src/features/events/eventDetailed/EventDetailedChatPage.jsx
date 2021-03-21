@@ -82,7 +82,7 @@ export default memo(function EventDetailedChatPage({ eventId, currentUser }) {
         <Divider variant='fullWidth' component='div' />
         {currentUser ? (
           <>
-            <EventDetailedChatForm parentId={0} eventId={eventId} />
+            <EventDetailedChatForm parentId={0} eventId={eventId} currentUser={currentUser} />
             <Divider variant='fullWidth' component='div' />
             <EventDetailedChat eventId={eventId} sort={sort} />
           </>
