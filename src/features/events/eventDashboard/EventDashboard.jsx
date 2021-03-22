@@ -24,9 +24,13 @@ export default function EventDashboard() {
     if (retainState) return;
     setLoadingInitial(true);
     dispatch(clearEvents());
-    dispatch(fetchEvents(filter, startDate, limit)).then(() => {
-      setLoadingInitial(false);
-    });
+    dispatch(fetchEvents(filter, startDate, limit))
+      .then(() => {
+        setLoadingInitial(false);
+      })
+      .catch((error) => {
+        console.log('event dashboard error', error);
+      });
 
     return () => {
       dispatch({ type: RETAIN_STATE });

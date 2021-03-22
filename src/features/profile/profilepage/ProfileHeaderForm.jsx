@@ -1,17 +1,45 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Box, TextField, Fab } from '@material-ui/core';
-import { FieldArray, Form, Formik } from 'formik';
 import { Add, Delete } from '@material-ui/icons';
+import { FieldArray, Form, Formik } from 'formik';
+import * as Yup from 'yup';
 import ButtonComponent from '../../../app/layout/ButtonComponent';
+import { userUpdate } from '../../../app/firestore/firestoreService';
+import { useSnackbar } from 'notistack';
 
-export default function ProfileHeaderForm({ handleEdit }) {
-  const initialValues = { description: '', home: '', links: [{ text: '' }] };
+export default function ProfileHeaderForm({ handleEdit, profile }) {
+  const initialValues = useMemo(() => {
+    return {
+      description: profile?.description || '',
+      home: profile?.home ?? '',
+      links: profile?.links ?? [{ link: '', key: 0 }],
+    };
+  }, [profile?.description, profile?.home, profile?.links]);
+  const { enqueueSnackbar } = useSnackbar();
 
   return (
     <Box mt={3}>
-      <Formik initialValues={initialValues}>
-        {({ values, handleChange }) => {
-          console.log(values);
+      <Formik
+        initialValues={initialValues}
+        validationSchema={Yup.object({
+          description: Yup.string(),
+          home: Yup.string(),
+          links: Yup.array().of(Yup.object({ link: Yup.string().url('올바른 URL을 입력해주세요') })),
+        })}
+        onSubmit={async (values, { setSubmitting, errors }) => {
+          console.log(values, errors);
+          try {
+            await userUpdate(values);
+            enqueueSnackbar('업데이트 되었습니다.', { variant: 'success' });
+          } catch (error) {
+            enqueueSnackbar(error.message, { variant: 'error' });
+          } finally {
+            setSubmitting(false);
+          }
+        }}
+      >
+        {({ values, handleChange, isSubmitting, dirty, errors }) => {
+          console.log();
           return (
             <Form style={{ width: '100%' }}>
               <TextField
@@ -28,6 +56,7 @@ export default function ProfileHeaderForm({ handleEdit }) {
               <Box mt={2} display='flex' alignItems='center'>
                 <TextField
                   name='home'
+                  value={values.home}
                   onChange={handleChange}
                   variant='outlined'
                   autoComplete='off'
@@ -37,17 +66,20 @@ export default function ProfileHeaderForm({ handleEdit }) {
                 />
                 <FieldArray name='links'>
                   {({ push, remove }) => (
-                    <>
-                      {values.links.map((_, index) => (
+                    <Box display='flex' alignItems='center' p={1} style={{ height: 70 }}>
+                      {values.links.map((link, index) => (
                         <div key={index}>
                           <TextField
-                            name={`links.${index}.text`}
+                            name={`links.${index}.link`}
+                            value={link.link}
                             onChange={handleChange}
                             variant='outlined'
                             autoComplete='off'
                             label={`링크 ${index + 1}`}
                             size='small'
                             style={{ marginRight: 5 }}
+                            error={Object.values(errors).flat()[index]?.link}
+                            helperText={Object.values(errors).flat()[index]?.link}
                           />
                           {values.links.length - 1 === index && index !== 0 && (
                             <Fab
@@ -66,20 +98,26 @@ export default function ProfileHeaderForm({ handleEdit }) {
                               color='primary'
                               aria-label='add'
                               style={{ marginLeft: 10 }}
-                              onClick={() => push({ text: '' })}
+                              onClick={() => push({ link: '', key: index + 1 })}
                             >
                               <Add />
                             </Fab>
                           )}
                         </div>
                       ))}
-                    </>
+                    </Box>
                   )}
                 </FieldArray>
               </Box>
               <Box display='flex' justifyContent='flex-end'>
                 <ButtonComponent variant='outlined' content='취소' onClick={() => handleEdit(false)} />
-                <ButtonComponent variant='contained' content='수정' />
+                <ButtonComponent
+                  type='submit'
+                  disabled={isSubmitting || !dirty}
+                  loading={isSubmitting}
+                  variant='contained'
+                  content='수정'
+                />
               </Box>
             </Form>
           );

@@ -1,5 +1,9 @@
-import React from 'react';
-import { makeStyles, Paper, Tabs, Tab, Typography, Box } from '@material-ui/core';
+import React, { useState, memo } from 'react';
+import { makeStyles, Paper, Tabs, Tab } from '@material-ui/core';
+import EventTab from './EventTab';
+import GalleryTab from './GalleryTab';
+import FollowingTab from './FollowingTab';
+import FollowerTab from './FollowerTab';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -11,9 +15,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ProfilePageTab() {
+export default memo(function ProfilePageTab({ profile, userIsMe }) {
   const classes = useStyles();
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = useState(0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -35,38 +39,10 @@ export default function ProfilePageTab() {
         <Tab label='팔로워' />
         <Tab label='팔로잉' />
       </Tabs>
-      <TabPanel value={value} index={0}>
-        Item One
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        Item Two
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        Item Three
-      </TabPanel>
-      <TabPanel value={value} index={3}>
-        Item four
-      </TabPanel>
+      <EventTab value={value} index={0} profile={profile} />
+      <GalleryTab value={value} index={1} profile={profile} />
+      <FollowerTab value={value} index={2} profile={profile} />
+      <FollowingTab value={value} index={3} profile={profile} />
     </Paper>
   );
-}
-
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role='tabpanel'
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box p={3}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
-}
+});

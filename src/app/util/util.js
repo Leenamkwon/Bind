@@ -41,3 +41,8 @@ export function makeChatTree(sort = 'recent', chat) {
     return dataTree;
   }
 }
+
+export function extractURL(url) {
+  const lastI = url.lastIndexOf('com');
+  return url.slice(0, lastI + 3);
+}

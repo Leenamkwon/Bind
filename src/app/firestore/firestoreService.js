@@ -139,6 +139,7 @@ export function eventParticipateFirestore(eventId) {
     });
 }
 
+// 이벤트 나감 //
 export async function eventOutFirestore(eventId) {
   const user = firebase.auth().currentUser;
   try {
@@ -172,12 +173,24 @@ export function setUserProfileData(user) {
     });
 }
 
-// 유저 참조 //
+// 유저 참조 ------- //
 export function getUserProfile(userId) {
   return db.collection('users').doc(userId);
 }
 
-// 유저 삭제 //
+// 유저 업데이트 ---------- //
+export function userUpdate(values) {
+  const { home, description, links } = values;
+  const user = firebase.auth().currentUser;
+
+  return db.collection('users').doc(user.uid).update({
+    description: description,
+    home: home,
+    links: links,
+  });
+}
+
+// 유저 삭제 ---------- //
 export async function deleteUser() {
   const user = firebase.auth().currentUser;
   const batch = db.batch();
@@ -224,4 +237,20 @@ export async function searchUserFirebase(query) {
 
   const filtering = userMap.filter((item) => item.displayName.indexOf(query) !== -1 && item.uid !== user.uid);
   return filtering;
+}
+
+// 프로필 피드
+export function getUserEventsQuery(activeTab, user, lastDoc = null) {
+  let eventsRef = db.collection('events');
+
+  switch (activeTab) {
+    case 0: // hosting Events
+      return eventsRef.where('hostUid', '==', user.id).orderBy('date').startAfter(lastDoc).limit(2);
+    case 1: // attendee events
+      return eventsRef.where('attendeeIds', 'array-contains', user.id).orderBy('date').startAfter(lastDoc).limit(2);
+    case 2: // likes Events
+      return eventsRef.where('likesPeople', 'array-contains', user.id).orderBy('date').startAfter(lastDoc).limit(2);
+    default:
+      return;
+  }
 }

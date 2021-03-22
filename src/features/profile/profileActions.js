@@ -1,3 +1,5 @@
+import { asyncActionError, asyncActionFinish, asyncActionStart } from '../../app/async/asyncReducer';
+import { dataFromSnapshot, getUserEventsQuery } from '../../app/firestore/firestoreService';
 import {
   LISTEN_TO_CURRENT_USER_PROFILE,
   LISTEN_TO_SELECT_USER_PROFILE,
@@ -39,10 +41,23 @@ export function listenToUserPhotos(photos) {
   };
 }
 
-export function listenToUserEvents(events) {
-  return {
-    type: LISTEN_TO_USER_EVENT,
-    payload: events,
+export function listenToUserEvents(activeTab, user, lastDoc) {
+  return async (dispatch) => {
+    try {
+      dispatch(asyncActionStart());
+      const snapshot = await getUserEventsQuery(activeTab, user, lastDoc).get();
+
+      const lastVisible = snapshot.docs[snapshot.docs.length - 1];
+      const moreEvents = snapshot.docs.length >= 1;
+      const events = snapshot.docs.map((doc) => dataFromSnapshot(doc));
+      console.log(events);
+      dispatch({ type: LISTEN_TO_USER_EVENT, payload: { events, moreEvents, lastVisible } });
+    } catch (error) {
+      console.log(error);
+      dispatch(asyncActionError(error));
+    } finally {
+      dispatch(asyncActionFinish());
+    }
   };
 }
 

@@ -1,58 +1,67 @@
 import React from 'react';
-import { Box, makeStyles, Typography } from '@material-ui/core';
+import { Box, Link, makeStyles, Typography } from '@material-ui/core';
 import { PersonPinCircle, InsertLink, PermContactCalendar } from '@material-ui/icons';
 import ButtonComponent from '../../../app/layout/ButtonComponent';
 import ProfileHeaderForm from './ProfileHeaderForm';
+import formatDate, { extractURL } from '../../../app/util/util';
 
 const useStyle = makeStyles((theme) => ({
   icon: {
     marginRight: theme.spacing(1),
-    color: theme.palette.text.secondary,
+    color: theme.palette.text.primary,
   },
 }));
 
-export default function ProfileHeaderdescription({ edit, handleEdit, userIsMe }) {
+export default function ProfileHeaderdescription({ edit, handleEdit, userIsMe, profile }) {
   const classes = useStyle();
 
   return (
     <>
       <Box mt={7}>
         <Typography variant='h4' component='h6'>
-          이남권
+          {profile.displayName || profile.email.split('@')[0]}
         </Typography>
         <Typography variant='subtitle1' color='textSecondary'>
-          namkwon12@gamil.com
+          {profile.email}
         </Typography>
       </Box>
       {/* description Form */}
-      {edit ? (
-        <ProfileHeaderForm handleEdit={handleEdit} />
+      {edit && userIsMe ? (
+        <ProfileHeaderForm handleEdit={handleEdit} profile={profile} />
       ) : (
         <>
           <Box mt={2}>
             <Typography variant='body1' paragraph>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet, incidunt?
+              {profile?.description ?? ''}
             </Typography>
           </Box>
           <Box mt={3} display='flex'>
+            {profile?.home && (
+              <Box display='flex' alignItems='center' mr={1}>
+                <PersonPinCircle className={classes.icon} />
+                <Typography variant='subtitle2' display='inline' color='textSecondary'>
+                  {profile?.home ?? ''}
+                </Typography>
+              </Box>
+            )}
             <Box display='flex' alignItems='center' mr={1}>
-              <PersonPinCircle className={classes.icon} />{' '}
+              <PermContactCalendar className={classes.icon} />
               <Typography variant='subtitle2' display='inline' color='textSecondary'>
-                New York
+                {formatDate(profile.createdAt, 'yyyy년 MM월 dd일')}
               </Typography>
             </Box>
-            <Box display='flex' alignItems='center' mr={1}>
-              <PermContactCalendar className={classes.icon} />{' '}
-              <Typography variant='subtitle2' display='inline' color='textSecondary'>
-                2019-11-10
-              </Typography>
-            </Box>
-            <Box display='flex' alignItems='center' mr={1}>
-              <InsertLink className={classes.icon} />{' '}
-              <Typography variant='subtitle2' display='inline' color='textSecondary'>
-                www.naver.com
-              </Typography>
-            </Box>
+            {profile?.links && (
+              <Box display='flex' alignItems='center' mr={1}>
+                <InsertLink className={classes.icon} />
+                <Typography variant='subtitle2' display='inline' color='textSecondary'>
+                  {profile?.links?.map((link) => (
+                    <Link rel='noopener noreferrer' target='_blank' href={link['link']} key={link.key}>
+                      {extractURL(link['link'])}
+                    </Link>
+                  ))}
+                </Typography>
+              </Box>
+            )}
           </Box>
           <Box mt={3} display='flex' alignItems='center' justifyContent='space-between'>
             <Box>

@@ -47,12 +47,7 @@ export default function HomePage() {
         <Grid item>
           <Card className={classes.cardRoot}>
             <CardActionArea component={Link} to='/events'>
-              <CardMedia
-                className={classes.cardMedia}
-                component='img'
-                image='/assets/categoryImages/play.jpg'
-                title='Contemplative Reptile'
-              />
+              <CardMedia className={classes.cardMedia} component='img' image='/assets/categoryImages/play.jpg' />
               <CardContent>
                 <Box className={classes.cardLogoBox}>
                   <DonutSmallOutlinedIcon color='primary' fontSize='large' />

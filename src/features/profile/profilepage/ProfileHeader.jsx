@@ -27,7 +27,7 @@ const useStyle = makeStyles((theme) => ({
   },
 }));
 
-export default function ProfileHeader({ userIsMe }) {
+export default function ProfileHeader({ userIsMe, profile }) {
   const classes = useStyle();
   const [edit, handleEdit] = useTargetClick(false);
 
@@ -37,7 +37,7 @@ export default function ProfileHeader({ userIsMe }) {
       <CardContent style={{ position: 'relative' }}>
         {/* Avatar */}
         <Box display='flex' justifyContent='space-between' alignItems='center' className={classes.content} p={1}>
-          <Avatar className={classes.avatar} />
+          <Avatar className={classes.avatar} src={profile.photoURL || null} />
           <div className={classes.button}>
             {!edit && userIsMe && (
               <ButtonComponent variant='outlined' color='primary' content='수정하기' onClick={() => handleEdit(true)} />
@@ -45,7 +45,7 @@ export default function ProfileHeader({ userIsMe }) {
           </div>
         </Box>
         {/* description */}
-        <ProfileHeaderdescription edit={edit} handleEdit={handleEdit} userIsMe={userIsMe} />
+        <ProfileHeaderdescription edit={edit} handleEdit={handleEdit} userIsMe={userIsMe} profile={profile} />
       </CardContent>
     </>
   );

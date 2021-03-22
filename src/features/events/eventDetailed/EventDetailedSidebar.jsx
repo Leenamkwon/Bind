@@ -56,7 +56,7 @@ export default memo(function AlignItemsList({ event }) {
 
   return (
     <Card raised={true}>
-      <CardHeader title={<Typography variant='h4'>이벤트 참가자</Typography>} />
+      <CardHeader title={<Typography variant='h6'>이벤트 참가자</Typography>} />
       <Divider />
       <List className={classes.root}>
         {event.attendees.map((attendee) => (

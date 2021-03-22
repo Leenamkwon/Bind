@@ -17,7 +17,7 @@ export default function ProfilePage({ match }) {
   const { loading, error } = useSelector((state) => state.async);
 
   // 프로필이 나인지 다른 사람 인지
-  const profile = useMemo(() => (currentUserProfile.id === match.params.id ? currentUserProfile : selectUserProfile), [
+  const profile = useMemo(() => (currentUserProfile?.id === match.params.id ? currentUserProfile : selectUserProfile), [
     currentUserProfile,
     match.params.id,
     selectUserProfile,
@@ -36,8 +36,8 @@ export default function ProfilePage({ match }) {
   return (
     <Grid container spacing={2}>
       <Card style={{ width: '100%' }} raised={true}>
-        <ProfileHeader userIsMe={profile.id === currentUser.uid} />
-        <ProfilePageTab />
+        <ProfileHeader userIsMe={profile.id === currentUser.uid} profile={profile} />
+        <ProfilePageTab userIsMe={profile.id === currentUser.uid} profile={profile} />
       </Card>
     </Grid>
   );
