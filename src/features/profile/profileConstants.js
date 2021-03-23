@@ -10,7 +10,6 @@ export const SET_UNFOLLOW_USER = 'SET_UNFOLLOW_USER';
 export const CLEAR_FOLLOWINGS = 'CLEAR_FOLLOWINGS';
 export const LISTEN_TO_FEED = 'LISTEN_TO_FEED';
 
-// RETAIN
-
+// RETAIN & Clean up
 export const RETAIN_EVENT = 'RETAIN_EVENT';
 export const CLEAN_UP_EVENT = 'CLEAN_UP_EVENT';

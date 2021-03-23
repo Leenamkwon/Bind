@@ -9,12 +9,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function LoadingComponent() {
-  const classes = useStyles();
+export default function LoadingComponent({ theme }) {
+  const classes = useStyles(theme);
 
   return (
-    <Backdrop className={classes.backdrop} open={true}>
-      <CircularProgress color='inherit' />
+    <Backdrop
+      className={classes.backdrop}
+      style={{ color: theme.palette.primary.main, backgroundColor: theme.palette.background.default }}
+      open={true}
+    >
+      <CircularProgress style={{ color: theme.palette.primary.main }} />
     </Backdrop>
   );
 }

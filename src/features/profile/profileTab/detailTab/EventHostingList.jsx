@@ -1,21 +1,25 @@
 import React, { useEffect, memo, useCallback, useRef } from 'react';
 import { Box, Grid } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
+import InfiniteScroll from 'react-infinite-scroller';
 
 // COMPONENT
 import { listenToUserEvents } from '../../profileActions';
 import { CLEAN_UP_EVENT } from '../../profileConstants';
 import EventTabItem from '../detailTab/EventTabListItem';
+import EventTabListItemSke from './EventTabListItemSke';
 
 export default memo(function EventHostingList({ tabIdx, index, profile }) {
-  const dispatch = useDispatch();
   const { retainTabIndex, profileEvents, eventLastDocRef, eventMoreEvents } = useSelector((state) => state.profile);
+  const { loading } = useSelector((state) => state.async);
+  const dispatch = useDispatch();
   const once = useRef(false);
 
   useEffect(() => {
     if (once.current) return;
-    once.current = true;
+
     dispatch(listenToUserEvents(tabIdx, profile, null));
+    once.current = true;
   }, [dispatch, once, profile, retainTabIndex, tabIdx]);
 
   useEffect(() => {
@@ -38,17 +42,27 @@ export default memo(function EventHostingList({ tabIdx, index, profile }) {
       hidden={tabIdx !== index}
       id={`vertical-tabpanel-${index}`}
       aria-labelledby={`vertical-tab-${index}`}
+      style={{ minHeight: 370, overflowY: 'auto' }}
     >
-      {tabIdx === index && (
+      <InfiniteScroll
+        pageStart={0}
+        loadMore={nextFetch}
+        hasMore={!loading && eventMoreEvents}
+        useWindow={false}
+        initialLoad={true}
+      >
         <Grid container spacing={4}>
-          {profileEvents.map((event) => (
-            <Grid item xs={12} sm={6} md={4} key={event.id}>
-              <EventTabItem event={event} />
-            </Grid>
-          ))}
-          <button onClick={nextFetch}>more</button>
+          {loading && !once.current ? (
+            <EventTabListItemSke />
+          ) : (
+            profileEvents.map((event) => (
+              <Grid item xs={12} sm={6} md={4} key={event.id}>
+                <EventTabItem event={event} />
+              </Grid>
+            ))
+          )}
         </Grid>
-      )}
+      </InfiniteScroll>
     </Box>
   );
 });

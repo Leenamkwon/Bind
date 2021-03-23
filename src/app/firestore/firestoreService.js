@@ -239,17 +239,17 @@ export async function searchUserFirebase(query) {
   return filtering;
 }
 
-// 프로필 피드
+// 프로필 이벤트 패치
 export function getUserEventsQuery(activeTab, user, lastDoc = null) {
   let eventsRef = db.collection('events');
 
   switch (activeTab) {
     case 0: // hosting Events
-      return eventsRef.where('hostUid', '==', user.id).orderBy('date').startAfter(lastDoc).limit(2);
+      return eventsRef.where('hostUid', '==', user.id).orderBy('date').startAfter(lastDoc).limit(4);
     case 1: // attendee events
-      return eventsRef.where('attendeeIds', 'array-contains', user.id).orderBy('date').startAfter(lastDoc).limit(2);
+      return eventsRef.where('attendeeIds', 'array-contains', user.id).orderBy('date').startAfter(lastDoc).limit(4);
     case 2: // likes Events
-      return eventsRef.where('likesPeople', 'array-contains', user.id).orderBy('date').startAfter(lastDoc).limit(2);
+      return eventsRef.where('likesPeople', 'array-contains', user.id).orderBy('date').startAfter(lastDoc).limit(4);
     default:
       return;
   }

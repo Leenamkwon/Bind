@@ -22,7 +22,7 @@ const initialState = {
   profileEvents: [],
   eventLastDocRef: null,
   eventMoreEvents: false,
-  retainTabIndex: false,
+  eventRetain: false,
   followers: [],
   followings: [],
   followingUser: false,
@@ -37,9 +37,6 @@ export default function profileReducer(state = initialState, { type, payload }) 
     case SIGN_OUT_USER:
       return { ...state, currentUserProfile: null };
 
-    case RETAIN_EVENT:
-      return { ...state, retainTabIndex: payload };
-
     case LISTEN_TO_SELECT_USER_PROFILE:
       return { ...state, selectUserProfile: payload };
 
@@ -48,6 +45,9 @@ export default function profileReducer(state = initialState, { type, payload }) 
 
     case LISTEN_TO_USER_PHOTOS:
       return { ...state, photos: payload };
+
+    case RETAIN_EVENT:
+      return { ...state, eventRetain: true };
 
     case LISTEN_TO_USER_EVENT:
       return {

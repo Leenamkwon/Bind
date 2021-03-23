@@ -46,3 +46,17 @@ export function extractURL(url) {
   const lastI = url.lastIndexOf('com');
   return url.slice(0, lastI + 3);
 }
+
+const debounce = (fn, ms, forceNow = true) => {
+  let interval;
+  return () => {
+    if (interval && !forceNow) clearTimeout(interval);
+
+    interval = setTimeout(() => {
+      fn();
+      if (forceNow) interval = null;
+    }, ms);
+
+    if (forceNow && !interval) fn();
+  };
+};

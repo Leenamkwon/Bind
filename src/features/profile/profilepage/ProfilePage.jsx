@@ -24,14 +24,14 @@ export default function ProfilePage({ match }) {
   ]);
 
   useFirestoreDoc({
-    shouldExcute: match.params.id === currentUserProfile?.id,
+    shouldExcute: match.params.id !== currentUserProfile?.id,
     query: () => getUserProfile(match.params.id),
     data: (profile) => dispatch(listenToSelectUserProfile(profile)),
     deps: [match.params.id, dispatch],
   });
 
   if (!profile && error) return <Redirect to='/error' />;
-  if ((loading && !profile && !error) || (!profile && !error)) return <div></div>;
+  if ((loading && !profile && !error) || (!profile && !error)) return <div>loading!!!!!!!!!!!!!!!!</div>;
 
   return (
     <Grid container spacing={2}>

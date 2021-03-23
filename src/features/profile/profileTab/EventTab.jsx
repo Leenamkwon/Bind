@@ -4,7 +4,6 @@ import { a11yProps } from '../../../app/util/util';
 
 // COMPONENT
 import EventHostingList from './detailTab/EventHostingList';
-import EventAttendeeList from './detailTab/EventAttendeeList';
 
 const useStyles = makeStyles((theme) => ({
   tabs: {

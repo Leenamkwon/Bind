@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Box, Container, ThemeProvider } from '@material-ui/core';
 import { Route, Switch, useLocation } from 'react-router-dom';
 import { SnackbarProvider } from 'notistack';
+import { useSelector } from 'react-redux';
 
 // Mui Custom Theme
 import themeStyle from './useTheme';
@@ -16,15 +17,19 @@ import ModalManager from '../common/modal/ModalManager';
 import AccountPage from '../../features/auth/AccountPage';
 import ProfilePage from '../../features/profile/profilepage/ProfilePage';
 import LightBox from './LightBox';
+import LoadingComponent from './LoadingComponent';
 
 export default function App() {
   const theme = themeStyle();
   const location = useLocation();
+  const { initialized } = useSelector((state) => state.async);
   let background = location.state && location.state.background;
 
   useEffect(() => {
     document.querySelector('body').style.backgroundColor = theme.palette.background.default;
   }, [theme.palette.background.default]);
+
+  if (!initialized) return <LoadingComponent theme={theme} />;
 
   return (
     <>
