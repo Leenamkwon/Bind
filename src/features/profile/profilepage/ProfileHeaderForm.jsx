@@ -3,9 +3,12 @@ import { Box, TextField, Fab } from '@material-ui/core';
 import { Add, Delete } from '@material-ui/icons';
 import { FieldArray, Form, Formik } from 'formik';
 import * as Yup from 'yup';
+import { useSnackbar } from 'notistack';
+
+// COMPONENT
 import ButtonComponent from '../../../app/layout/ButtonComponent';
 import { userUpdate } from '../../../app/firestore/firestoreService';
-import { useSnackbar } from 'notistack';
+import { matchURLRegex } from '../../../app/util/util';
 
 export default function ProfileHeaderForm({ handleEdit, profile }) {
   const initialValues = useMemo(() => {
@@ -24,10 +27,9 @@ export default function ProfileHeaderForm({ handleEdit, profile }) {
         validationSchema={Yup.object({
           description: Yup.string(),
           home: Yup.string(),
-          links: Yup.array().of(Yup.object({ link: Yup.string().url('올바른 URL을 입력해주세요') })),
+          links: Yup.array(),
         })}
-        onSubmit={async (values, { setSubmitting, errors }) => {
-          console.log(values, errors);
+        onSubmit={async (values, { setSubmitting }) => {
           try {
             await userUpdate(values);
             enqueueSnackbar('업데이트 되었습니다.', { variant: 'success' });
@@ -38,7 +40,7 @@ export default function ProfileHeaderForm({ handleEdit, profile }) {
           }
         }}
       >
-        {({ values, handleChange, isSubmitting, dirty, errors }) => {
+        {({ values, handleChange, isSubmitting, dirty }) => {
           console.log();
           return (
             <Form style={{ width: '100%' }}>
@@ -78,8 +80,8 @@ export default function ProfileHeaderForm({ handleEdit, profile }) {
                             label={`링크 ${index + 1}`}
                             size='small'
                             style={{ marginRight: 5 }}
-                            error={Object.values(errors).flat()[index]?.link}
-                            helperText={Object.values(errors).flat()[index]?.link}
+                            error={!matchURLRegex(link.link)}
+                            helperText={!matchURLRegex(link.link) && '유효한 URL이 아닙니다.'}
                           />
                           {values.links.length - 1 === index && index !== 0 && (
                             <Fab

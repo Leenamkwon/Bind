@@ -2,7 +2,7 @@ import React, { useCallback, useRef } from 'react';
 import Cropper from 'react-cropper';
 import 'cropperjs/dist/cropper.css';
 
-export const PhotoCropper = React.memo(({ imagePreview }) => {
+export const PhotoCropper = React.memo(({ imagePreview, setUploadFile }) => {
   const cropperRef = useRef(null);
 
   const onCrop = useCallback(() => {
@@ -16,9 +16,9 @@ export const PhotoCropper = React.memo(({ imagePreview }) => {
         imageSmoothingQuality: 'high',
       })
       ?.toBlob((blob) => {
-        console.log(blob);
+        setUploadFile(blob);
       });
-  }, []);
+  }, [setUploadFile]);
 
   const debounce = useCallback((fn, ms, forceNow = true) => {
     let interval;

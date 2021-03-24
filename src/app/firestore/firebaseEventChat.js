@@ -6,7 +6,7 @@ export function firebaseObjectToArray(snapshot) {
   }
 }
 
-//  실시간 댓글
+//  실시간 댓글 추가하기
 export function addEventChatComment(eventId, values) {
   const user = firebase.auth().currentUser;
   const newComment = {
@@ -22,15 +22,18 @@ export function addEventChatComment(eventId, values) {
   return firebase.database().ref(`chat/${eventId}`).push(newComment);
 }
 
+// 댓글 가져오기
 export function getEventChatRef(eventId) {
   return firebase.database().ref(`chat/${eventId}`).orderByKey();
 }
 
+// 댓글 수정하기
 export async function updateChatComment(eventId, commentId, text) {
   const chatRef = firebase.database().ref(`chat/${eventId}/${commentId}`);
   return chatRef.update({ text: text, isUpdate: true });
 }
 
+// 댓글 지우기
 export async function deleteChatComment(eventId, comment) {
   const realTimeRef = firebase.database().ref();
 

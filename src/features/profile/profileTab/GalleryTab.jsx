@@ -1,33 +1,29 @@
 import React, { memo, useState } from 'react';
-import { Box, Grid, Typography } from '@material-ui/core';
-
-// COMPONENT
-import PhotoDropzone from './photoTab/PhotoDropzone';
-import { PhotoCropper } from './photoTab/PhotoCropper';
+import { Box, Button, GridList, GridListTile, GridListTileBar, ListSubheader } from '@material-ui/core';
+import PhotoUpload from './photoTab/PhotoUpload';
 
 export default memo(function GalleryTab(props) {
-  const { value, index } = props;
-  const [image, setImage] = useState(null);
+  const { value, index, userIsMe, profile } = props;
+  const [editMode, setEditMode] = useState(false);
 
   return (
     <div role='tabpanel' hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`}>
-      {value === index && (
-        <Box mt={2} p={3}>
-          <PhotoDropzone setImage={setImage} />
-          <Box mt={4}>
-            <Grid container spacing={2}>
-              <Grid item xs={12} md={7}>
-                <Typography variant='subtitle1'>Cropper</Typography>
-                <PhotoCropper imagePreview={image?.[0]?.preview ?? null} />
-              </Grid>
-              <Grid item xs={12} md={5}>
-                <Typography variant='subtitle1'>미리 보기</Typography>
-                <div className='img-preview' style={{ width: '100%', height: 400, overflow: 'hidden' }}></div>
-              </Grid>
-            </Grid>
-          </Box>
-        </Box>
-      )}
+      <Box mt={2} p={3} style={{ minHeight: 400 }}>
+        {userIsMe && (
+          <Button variant='outlined' color='primary' onClick={() => setEditMode(!editMode)}>
+            이미지 올리기
+          </Button>
+        )}
+        {editMode ? (
+          <PhotoUpload setEditMode={setEditMode} />
+        ) : (
+          <GridList cellHeight={180} style={{ width: '100%' }}>
+            <GridListTile key='Subheader' cols={2} style={{ height: 'auto' }}>
+              <ListSubheader component='div'>December</ListSubheader>
+            </GridListTile>
+          </GridList>
+        )}
+      </Box>
     </div>
   );
 });
