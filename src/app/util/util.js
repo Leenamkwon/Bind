@@ -47,7 +47,7 @@ export function extractURL(url) {
   return url.slice(0, lastI + 3);
 }
 
-const debounce = (fn, ms, forceNow = true) => {
+export const debounce = (fn, ms, forceNow = true) => {
   let interval;
   return () => {
     if (interval && !forceNow) clearTimeout(interval);
