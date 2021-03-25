@@ -9,6 +9,7 @@ import { useTargetClick } from '../../../app/hooks/useTargetClick';
 const useStyle = makeStyles((theme) => ({
   media: {
     height: 400,
+    backgroundColor: theme.palette.background.default,
   },
   content: {
     width: '100%',
@@ -33,7 +34,7 @@ export default function ProfileHeader({ userIsMe, profile }) {
 
   return (
     <>
-      <CardMedia className={classes.media} image={'/assets/categoryImages/culture.jpg'} />
+      <CardMedia className={classes.media} image={profile?.backgroundURL ?? '/assets/categoryImages/culture.jpg'} />
       <CardContent style={{ position: 'relative' }}>
         {/* Avatar */}
         <Box display='flex' justifyContent='space-between' alignItems='center' className={classes.content} p={1}>

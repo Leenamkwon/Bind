@@ -2,7 +2,6 @@ import { SIGN_OUT_USER } from '../auth/authConstants';
 import {
   LISTEN_TO_CURRENT_USER_PROFILE,
   LISTEN_TO_SELECT_USER_PROFILE,
-  LISTEN_TO_CURRENT_USER_LIKE,
   LISTEN_TO_USER_PHOTOS,
   LISTEN_TO_USER_EVENT,
   LISTEN_TO_FOLLOWERS,
@@ -40,9 +39,6 @@ export default function profileReducer(state = initialState, { type, payload }) 
     case LISTEN_TO_SELECT_USER_PROFILE:
       return { ...state, selectUserProfile: payload };
 
-    case LISTEN_TO_CURRENT_USER_LIKE:
-      return { ...state, currentUserProfile: { ...state.currentUserProfile, like: payload } };
-
     case LISTEN_TO_USER_PHOTOS:
       return { ...state, photos: payload };
 
@@ -56,6 +52,7 @@ export default function profileReducer(state = initialState, { type, payload }) 
         eventLastDocRef: payload.lastVisible,
         eventMoreEvents: payload.moreEvents,
       };
+
     case LISTEN_TO_FOLLOWERS:
       return { ...state, followers: payload };
 
@@ -76,6 +73,7 @@ export default function profileReducer(state = initialState, { type, payload }) 
 
     case CLEAN_UP_EVENT:
       return { ...state, retainEvent: false, profileEvents: [], eventLastDocRef: null };
+
     case 'CLEAN_UP_ALL':
       return { ...state, photos: [], retainEvent: false, profileEvents: [], eventLastDocRef: null };
     default:

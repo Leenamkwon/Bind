@@ -26,7 +26,7 @@ export function deleteFromGalleryFirebaseStorage(filename) {
   return storageRef.child(`${userUid}/user_image/${filename}`).delete();
 }
 
-// 데이터베이스 갤러리 사진 지우기
+// 파이어스토어 갤러리 사진 지우기
 export function deleteGalleryFromCollection(photoId) {
   const userUid = firebase.auth().currentUser.uid;
   return firebase.firestore().collection('users').doc(userUid).collection('photos').doc(photoId).delete();

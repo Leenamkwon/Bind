@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, memo } from 'react';
 import { Box, Grid, Typography } from '@material-ui/core';
 import cuid from 'cuid';
 
@@ -11,7 +11,7 @@ import { useSnackbar } from 'notistack';
 import { uploadToGalleryFirebaseStorage } from '../../../../app/firestore/fireStorageService';
 import { updateUserGalleryPhoto } from '../../../../app/firestore/firestoreService';
 
-export default function PhotoUpload({ setEditMode }) {
+export default memo(function PhotoUpload({ setEditMode }) {
   const [image, setImage] = useState([]);
   const [loading, setLoading] = useState(false);
   const [uploadFile, setUploadFile] = useState(null);
@@ -84,4 +84,4 @@ export default function PhotoUpload({ setEditMode }) {
       </Box>
     </>
   );
-}
+});

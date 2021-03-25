@@ -56,7 +56,9 @@ export default function AccountPage() {
 
             {currentUser?.providerId === 'google.com' && (
               <Box>
-                <Typography>Google 사용자는 Google 홈페이지에서 계정 설정을 해주세요.</Typography>
+                <Typography variant='h6' gutterBottom>
+                  Google 사용자는 Google 홈페이지에서 계정 설정을 해주세요.
+                </Typography>
                 <Button
                   style={{ marginTop: 10 }}
                   startIcon={<i className='fab fa-google'></i>}
@@ -73,13 +75,14 @@ export default function AccountPage() {
 
             {currentUser?.providerId === 'facebook.com' && (
               <Box>
-                <Typography>facebook 사용자는 facebook 홈페이지에서 계정 설정을 해주세요.</Typography>
+                <Typography variant='h6' gutterBottom>
+                  Facebook 사용자는 Facebook 홈페이지에서 계정 설정을 해주세요.
+                </Typography>
                 <Button
-                  style={{ marginTop: 10 }}
+                  style={{ marginTop: 10, backgroundColor: '#4267B2' }}
                   startIcon={<i className='fab fa-facebook'></i>}
                   variant='outlined'
                   size='large'
-                  color='primary'
                   component='a'
                   href='https://facebook.com'
                   target='_blank'
@@ -91,13 +94,14 @@ export default function AccountPage() {
 
             {currentUser?.providerId === 'github.com' && (
               <Box>
-                <Typography>github 사용자는 github 홈페이지에서 계정 설정을 해주세요.</Typography>
+                <Typography variant='h6' gutterBottom>
+                  Github 사용자는 Github 홈페이지에서 계정 설정을 해주세요.
+                </Typography>
                 <Button
-                  style={{ marginTop: 10 }}
+                  style={{ marginTop: 10, backgroundColor: '#333' }}
                   startIcon={<i className='fab fa-github'></i>}
                   variant='outlined'
                   size='large'
-                  color='primary'
                   component='a'
                   href='https://github.com'
                   target='_blank'

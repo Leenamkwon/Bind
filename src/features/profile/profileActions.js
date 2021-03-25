@@ -3,7 +3,6 @@ import { dataFromSnapshot, getUserEventsQuery } from '../../app/firestore/firest
 import {
   LISTEN_TO_CURRENT_USER_PROFILE,
   LISTEN_TO_SELECT_USER_PROFILE,
-  LISTEN_TO_CURRENT_USER_LIKE,
   LISTEN_TO_USER_PHOTOS,
   LISTEN_TO_USER_EVENT,
   LISTEN_TO_FOLLOWERS,
@@ -27,13 +26,6 @@ export function listenToSelectUserProfile(profile) {
   };
 }
 
-export function listenToLikeUserProfile(like) {
-  return {
-    type: LISTEN_TO_CURRENT_USER_LIKE,
-    payload: like,
-  };
-}
-
 export function listenToUserPhotos(photos) {
   return {
     type: LISTEN_TO_USER_PHOTOS,
@@ -50,10 +42,8 @@ export function listenToUserEvents(activeTab, user, lastDoc) {
       const lastVisible = snapshot.docs[snapshot.docs.length - 1];
       const moreEvents = snapshot.docs.length >= 1;
       const events = snapshot.docs.map((doc) => dataFromSnapshot(doc));
-      console.log(events);
       dispatch({ type: LISTEN_TO_USER_EVENT, payload: { events, moreEvents, lastVisible } });
     } catch (error) {
-      console.log(error);
       dispatch(asyncActionError(error));
     } finally {
       dispatch(asyncActionFinish());

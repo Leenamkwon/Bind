@@ -1,5 +1,6 @@
 import firebase from '../config/firebase';
 import { deleteStorageImage } from './fireStorageService';
+import { eventChatPhotoIconUpdate } from './firebaseEventChat';
 
 const db = firebase.firestore();
 
@@ -270,6 +271,64 @@ export async function updateUserGalleryPhoto(downloadURL, filename) {
     return await db.collection('users').doc(user.uid).collection('photos').add({
       name: filename,
       url: downloadURL,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    });
+  } catch (error) {
+    throw error;
+  }
+}
+
+// 갤러리 이미지 가져오기
+export function getUserPhotos(userUid) {
+  return db.collection('users').doc(userUid).collection('photos');
+}
+
+export function userBackgroundUpdate(values) {
+  const user = firebase.auth().currentUser;
+
+  return db.collection('users').doc(user.uid).update({
+    backgroundURL: values,
+  });
+}
+
+export async function userProfilePhotoUpdate(url) {
+  const user = firebase.auth().currentUser;
+  const eventDocQuery = db.collection('events').where('attendeeIds', 'array-contains', user.uid);
+  const batch = db.batch();
+
+  try {
+    batch.update(db.collection('users').doc(user.uid), {
+      photoURL: url,
+    });
+
+    // 이벤트, 이벤트 참여 아이콘 사진 업데이트
+    const eventsQuerySnap = await eventDocQuery.get();
+    for (let i = 0; i < eventsQuerySnap.docs.length; i++) {
+      let eventDoc = eventsQuerySnap.docs[i];
+
+      if (eventDoc.data().hostUid === user.uid) {
+        batch.update(eventsQuerySnap.docs[i].ref, {
+          hostPhotoURL: url,
+        });
+      }
+
+      batch.update(eventsQuerySnap.docs[i].ref, {
+        attendees: eventDoc.data().attendees.map((attendee) => {
+          if (attendee.id === user.uid) {
+            return { ...attendee, photoURL: url };
+          }
+          return attendee;
+        }),
+      });
+    }
+
+    // 채팅 아바타 업데이트
+    await eventChatPhotoIconUpdate('chat', { photoURL: url });
+
+    await batch.commit();
+
+    return await user.updateProfile({
+      photoURL: url,
     });
   } catch (error) {
     throw error;

@@ -15,6 +15,10 @@ const useStyle = makeStyles((theme) => ({
 export default function ProfileHeaderdescription({ edit, handleEdit, userIsMe, profile }) {
   const classes = useStyle();
 
+  function isHttpcontains(link) {
+    return link['link'].includes('http') ? link['link'] : `https://${link['link']}`;
+  }
+
   return (
     <>
       <Box mt={7}>
@@ -55,7 +59,13 @@ export default function ProfileHeaderdescription({ edit, handleEdit, userIsMe, p
                 <InsertLink className={classes.icon} />
                 <Typography variant='subtitle2' display='inline' color='textSecondary'>
                   {profile?.links?.map((link) => (
-                    <Link rel='noopener noreferrer' target='_blank' href={link['link']} key={link.key}>
+                    <Link
+                      rel='noopener noreferrer'
+                      target='_blank'
+                      href={isHttpcontains(link)}
+                      key={link.key}
+                      style={{ marginRight: 8 }}
+                    >
                       {extractURL(link['link'])}
                     </Link>
                   ))}

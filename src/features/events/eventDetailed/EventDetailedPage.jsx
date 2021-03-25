@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Grid, useMediaQuery } from '@material-ui/core';
+import { Grid, useMediaQuery, useTheme } from '@material-ui/core';
 import { Redirect } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -15,6 +15,7 @@ import LoadingComponent from '../../../app/layout/LoadingComponent';
 
 export default function EventDetailedPage({ match }) {
   const matches = useMediaQuery('(max-width:600px)');
+  const theme = useTheme();
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.async);
   const { currentUser } = useSelector((state) => state.auth);
@@ -35,7 +36,7 @@ export default function EventDetailedPage({ match }) {
     selectedEvent?.attendees,
   ]);
 
-  if (loading || (!selectedEvent && !error)) return <LoadingComponent content='Loading...' />;
+  if (loading || (!selectedEvent && !error)) return <LoadingComponent content='Loading...' theme={theme} />;
   if (error) return <Redirect to='/error' />;
 
   return (
