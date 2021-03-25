@@ -11,6 +11,8 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     alignItems: 'center',
     padding: theme.spacing(2),
+    position: 'sticky',
+    top: 80,
   },
   details: {
     width: '100%',

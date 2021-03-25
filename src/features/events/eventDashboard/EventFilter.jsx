@@ -10,6 +10,10 @@ import clsx from 'clsx';
 import { setFilter, setStartDate } from '../eventActions';
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    position: 'sticky',
+    top: 80,
+  },
   calendar: {
     display: 'flex',
     justifyContent: 'center',
@@ -36,7 +40,7 @@ const EventFilter = ({ loadingInitial }) => {
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ko}>
-      <Grid container spacing={3}>
+      <Grid container spacing={3} className={classes.root}>
         {authenticated && (
           <Grid item xs>
             <Card elevation={3}>
