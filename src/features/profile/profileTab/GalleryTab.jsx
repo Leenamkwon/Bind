@@ -1,5 +1,6 @@
 import React, { memo, useState } from 'react';
-import { Box, Button } from '@material-ui/core';
+import { Box } from '@material-ui/core';
+import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 import { useDispatch, useSelector } from 'react-redux';
 
 // COMPONENT
@@ -8,6 +9,8 @@ import PhotoList from './photoTab/PhotoList';
 import useFirestoreCollection from '../../../app/hooks/useFirestoreCollection';
 import { listenToUserPhotos } from '../profileActions';
 import { getUserPhotos } from '../../../app/firestore/firestoreService';
+import PhotoListSkeleton from './photoTab/PhotoListSkeleton';
+import IconButtonComponent from '../../../app/layout/IconButtonComponent';
 
 export default memo(function GalleryTab(props) {
   const { value, index, userIsMe, profile } = props;
@@ -24,14 +27,20 @@ export default memo(function GalleryTab(props) {
 
   return (
     <div role='tabpanel' hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`}>
-      <Box mt={2} p={3} style={{ minHeight: 400 }}>
+      <Box p={1} style={{ minHeight: 400 }}>
         {userIsMe && (
-          <Button variant='outlined' color='primary' onClick={() => setEditMode(!editMode)}>
-            이미지 올리기
-          </Button>
+          <Box display='flex' justifyContent='flex-end'>
+            <IconButtonComponent
+              type='linear'
+              handleClick={() => setEditMode(!editMode)}
+              TooltipContext='이미지 업로드'
+              Icon={<PhotoCameraIcon />}
+              color='primary'
+            />
+          </Box>
         )}
         {loading ? (
-          <div></div>
+          <PhotoListSkeleton />
         ) : editMode ? (
           <PhotoUpload setEditMode={setEditMode} />
         ) : (

@@ -10,13 +10,13 @@ import { userBackgroundUpdate, userProfilePhotoUpdate } from '../../../../app/fi
 export default memo(function PhotoList({ photos, userIsMe, profile }) {
   const theme = useTheme();
   const xsMatches = useMediaQuery(theme.breakpoints.down('xs'));
-  const smMatches = useMediaQuery(theme.breakpoints.up('sm'));
+  const smMatches = useMediaQuery(theme.breakpoints.down('sm'));
   const mdMatches = useMediaQuery(theme.breakpoints.up('md'));
 
   const gridColsResponsive = useMemo(() => {
     if (xsMatches) return 1;
     if (smMatches) return 2;
-    if (mdMatches) return 4;
+    if (mdMatches) return 3;
   }, [mdMatches, smMatches, xsMatches]);
 
   function handleProfilePhoto(url) {
@@ -31,28 +31,32 @@ export default memo(function PhotoList({ photos, userIsMe, profile }) {
     <GridList cellHeight={360} cols={gridColsResponsive}>
       {photos.map((photo) => (
         <GridListTile key={photo.url}>
-          <img src={photo.url} alt={photo.name} />
+          <img src={photo.url} alt={photo.name} loading='lazy' />
           <GridListTileBar
             subtitle={formatDate(photo?.createdAt, 'yyyy년 MM월 dd일')}
             actionIcon={
-              userIsMe && (
-                <Box display='flex'>
-                  <IconButtonComponent
-                    disabled={profile.photoURL === photo.url}
-                    handleClick={() => handleProfilePhoto(photo.url)}
-                    TooltipContext='프로필 이미지'
-                    size='small'
-                    Icon={<FaceIcon />}
-                  />
-                  <IconButtonComponent
-                    disabled={profile.backgroundURL === photo.url}
-                    handleClick={() => updateBackground(photo.url)}
-                    TooltipContext='배경 이미지'
-                    size='small'
-                    Icon={<ImageRoundedIcon />}
-                  />
-                </Box>
-              )
+              <Box display='flex'>
+                {userIsMe && (
+                  <>
+                    <IconButtonComponent
+                      type='async'
+                      disabled={profile.photoURL === photo.url}
+                      handleClick={() => handleProfilePhoto(photo.url)}
+                      TooltipContext='프로필 이미지'
+                      size='small'
+                      Icon={<FaceIcon />}
+                    />
+                    <IconButtonComponent
+                      type='async'
+                      disabled={profile.backgroundURL === photo.url}
+                      handleClick={() => updateBackground(photo.url)}
+                      TooltipContext='배경 이미지'
+                      size='small'
+                      Icon={<ImageRoundedIcon />}
+                    />
+                  </>
+                )}
+              </Box>
             }
           />
         </GridListTile>

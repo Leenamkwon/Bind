@@ -3,6 +3,7 @@ import { makeStyles, Card, CardContent, Typography, Avatar, CardActions, Divider
 
 // COMPONENT
 import EventProfileFollowing from './EventProfileFollowing';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,7 +35,12 @@ export default function EventProfile({ currentUserProfile }) {
     <Card className={classes.root} raised={true}>
       <div className={classes.details}>
         <CardActions>
-          <Avatar className={classes.avatar} src={currentUserProfile?.photoURL || null} />
+          <Avatar
+            className={classes.avatar}
+            src={currentUserProfile?.photoURL || null}
+            component={Link}
+            to={`/profile/${currentUserProfile?.id}`}
+          />
         </CardActions>
         <CardContent className={classes.content}>
           <Typography variant='h6' align='center'>

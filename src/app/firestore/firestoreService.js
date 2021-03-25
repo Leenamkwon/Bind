@@ -171,6 +171,9 @@ export function setUserProfileData(user) {
       providerId: user.providerData[0].providerId,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       likesEvent: [],
+      backgroundURL: ['culture, drinks, film, food, game, hobby, music, play, study, travel'][
+        Math.floor(Math.random() * 10)
+      ],
     });
 }
 
@@ -291,6 +294,7 @@ export function userBackgroundUpdate(values) {
   });
 }
 
+// 메인 프로파일 업데이트 //
 export async function userProfilePhotoUpdate(url) {
   const user = firebase.auth().currentUser;
   const eventDocQuery = db.collection('events').where('attendeeIds', 'array-contains', user.uid);

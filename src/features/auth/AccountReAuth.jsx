@@ -45,10 +45,11 @@ export default function AccountReAuth({ setAuthstep }) {
         }
       }}
     >
-      {({ handleChange, handleBlur, isSubmitting, errors, touched }) => (
+      {({ values, handleChange, handleBlur, isSubmitting, errors, touched }) => (
         <Form>
           <TextField
             autoComplete='off'
+            value={values.email}
             type='email'
             name='email'
             variant='outlined'
@@ -60,6 +61,7 @@ export default function AccountReAuth({ setAuthstep }) {
             onBlur={handleBlur}
           />
           <TextField
+            value={values.password}
             type='password'
             name='password'
             variant='outlined'

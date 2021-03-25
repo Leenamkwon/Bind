@@ -8,7 +8,7 @@ import { useSnackbar } from 'notistack';
 
 // COMPONENT
 import ButtonComponent from '../../app/layout/ButtonComponent';
-import { emailAndPasswordChange, signOutFirebase } from '../../app/firestore/firebaseService';
+import { emailAndPasswordChange } from '../../app/firestore/firebaseService';
 
 export default function AccountCompleteAuth({ setAuthstep }) {
   const { enqueueSnackbar } = useSnackbar();
@@ -35,7 +35,6 @@ export default function AccountCompleteAuth({ setAuthstep }) {
           setSubmitting(false);
           resetForm();
           setAuthstep('authrelogin');
-          signOutFirebase();
         } catch (error) {
           setErrors({ auth: error.message });
         }

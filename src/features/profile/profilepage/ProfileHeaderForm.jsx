@@ -80,8 +80,8 @@ export default function ProfileHeaderForm({ handleEdit, profile }) {
                             label={`링크 ${index + 1}`}
                             size='small'
                             style={{ marginRight: 5 }}
-                            error={!matchURLRegex(link.link)}
-                            helperText={!matchURLRegex(link.link) && '유효한 URL이 아닙니다.'}
+                            error={link.link.length > 3 && !matchURLRegex(link.link)}
+                            helperText={link.link.length > 3 && !matchURLRegex(link.link) && '유효한 URL이 아닙니다.'}
                           />
                           {values.links.length - 1 === index && index !== 0 && (
                             <Fab

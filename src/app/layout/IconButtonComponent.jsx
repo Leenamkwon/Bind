@@ -8,6 +8,7 @@ const useStyles = makeStyles((theme) => ({
   wrapper: {
     margin: theme.spacing(1),
     position: 'relative',
+    display: 'inline-block',
   },
   fabProgress: {
     color: theme.palette.primary.main,
@@ -18,7 +19,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function CircularIntegration({ Icon, size, TooltipContext, handleClick, disabled = false }) {
+export default function CircularIntegration({
+  type = 'async',
+  Icon,
+  size,
+  TooltipContext,
+  handleClick,
+  disabled = false,
+  ...rest
+}) {
   const classes = useStyles();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -58,7 +67,8 @@ export default function CircularIntegration({ Icon, size, TooltipContext, handle
           className={buttonClassname}
           disabled={loading || disabled}
           size={size}
-          onClick={handleButtonClick}
+          onClick={type === 'async' ? handleButtonClick : handleClick}
+          {...rest}
         >
           {success ? <CheckIcon /> : Icon}
         </Fab>

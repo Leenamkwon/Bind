@@ -1,16 +1,7 @@
 import React from 'react';
-import { Box, Button, CardMedia, Typography } from '@material-ui/core';
-import { useDispatch } from 'react-redux';
-
-import { modalOpen } from '../../app/common/modal/modalReducer';
+import { Box, CardMedia, Typography } from '@material-ui/core';
 
 export default function AccountChangeSuc() {
-  const dispatch = useDispatch();
-
-  function handleLogin() {
-    dispatch(modalOpen('LoginForm'));
-  }
-
   return (
     <Box display='flex' alignItems='center' flexDirection='column'>
       <CardMedia
@@ -22,13 +13,7 @@ export default function AccountChangeSuc() {
       <Typography variant='subtitle1' paragraph>
         업데이트가 완료되었습니다!
       </Typography>
-      <Typography variant='subtitle2'>
-        계속 활동을 원하시면{' '}
-        <Button color='primary' variant='contained' size='small' onClick={handleLogin}>
-          로그인
-        </Button>{' '}
-        해주세요.
-      </Typography>
+      <Typography variant='subtitle2'>많은 활동 부탁드려요. - Bind Team</Typography>
     </Box>
   );
 }
