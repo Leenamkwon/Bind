@@ -58,21 +58,13 @@ export default function NavBar() {
   return (
     <AppBar className={classes.root}>
       <Toolbar className={classes.toolBar} position='static'>
-        <Hidden mdDown>
-          <Box className={classes.tabs} display='flex'>
-            <Button variant='text' startIcon={<Home />} color='inherit'>
-              홈{pathname === '/events' && <div className='indicator' aria-label='indicator'></div>}
-            </Button>
-          </Box>
-        </Hidden>
-
         <IconButton aria-label='logo button' color='inherit' component={Link} to='/events'>
           <DonutSmall size='large' />
         </IconButton>
 
         <Box className={classes.rightButtonSection}>
-          {authenticated && initialized && <SignedInMenu />}
-          {!authenticated && initialized && <SignedOutMenu />}
+          {authenticated && <SignedInMenu />}
+          {!authenticated && <SignedOutMenu />}
           <Hidden xsDown>
             <IconButton color='inherit' onClick={changeTheme}>
               {isThemeMode === 'dark' ? <Brightness7 /> : <Brightness4 />}
@@ -82,4 +74,14 @@ export default function NavBar() {
       </Toolbar>
     </AppBar>
   );
+}
+
+{
+  /* <Hidden mdDown>
+<Box className={classes.tabs} display='flex'>
+  <Button variant='text' startIcon={<Home />} color='inherit'>
+    홈{pathname === '/events' && <div className='indicator' aria-label='indicator'></div>}
+  </Button>
+</Box>
+</Hidden> */
 }

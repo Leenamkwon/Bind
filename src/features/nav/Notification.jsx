@@ -1,7 +1,13 @@
-import React, { useState } from 'react';
-import { Badge, IconButton, Menu, List, makeStyles } from '@material-ui/core';
+import React, { useEffect, useState } from 'react';
+import { Badge, IconButton, Menu, List, makeStyles, ListItem, ListItemText } from '@material-ui/core';
 import NotificationsIcon from '@material-ui/icons/Notifications';
+import { useDispatch, useSelector } from 'react-redux';
+
+// COMPONENT
+import { getNotificationCollction } from '../../app/firestore/firebaseNotification';
 import NotificationList from './NotificationList';
+import { firebaseObjectToArray } from '../../app/firestore/firebaseEventChat';
+import { listenToNotification } from '../auth/authAction';
 
 const useStyles = makeStyles((theme) => ({
   menu: {
@@ -16,9 +22,24 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Notification() {
-  // const [invisible, setInvisible] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
   const classes = useStyles();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const dispatch = useDispatch();
+  const { currentUser, notification } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (!currentUser) return;
+
+    const unsubscribe = getNotificationCollction(currentUser).on('value', (snapshot) => {
+      if (!snapshot.exists()) return;
+      const filtering = firebaseObjectToArray(snapshot.val())
+        .filter((item) => !item.isChecked)
+        .reverse();
+      dispatch(listenToNotification(filtering));
+    });
+
+    return () => getNotificationCollction(currentUser).off('value', unsubscribe);
+  }, [currentUser, dispatch]);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -31,7 +52,7 @@ export default function Notification() {
   return (
     <>
       <IconButton color='inherit'>
-        <Badge color='error' badgeContent={1} invisible={false}>
+        <Badge color='error' badgeContent={notification.length} invisible={notification.length === 0}>
           <NotificationsIcon onClick={handleClick} />
         </Badge>
         <Menu
@@ -47,12 +68,13 @@ export default function Notification() {
           }}
         >
           <List className={classes.listRoot}>
-            <NotificationList />
-            <NotificationList />
-            <NotificationList />
-            <NotificationList />
-            <NotificationList />
-            <NotificationList />
+            {notification.length > 0 ? (
+              notification.map((notice, i) => <NotificationList notification={notice} key={i} />)
+            ) : (
+              <ListItem>
+                <ListItemText id='switch-list-label-bluetooth' primary='알림이 없습니다.' />
+              </ListItem>
+            )}
           </List>
         </Menu>
       </IconButton>

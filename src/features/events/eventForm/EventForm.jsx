@@ -1,8 +1,8 @@
 // eslint-disable-next-line no-unused-vars
 /* global google */
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Avatar, Box, Card, CardActions, CardHeader, Divider, makeStyles, Fab } from '@material-ui/core';
-import { CloudUpload, EventAvailable, Send, CloudDone } from '@material-ui/icons';
+import { Avatar, Box, Card, CardActions, CardHeader, Divider, makeStyles, Fab, Typography } from '@material-ui/core';
+import { EventAvailable, Send, CheckCircle, InsertPhoto } from '@material-ui/icons';
 import { DropzoneDialog } from 'material-ui-dropzone';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
@@ -187,12 +187,15 @@ export default function EventForm({ match }) {
                   onClick={() => setImageFile({ open: true, files: [] })}
                 >
                   {imageFile['files'].length > 0 ? (
-                    <CloudDone className={classes.margin} />
+                    <CheckCircle className={classes.margin} />
                   ) : (
-                    <CloudUpload className={classes.margin} />
+                    <InsertPhoto className={classes.margin} />
                   )}
                   {imageFile['files'].length > 0 ? '업로드 완료' : '이미지 업로드'}
                 </Fab>
+                <Typography variant='caption' color='textSecondary' display='block' style={{ marginTop: 5 }}>
+                  이미지를 업로드 하지 않을 경우에는 카테고리 이미지로 대체됩니다.
+                </Typography>
                 <DropzoneDialog
                   open={imageFile.open}
                   onSave={handleSaveImage}
@@ -208,7 +211,6 @@ export default function EventForm({ match }) {
                 />
 
                 <Box display='flex' flexDirection='row-reverse'>
-                  <ButtonComponent variant='contained' loading={false} content='취소' />
                   <ButtonComponent
                     startIcon={<Send />}
                     color='primary'
@@ -217,6 +219,12 @@ export default function EventForm({ match }) {
                     type='submit'
                     content={'게시'}
                     variant='contained'
+                  />
+                  <ButtonComponent
+                    variant='contained'
+                    loading={false}
+                    content='취소'
+                    onClick={() => history.push(prevLocation)}
                   />
                 </Box>
               </Form>

@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     padding: theme.spacing(2),
     position: 'sticky',
-    top: 80,
+    top: 100,
   },
   details: {
     width: '100%',

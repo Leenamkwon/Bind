@@ -1,6 +1,6 @@
 import React, { memo, useState } from 'react';
 import { Box } from '@material-ui/core';
-import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
+import { PhotoCamera, PhotoLibrary } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 
 // COMPONENT
@@ -20,7 +20,6 @@ export default memo(function GalleryTab(props) {
   const { photos } = useSelector((state) => state.profile);
 
   useFirestoreCollection({
-    shouldExcute: photos.length === 0,
     query: () => getUserPhotos(profile.id),
     data: (photos) => dispatch(listenToUserPhotos(photos)),
     deps: [profile.id, dispatch],
@@ -34,8 +33,8 @@ export default memo(function GalleryTab(props) {
             <IconButtonComponent
               type='linear'
               handleClick={() => setEditMode(!editMode)}
-              TooltipContext='이미지 업로드'
-              Icon={<PhotoCameraIcon />}
+              TooltipContext={!editMode ? '이미지 업로드' : '갤러리로 이동'}
+              Icon={!editMode ? <PhotoCamera /> : <PhotoLibrary />}
               color='primary'
             />
           </Box>

@@ -47,7 +47,7 @@ export default memo(function SignedInMenu() {
     try {
       handleClose();
       await signOutFirebase();
-      history.push('/');
+      history.push('/events');
     } catch (error) {
       enqueueSnackbar(error.message, { variant: 'error' });
     }

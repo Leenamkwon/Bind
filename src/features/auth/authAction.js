@@ -1,4 +1,4 @@
-import { SIGN_IN_USER, SIGN_OUT_USER } from './authConstants';
+import { LISTEN_TO_NOTIFICATION, SIGN_IN_USER, SIGN_OUT_USER } from './authConstants';
 import firebase from '../../app/config/firebase';
 import { APP_LOADED } from '../../app/async/asyncReducer';
 import { listenToCurrentUserProfile } from '../profile/profileActions';
@@ -29,5 +29,12 @@ export function verifyAuth() {
         dispatch({ type: APP_LOADED });
       }
     });
+  };
+}
+
+export function listenToNotification(feed) {
+  return {
+    type: LISTEN_TO_NOTIFICATION,
+    payload: feed,
   };
 }

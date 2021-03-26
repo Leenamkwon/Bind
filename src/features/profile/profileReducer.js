@@ -9,7 +9,6 @@ import {
   SET_FOLLOW_USER,
   SET_UNFOLLOW_USER,
   CLEAR_FOLLOWINGS,
-  LISTEN_TO_FEED,
   RETAIN_EVENT,
   CLEAN_UP_EVENT,
   CLEAN_UP_ALL,
@@ -68,9 +67,6 @@ export default function profileReducer(state = initialState, { type, payload }) 
 
     case CLEAR_FOLLOWINGS:
       return { ...state, followers: [], followings: [] };
-
-    case LISTEN_TO_FEED:
-      return { ...state, feed: payload };
 
     case CLEAN_UP_EVENT:
       return { ...state, retainEvent: false, profileEvents: [], eventLastDocRef: null };

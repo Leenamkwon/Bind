@@ -21,7 +21,7 @@ export default function EventDashboard() {
   const [loadingInitial, setLoadingInitial] = useState(false);
 
   useEffect(() => {
-    if (retainState) return;
+    if (retainState || loadingInitial) return;
     setLoadingInitial(true);
     dispatch(clearEvents());
     dispatch(fetchEvents(filter, startDate, limit))
@@ -35,7 +35,7 @@ export default function EventDashboard() {
     return () => {
       dispatch({ type: RETAIN_STATE });
     };
-  }, [dispatch, filter, retainState, startDate]);
+  }, [dispatch, filter, loadingInitial, retainState, startDate]);
 
   const handleFetchNextEvents = useCallback(() => {
     dispatch(fetchEvents(filter, startDate, limit, lastVisible));

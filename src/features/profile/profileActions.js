@@ -9,7 +9,6 @@ import {
   LISTEN_TO_FOLLOWINGS,
   SET_FOLLOW_USER,
   SET_UNFOLLOW_USER,
-  LISTEN_TO_FEED,
 } from './profileConstants';
 
 export function listenToCurrentUserProfile(profile) {
@@ -74,12 +73,5 @@ export function setFollowUser() {
 export function setUnFollowUser() {
   return {
     type: SET_UNFOLLOW_USER,
-  };
-}
-
-export function listenToFeed(feed) {
-  return {
-    type: LISTEN_TO_FEED,
-    payload: feed,
   };
 }

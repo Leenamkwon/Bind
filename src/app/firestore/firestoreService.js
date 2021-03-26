@@ -338,3 +338,47 @@ export async function userProfilePhotoUpdate(url) {
     throw error;
   }
 }
+
+// 팔로우한 유저 1명 정보 가져오기
+export async function getFollowingUserDoc(profileId) {
+  const userUid = firebase.auth().currentUser.uid;
+  return db.collection('following').doc(userUid).collection('userFollowing').doc(profileId).get();
+}
+
+// 유저 팔로워
+export async function followUser(profile) {
+  const user = firebase.auth().currentUser;
+  const batch = db.batch();
+  try {
+    batch.set(db.collection('following').doc(user.uid).collection('userFollowing').doc(profile.id), {
+      displayName: profile.displayName,
+      photoURL: profile.photoURL,
+      uid: profile.id,
+    });
+
+    batch.update(db.collection('users').doc(user.uid), {
+      followingCount: firebase.firestore.FieldValue.increment(1),
+    });
+
+    return await batch.commit();
+  } catch (error) {
+    throw error;
+  }
+}
+
+// 유저 언팔로우
+export async function unFollowUser(profile) {
+  const user = firebase.auth().currentUser;
+  const batch = db.batch();
+  try {
+    batch.delete(db.collection('following').doc(user.uid).collection('userFollowing').doc(profile.id));
+
+    batch.update(db.collection('users').doc(user.uid), {
+      followingCount: firebase.firestore.FieldValue.increment(-1),
+    });
+
+    return await batch.commit();
+  } catch (error) {
+    throw error;
+  }
+}

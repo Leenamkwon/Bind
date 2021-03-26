@@ -24,7 +24,7 @@ export default function ProfilePage({ match }) {
   ]);
 
   useFirestoreDoc({
-    shouldExcute: match.params.id !== currentUserProfile?.id,
+    shouldExcute: currentUser && match.params.id !== currentUserProfile?.id,
     query: () => getUserProfile(match.params.id),
     data: (profile) => dispatch(listenToSelectUserProfile(profile)),
     deps: [match.params.id, dispatch],

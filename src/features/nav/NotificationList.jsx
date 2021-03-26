@@ -1,37 +1,73 @@
 import React from 'react';
-import { ListItem, ListItemAvatar, ListItemText, Typography, Avatar, makeStyles, Divider, Link } from '@material-ui/core';
+import {
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  Typography,
+  Avatar,
+  Divider,
+  ListItemSecondaryAction,
+  IconButton,
+} from '@material-ui/core';
+import { Link } from 'react-router-dom';
+import HighlightOffRoundedIcon from '@material-ui/icons/HighlightOffRounded';
+import { formatDateDistance } from '../../app/util/util';
 
-const useStyles = makeStyles((theme) => ({
-  inline: {
-    display: 'inline',
-  },
-}));
+export default function NotificationList({ notification }) {
+  let Summary;
 
-export default function NotificationList() {
-  const classes = useStyles();
+  switch (notification.code) {
+    case 'like':
+      Summary = `${(<Link to={`/events/${notification.eventId}`}>이벤트</Link>)}에 좋아요를 눌렀습니다.`;
+      break;
+    case 'join-event':
+      Summary = `${(<Link to={`/events/${notification.eventId}`}>이벤트</Link>)}에 참가했습니다.`;
+      break;
+    case 'left-event':
+      Summary = `${(<Link to={`/events/${notification.eventId}`}>이벤트</Link>)}를 떠났습니다.`;
+      break;
+    case 'follow':
+      Summary = '팔로워를 하였습니다.';
+      break;
+    case 'unfollow':
+      Summary = '언팔로우를 하였습니다.';
+      break;
+    default:
+      Summary = '알림이 없습니다.';
+      break;
+  }
 
   return (
     <>
       <ListItem alignItems='flex-start'>
         <ListItemAvatar>
-          <Avatar alt='Remy Sharp' src='/static/images/avatar/1.jpg' />
+          <Avatar component={Link} to={`/profile/${notification.userUid}`} src={notification.photoURL || null} />
         </ListItemAvatar>
         <ListItemText
           primary={
-            <Typography>
-              이남권님이 <Link style={{ cursor: 'pointer' }}>쿠팡가즈아</Link> 좋아요를 눌렀습니다.
+            <Typography variant='body2' color='textSecondary' gutterBottom>
+              {`${notification.displayName}님이 ${Summary}`}
             </Typography>
           }
-          secondary={
-            <>
-              <Typography component='span' variant='caption' className={classes.inline} color='textSecondary'>
-                1hours ago...
-              </Typography>
-            </>
-          }
+          secondary={<Typography variant='caption'>{formatDateDistance(notification.date)}</Typography>}
         />
+        <ListItemSecondaryAction>
+          <IconButton size='small' color='inherit'>
+            <HighlightOffRoundedIcon />
+          </IconButton>
+        </ListItemSecondaryAction>
       </ListItem>
       <Divider component='li' light={true} variant='middle' />
     </>
   );
 }
+
+// {
+//   userUid: user.id,
+//   code,
+//   eventId,
+//   photoURL: user.photoURL,
+//   displayName: user.displayName,
+//   date: realDB.ServerValue.TIMESTAMP,
+//   isChecked: false,
+// };
