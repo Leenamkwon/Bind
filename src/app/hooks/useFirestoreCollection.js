@@ -3,10 +3,11 @@ import { useDispatch } from 'react-redux';
 import { asyncActionError, asyncActionFinish, asyncActionStart } from '../async/asyncReducer';
 import { dataFromSnapshot } from '../firestore/firestoreService';
 
-export default function useFirestoreCollection({ query, data, deps, shouldExcute }) {
+export default function useFirestoreCollection({ query, data, deps, shouldExcute = true }) {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    if (!shouldExcute) return;
     dispatch(asyncActionStart());
     const unsubsribe = query().onSnapshot(
       (snapshot) => {

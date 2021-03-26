@@ -12,6 +12,7 @@ import {
   LISTEN_TO_FEED,
   RETAIN_EVENT,
   CLEAN_UP_EVENT,
+  CLEAN_UP_ALL,
 } from './profileConstants';
 
 const initialState = {
@@ -74,8 +75,18 @@ export default function profileReducer(state = initialState, { type, payload }) 
     case CLEAN_UP_EVENT:
       return { ...state, retainEvent: false, profileEvents: [], eventLastDocRef: null };
 
-    case 'CLEAN_UP_ALL':
-      return { ...state, photos: [], retainEvent: false, profileEvents: [], eventLastDocRef: null };
+    case CLEAN_UP_ALL:
+      return {
+        ...state,
+        photos: [],
+        eventRetain: false,
+        profileEvents: [],
+        eventLastDocRef: null,
+        eventMoreEvents: false,
+        followers: [],
+        followings: [],
+        followingUser: false,
+      };
     default:
       return state;
   }

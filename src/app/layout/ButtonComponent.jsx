@@ -7,6 +7,9 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
     display: 'inline-block',
   },
+  button: {
+    width: '100%',
+  },
   buttonProgress: {
     position: 'absolute',
     top: '50%',
@@ -21,7 +24,7 @@ export default memo(function ButtonComponent({ loading, content, css, ...props }
 
   return (
     <div className={classes.wrapper} style={css || {}}>
-      <Button {...props} style={{ width: '100%' }}>
+      <Button className={classes.button} {...props}>
         {content}
       </Button>
       {loading && <CircularProgress size={24} className={classes.buttonProgress} color='primary' />}

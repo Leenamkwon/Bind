@@ -37,7 +37,6 @@ export async function socialLoginFirebase(selectProvider) {
 
   try {
     const result = await firebase.auth().signInWithPopup(provider);
-    console.log(result);
     if (result.additionalUserInfo.isNewUser) {
       await setUserProfileData(result.user);
     }
@@ -122,6 +121,8 @@ export async function userBye() {
     // step 03. 팔로잉 팔로워 삭제
 
     // step 04. 호스팅 이미지 모두 삭제
+    const storageRef = firebase.storage().ref(user.uid);
+    await storageRef.delete();
 
     // step 05. 유저 스토리지 삭제
 

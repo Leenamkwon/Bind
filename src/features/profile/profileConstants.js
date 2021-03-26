@@ -13,3 +13,4 @@ export const LISTEN_TO_FEED = 'LISTEN_TO_FEED';
 // RETAIN & Clean up
 export const RETAIN_EVENT = 'RETAIN_EVENT';
 export const CLEAN_UP_EVENT = 'CLEAN_UP_EVENT';
+export const CLEAN_UP_ALL = 'CLEAN_UP_ALL';

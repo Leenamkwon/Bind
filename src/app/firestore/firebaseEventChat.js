@@ -51,6 +51,7 @@ export async function deleteChatComment(eventId, comment) {
   }
 }
 
+// 채팅 아바타 사진 업데이트
 export async function eventChatPhotoIconUpdate(entryName, updateData) {
   const userUid = firebase.auth().currentUser.uid;
   const chatRef = firebase.database().ref(entryName);

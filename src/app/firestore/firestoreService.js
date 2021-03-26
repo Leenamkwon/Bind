@@ -217,7 +217,6 @@ export async function deleteUser() {
 
     await batch.commit();
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }
@@ -243,17 +242,17 @@ export async function searchUserFirebase(query) {
   return filtering;
 }
 
-// 프로필 이벤트 패치
-export function getUserEventsQuery(activeTab, user, lastDoc = null) {
+// 프로필 이벤트 가져오기
+export function getUserEventsQuery(activeTab, user, lastDoc = null, limit) {
   let eventsRef = db.collection('events');
 
   switch (activeTab) {
     case 0: // hosting Events
-      return eventsRef.where('hostUid', '==', user.id).orderBy('date').startAfter(lastDoc).limit(4);
+      return eventsRef.where('hostUid', '==', user.id).orderBy('date').startAfter(lastDoc).limit(limit);
     case 1: // attendee events
-      return eventsRef.where('attendeeIds', 'array-contains', user.id).orderBy('date').startAfter(lastDoc).limit(4);
+      return eventsRef.where('attendeeIds', 'array-contains', user.id).orderBy('date').startAfter(lastDoc).limit(limit);
     case 2: // likes Events
-      return eventsRef.where('likesPeople', 'array-contains', user.id).orderBy('date').startAfter(lastDoc).limit(4);
+      return eventsRef.where('likesPeople', 'array-contains', user.id).orderBy('date').startAfter(lastDoc).limit(limit);
     default:
       return;
   }
@@ -286,6 +285,7 @@ export function getUserPhotos(userUid) {
   return db.collection('users').doc(userUid).collection('photos');
 }
 
+// 프로파일 배경화면 업데이트
 export function userBackgroundUpdate(values) {
   const user = firebase.auth().currentUser;
 

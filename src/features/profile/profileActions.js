@@ -33,11 +33,11 @@ export function listenToUserPhotos(photos) {
   };
 }
 
-export function listenToUserEvents(activeTab, user, lastDoc) {
+export function listenToUserEvents(activeTab, user, lastDoc, limit) {
   return async (dispatch) => {
     try {
       dispatch(asyncActionStart());
-      const snapshot = await getUserEventsQuery(activeTab, user, lastDoc).get();
+      const snapshot = await getUserEventsQuery(activeTab, user, lastDoc, limit).get();
 
       const lastVisible = snapshot.docs[snapshot.docs.length - 1];
       const moreEvents = snapshot.docs.length >= 1;

@@ -9,18 +9,17 @@ import { CLEAN_UP_EVENT } from '../../profileConstants';
 import EventTabItem from '../detailTab/EventTabListItem';
 import EventTabListItemSke from './EventTabListItemSke';
 
-export default memo(function EventHostingList({ tabIdx, index, profile }) {
-  const { retainTabIndex, profileEvents, eventLastDocRef, eventMoreEvents } = useSelector((state) => state.profile);
+export default memo(function EventHostingList({ tabIdx, profile }) {
   const { loading } = useSelector((state) => state.async);
+  const { profileEvents, eventLastDocRef, eventMoreEvents } = useSelector((state) => state.profile);
   const dispatch = useDispatch();
-  const once = useRef(false);
+  const initialLoading = useRef(true);
 
   useEffect(() => {
-    if (once.current) return;
-
-    dispatch(listenToUserEvents(tabIdx, profile, null));
-    once.current = true;
-  }, [dispatch, once, profile, retainTabIndex, tabIdx]);
+    dispatch(listenToUserEvents(tabIdx, profile, null, 4)).then((_) => {
+      initialLoading.current = false;
+    });
+  }, [dispatch, profile, tabIdx]);
 
   useEffect(() => {
     return () => {
@@ -30,7 +29,7 @@ export default memo(function EventHostingList({ tabIdx, index, profile }) {
 
   const nextFetch = useCallback(() => {
     if (eventMoreEvents) {
-      dispatch(listenToUserEvents(tabIdx, profile, eventLastDocRef));
+      dispatch(listenToUserEvents(tabIdx, profile, eventLastDocRef, 4));
     }
   }, [dispatch, eventLastDocRef, eventMoreEvents, profile, tabIdx]);
 
@@ -39,20 +38,13 @@ export default memo(function EventHostingList({ tabIdx, index, profile }) {
       mt={4}
       p={2}
       role='tabpanel'
-      hidden={tabIdx !== index}
-      id={`vertical-tabpanel-${index}`}
-      aria-labelledby={`vertical-tab-${index}`}
+      id={`vertical-tabpanel-${tabIdx}`}
+      aria-labelledby={`vertical-tab-${tabIdx}`}
       style={{ minHeight: 370, overflowY: 'auto' }}
     >
-      <InfiniteScroll
-        pageStart={0}
-        loadMore={nextFetch}
-        hasMore={!loading && eventMoreEvents}
-        useWindow={false}
-        initialLoad={true}
-      >
+      <InfiniteScroll pageStart={0} loadMore={nextFetch} hasMore={!loading && eventMoreEvents} useWindow={false}>
         <Grid container spacing={4}>
-          {loading && !once.current ? (
+          {loading && initialLoading.current ? (
             <EventTabListItemSke />
           ) : (
             profileEvents.map((event) => (

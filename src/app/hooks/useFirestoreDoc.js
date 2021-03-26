@@ -6,8 +6,6 @@ import { dataFromSnapshot } from '../firestore/firestoreService';
 export default function useFirestoreDoc({ query, data, deps, shouldExcute = true }) {
   const dispatch = useDispatch();
 
-  console.log(shouldExcute);
-
   useEffect(() => {
     if (!shouldExcute) return;
     dispatch(asyncActionStart());

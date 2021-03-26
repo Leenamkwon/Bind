@@ -40,14 +40,11 @@ export default memo(function EventTab({ value, index, profile }) {
             <Tab label='참여한 이벤트' {...a11yProps(1)} />
             <Tab label='좋아한 이벤트' {...a11yProps(2)} />
           </Tabs>
-          {Array.from({ length: 3 }, (_, i) => {
-            return tabIdx === i && <EventHostingList tabIdx={tabIdx} index={i} profile={profile} key={i} />;
+          {Array.from({ length: 3 }, (_, index) => {
+            return tabIdx === index && <EventHostingList tabIdx={tabIdx} profile={profile} key={index} />;
           })}
         </Box>
       )}
     </div>
   );
 });
-
-// {tabIdx === 0 && <EventHostingList tabIdx={tabIdx} index={0} profile={profile} />}
-//           {tabIdx === 1 && <EventAttendeeList tabIdx={tabIdx} index={1} profile={profile} />}

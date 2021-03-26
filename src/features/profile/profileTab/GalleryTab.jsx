@@ -14,12 +14,13 @@ import IconButtonComponent from '../../../app/layout/IconButtonComponent';
 
 export default memo(function GalleryTab(props) {
   const { value, index, userIsMe, profile } = props;
-  const [editMode, setEditMode] = useState(false);
   const dispatch = useDispatch();
+  const [editMode, setEditMode] = useState(false);
   const { loading } = useSelector((state) => state.async);
   const { photos } = useSelector((state) => state.profile);
 
   useFirestoreCollection({
+    shouldExcute: photos.length === 0,
     query: () => getUserPhotos(profile.id),
     data: (photos) => dispatch(listenToUserPhotos(photos)),
     deps: [profile.id, dispatch],
