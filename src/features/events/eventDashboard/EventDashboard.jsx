@@ -45,7 +45,7 @@ export default function EventDashboard() {
     <Grid container spacing={2}>
       <Hidden mdDown>
         <Grid item lg={3}>
-          {initialized ? <EventProfile currentUserProfile={currentUserProfile} /> : <EventProfileSkeleton />}
+          {!loadingInitial && initialized ? <EventProfile profile={currentUserProfile} /> : <EventProfileSkeleton />}
         </Grid>
       </Hidden>
 

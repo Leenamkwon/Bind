@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { makeStyles, Card, CardContent, CardActions, Divider } from '@material-ui/core';
 import Skeleton from '@material-ui/lab/Skeleton';
 
@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function EventProfile() {
+export default memo(function EventProfile() {
   const classes = useStyles();
 
   return (
@@ -47,4 +47,4 @@ export default function EventProfile() {
       </div>
     </Card>
   );
-}
+});

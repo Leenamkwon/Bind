@@ -285,6 +285,11 @@ export function getUserPhotos(userUid) {
   return db.collection('users').doc(userUid).collection('photos');
 }
 
+// 갤러리 이미지 개수 제한해서 가져오기
+export function getUserPhotosLimit(userUid) {
+  return db.collection('users').doc(userUid).collection('photos').orderBy('createdAt').limitToLast(9);
+}
+
 // 프로파일 배경화면 업데이트
 export function userBackgroundUpdate(values) {
   const user = firebase.auth().currentUser;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { makeStyles, Card, CardContent, Typography, Avatar, CardActions, Divider } from '@material-ui/core';
 
 // COMPONENT
@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function EventProfile({ currentUserProfile }) {
+export default memo(function EventProfile({ profile }) {
   const classes = useStyles();
 
   return (
@@ -39,25 +39,25 @@ export default function EventProfile({ currentUserProfile }) {
         <CardActions>
           <Avatar
             className={classes.avatar}
-            src={currentUserProfile?.photoURL || null}
+            src={profile?.photoURL || null}
             component={Link}
-            to={`/profile/${currentUserProfile?.id}`}
+            to={profile?.id && `/profile/${profile?.id}`}
           />
         </CardActions>
         <CardContent className={classes.content}>
           <Typography variant='h6' align='center'>
-            {currentUserProfile?.displayName || currentUserProfile?.email || ''}
+            {profile?.displayName || profile?.email || '회원가입을 하여 이용해보세요'}
           </Typography>
-          <Typography variant='subtitle1' color='textSecondary' align='center'>
-            {currentUserProfile?.email || null}
+          <Typography variant='subtitle2' color='textSecondary' align='center'>
+            {profile?.email || null}
           </Typography>
         </CardContent>
 
         <Divider />
 
         {/* EVENT FOLLOWING */}
-        {currentUserProfile && <EventProfileFollowing />}
+        {profile && <EventProfileFollowing profile={profile} />}
       </div>
     </Card>
   );
-}
+});

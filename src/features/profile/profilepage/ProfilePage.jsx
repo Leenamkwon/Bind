@@ -9,6 +9,7 @@ import ProfilePageTab from '../profileTab/ProfilePageTab';
 import useFirestoreDoc from '../../../app/hooks/useFirestoreDoc';
 import { getUserProfile } from '../../../app/firestore/firestoreService';
 import { listenToSelectUserProfile } from '../profileActions';
+import ProfilePageSkeleton from './ProfilePageSkeleton';
 
 export default function ProfilePage({ match }) {
   const dispatch = useDispatch();
@@ -31,7 +32,7 @@ export default function ProfilePage({ match }) {
   });
 
   if (!profile && error) return <Redirect to='/error' />;
-  if ((loading && !profile && !error) || (!profile && !error)) return <div>loading!!!!!!!!!!!!!!!!</div>;
+  if (loading && !profile && !error) return <ProfilePageSkeleton />;
 
   return (
     <Grid container spacing={2}>

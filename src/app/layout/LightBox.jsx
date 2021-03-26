@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { Avatar, Box, Card, CardHeader, CardMedia, Dialog, IconButton, makeStyles, Typography } from '@material-ui/core';
-import { ArrowBackIos, ArrowForwardIos, LocationCity } from '@material-ui/icons';
+import { ArrowBackIos, ArrowForwardIos, LocationOn } from '@material-ui/icons';
 import { Redirect, useHistory, useLocation, useParams } from 'react-router';
 import { useSelector } from 'react-redux';
 import clsx from 'clsx';
@@ -58,18 +58,15 @@ export default memo(function LightBox() {
               aria-label='recipe'
             />
           }
-          title={<Typography variant='h6'>{events[currentIdx].title}</Typography>}
+          title={<Typography variant='subtitle1'>{events[currentIdx].title}</Typography>}
           subheader={
             <>
               <Box display='flex' alignItems='center'>
-                <LocationCity className={classes.icon} />
+                <LocationOn className={classes.icon} />
                 <Typography variant='subtitle2' color='textSecondary'>
                   {events[currentIdx].city.address}
                 </Typography>
               </Box>
-              <Typography variant='subtitle2' color='textPrimary'>
-                {events[currentIdx].description}
-              </Typography>
             </>
           }
         />

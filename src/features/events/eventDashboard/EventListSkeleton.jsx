@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { memo } from 'react';
 import Skeleton from '@material-ui/lab/Skeleton';
 import { Card, CardContent, CardHeader, Grid } from '@material-ui/core';
 
-export default function EventListSkeleton() {
+export default memo(function EventListSkeleton() {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
@@ -52,4 +52,4 @@ export default function EventListSkeleton() {
       </Grid>
     </Grid>
   );
-}
+});

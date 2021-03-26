@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { Grid } from '@material-ui/core';
+import { CircularProgress, Grid } from '@material-ui/core';
 import InfinitScroll from 'react-infinite-scroller';
 
 import EventListItem from './EventListItem';
@@ -20,6 +20,8 @@ export default memo(function EventList({ events, getNextEvents, loading, moreEve
           ))}
         </InfinitScroll>
       ) : null}
+
+      {loading && <CircularProgress style={{ margin: '0 auto' }} />}
     </Grid>
   );
 });

@@ -20,7 +20,7 @@ import {
   Divider,
   CardActionArea,
 } from '@material-ui/core';
-import { Favorite, LocationOn, FavoriteBorderOutlined, Share, MoreVert, Group } from '@material-ui/icons';
+import { Favorite, LocationOn, FavoriteBorderOutlined, Share, MoreVert, Group, Title, Class } from '@material-ui/icons';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -147,7 +147,7 @@ export default memo(function EventListItem({ event }) {
               </>
             )
           }
-          title={event.title}
+          title={event.hostedBy}
           subheader={
             <Typography variant='caption' color='textSecondary'>
               {formatDate(event.date)}
@@ -169,14 +169,20 @@ export default memo(function EventListItem({ event }) {
         </CardActionArea>
         <CardContent>
           <Box display='flex' alignItems='center'>
+            <Title className={classes.icon} size='small' />
+            <Typography variant='caption' color='textSecondary' display='inline'>
+              {event.title}
+            </Typography>
+          </Box>
+          <Box display='flex' alignItems='center' mt={1}>
             <LocationOn className={classes.icon} />
-            <Typography variant='subtitle2' color='textSecondary' display='inline'>
+            <Typography variant='caption' color='textSecondary' display='inline'>
               {event.city.address}
             </Typography>
           </Box>
 
           <Divider variant='fullWidth' style={{ margin: '8px 0' }} />
-          <Typography variant='body1' color='textSecondary' component='p'>
+          <Typography variant='body2' color='textSecondary' component='p'>
             {event.description}
           </Typography>
         </CardContent>
@@ -198,7 +204,7 @@ export default memo(function EventListItem({ event }) {
               <Group className={classes.subIcon} />
             </IconButton>
             <Button color='primary' component={Link} to={`/events/${event.id}`} variant='contained'>
-              자세히 보기
+              더 보기
             </Button>
           </Box>
         </CardActions>
