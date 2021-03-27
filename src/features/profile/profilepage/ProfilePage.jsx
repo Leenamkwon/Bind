@@ -32,13 +32,13 @@ export default function ProfilePage({ match }) {
   });
 
   if (!profile && error) return <Redirect to='/error' />;
-  if (loading && !profile && !error) return <ProfilePageSkeleton />;
+  if ((loading && !profile && !error) || (!profile && !error)) return <ProfilePageSkeleton />;
 
   return (
     <Grid container spacing={2}>
       <Card style={{ width: '100%' }} raised={true}>
-        <ProfileHeader userIsMe={profile.id === currentUser.uid} profile={profile} />
-        <ProfilePageTab userIsMe={profile.id === currentUser.uid} profile={profile} />
+        <ProfileHeader userIsMe={profile.id === currentUser?.uid} profile={profile} />
+        <ProfilePageTab userIsMe={profile.id === currentUser?.uid} profile={profile} />
       </Card>
     </Grid>
   );

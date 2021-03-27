@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Badge, IconButton, Menu, List, makeStyles, ListItem, ListItemText } from '@material-ui/core';
-import NotificationsIcon from '@material-ui/icons/Notifications';
+import { Badge, IconButton, Menu, List, makeStyles, ListItem, ListItemText, ListItemAvatar } from '@material-ui/core';
+import { Notifications, NotificationsPaused } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 
 // COMPONENT
@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
   },
   listRoot: {
     width: '100%',
-    maxWidth: '30ch',
+    maxWidth: '300px',
     backgroundColor: theme.palette.background.paper,
     outline: 'none',
   },
@@ -53,7 +53,7 @@ export default function Notification() {
     <>
       <IconButton color='inherit'>
         <Badge color='error' badgeContent={notification.length} invisible={notification.length === 0}>
-          <NotificationsIcon onClick={handleClick} />
+          <Notifications onClick={handleClick} />
         </Badge>
         <Menu
           className={classes.menu}
@@ -69,10 +69,13 @@ export default function Notification() {
         >
           <List className={classes.listRoot}>
             {notification.length > 0 ? (
-              notification.map((notice, i) => <NotificationList notification={notice} key={i} />)
+              notification.map((notice) => <NotificationList notification={notice} key={notice.id} />)
             ) : (
               <ListItem>
-                <ListItemText id='switch-list-label-bluetooth' primary='알림이 없습니다.' />
+                <ListItemAvatar>
+                  <NotificationsPaused style={{ fontSize: 45 }} />
+                </ListItemAvatar>
+                <ListItemText primary='알림이 없습니다.' />
               </ListItem>
             )}
           </List>

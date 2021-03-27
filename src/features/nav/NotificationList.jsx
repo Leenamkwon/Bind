@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Link as MuiLink,
   ListItem,
   ListItemAvatar,
   ListItemText,
@@ -12,29 +13,60 @@ import {
 import { Link } from 'react-router-dom';
 import HighlightOffRoundedIcon from '@material-ui/icons/HighlightOffRounded';
 import { formatDateDistance } from '../../app/util/util';
+import { checkedNotification } from '../../app/firestore/firebaseNotification';
 
 export default function NotificationList({ notification }) {
-  let Summary;
+  function render() {
+    switch (notification.code) {
+      case 'like':
+        return (
+          <>
+            <MuiLink component={Link} to={`/events/${notification.eventId}`}>
+              이벤트
+            </MuiLink>
+            에 좋아요를 보냈습니다.
+          </>
+        );
 
-  switch (notification.code) {
-    case 'like':
-      Summary = `${(<Link to={`/events/${notification.eventId}`}>이벤트</Link>)}에 좋아요를 눌렀습니다.`;
-      break;
-    case 'join-event':
-      Summary = `${(<Link to={`/events/${notification.eventId}`}>이벤트</Link>)}에 참가했습니다.`;
-      break;
-    case 'left-event':
-      Summary = `${(<Link to={`/events/${notification.eventId}`}>이벤트</Link>)}를 떠났습니다.`;
-      break;
-    case 'follow':
-      Summary = '팔로워를 하였습니다.';
-      break;
-    case 'unfollow':
-      Summary = '언팔로우를 하였습니다.';
-      break;
-    default:
-      Summary = '알림이 없습니다.';
-      break;
+      case 'event-join':
+        return (
+          <>
+            <MuiLink component={Link} to={`/events/${notification.eventId}`}>
+              이벤트
+            </MuiLink>
+            에 참가했습니다.
+          </>
+        );
+
+      case 'event-out':
+        return (
+          <>
+            <MuiLink component={Link} to={`/events/${notification.eventId}`}>
+              이벤트
+            </MuiLink>
+            를 떠났습니다.
+          </>
+        );
+
+      case 'my-event-joined':
+        return (
+          <>
+            <MuiLink component={Link} to={`/events/${notification.eventId}`}>
+              이벤트
+            </MuiLink>
+            에 참가했습니다.
+          </>
+        );
+
+      case 'follow':
+        return '팔로워를 하였습니다.';
+
+      case 'unfollow':
+        return '언팔로우를 하였습니다.';
+
+      default:
+        return '알림이 없습니다.';
+    }
   }
 
   return (
@@ -46,13 +78,13 @@ export default function NotificationList({ notification }) {
         <ListItemText
           primary={
             <Typography variant='body2' color='textSecondary' gutterBottom>
-              {`${notification.displayName}님이 ${Summary}`}
+              {`${notification.displayName}님이`} {render()}
             </Typography>
           }
           secondary={<Typography variant='caption'>{formatDateDistance(notification.date)}</Typography>}
         />
         <ListItemSecondaryAction>
-          <IconButton size='small' color='inherit'>
+          <IconButton size='small' color='inherit' onClick={() => checkedNotification(notification.id)}>
             <HighlightOffRoundedIcon />
           </IconButton>
         </ListItemSecondaryAction>
@@ -61,13 +93,3 @@ export default function NotificationList({ notification }) {
     </>
   );
 }
-
-// {
-//   userUid: user.id,
-//   code,
-//   eventId,
-//   photoURL: user.photoURL,
-//   displayName: user.displayName,
-//   date: realDB.ServerValue.TIMESTAMP,
-//   isChecked: false,
-// };

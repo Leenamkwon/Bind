@@ -3,7 +3,6 @@ const admin = require('firebase-admin');
 admin.initializeApp(functions.config().firebase);
 
 const db = admin.firestore();
-const storage = admin.storage();
 const realDB = admin.database();
 
 /* 
@@ -29,7 +28,7 @@ exports.addFollowing = functions.firestore
         followerCount: admin.firestore.FieldValue.increment(1),
       });
 
-      realDB.ref(`/notification/${context.params.profileId}`).push(newPost(userDoc.data(), 'follow', null));
+      admin.database().ref(`/notification/${context.params.profileId}`).push(newPost(userDoc.data(), 'follow', null));
 
       return await batch.commit();
     } catch (error) {
@@ -55,7 +54,7 @@ exports.removeFollowing = functions.firestore
         followerCount: admin.firestore.FieldValue.increment(-1),
       });
 
-      realDB.ref(`/notification/${context.params.profileId}`).push(newPost(userDoc.data(), 'unfollow', null));
+      admin.database().ref(`/notification/${context.params.profileId}`).push(newPost(userDoc.data(), 'unfollow', null));
 
       return await batch.commit();
     } catch (error) {
@@ -70,7 +69,7 @@ exports.eventUpdated = functions.firestore.document('events/{eventId}').onUpdate
   const before = snapshot.before.data();
   const after = snapshot.after.data();
 
-  // EVENT IN
+  // 이벤트 참가
   if (before.attendees.length < after.attendees.length) {
     let attendeeJoined = after.attendees.filter((item1) => before.attendees.some((item2) => item2.id !== item1.id))[0];
     try {
@@ -78,11 +77,56 @@ exports.eventUpdated = functions.firestore.document('events/{eventId}').onUpdate
 
       if (!targetFollowers.empty) {
         targetFollowers.forEach((follwer) => {
-          realDB.ref(`/notification/${follwer.id}`).push(newPost(attendeeJoined, 'join-event', context.params.eventId));
+          realDB.ref(`/notification/${follwer.id}`).push(newPost(attendeeJoined, 'event-join', context.params.eventId));
         });
       }
 
-      realDB.ref(`/notification/${before.hostUid}`).push(newPost(attendeeJoined, 'my-event-joined', context.params.eventId));
+      admin
+        .database()
+        .ref(`/notification/${before.hostUid}`)
+        .push(newPost(attendeeJoined, 'my-event-joined', context.params.eventId));
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  // 이벤트 나감
+  if (before.attendees.length > after.attendees.length) {
+    let attendeeLeft = before.attendees.filter((item1) => !after.attendees.some((item2) => item2.id === item1.id))[0];
+
+    try {
+      const targetFollowers = await db.collection('following').doc(attendeeLeft.id).collection('userFollowers').get();
+
+      if (!targetFollowers.empty) {
+        targetFollowers.forEach((follower) => {
+          admin
+            .database()
+            .ref(`/posts/${follower.id}`)
+            .push(newPost(attendeeLeft, 'event-out', context.params.eventId, before));
+        });
+      }
+
+      admin
+        .database()
+        .ref(`/notification/${before.hostUid}`)
+        .push(newPost(attendeeLeft, 'my-event-joined', context.params.eventId));
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  // LIKES
+  if (before.likesPeople.length < after.likesPeople.length) {
+    let likesEvent = after.likesPeople.filter((item1) => before.likesPeople.indexOf(item1) === -1)[0];
+
+    try {
+      let likedUser = db.collection('users').doc(likesEvent);
+      const targetUser = await likedUser.get();
+
+      admin
+        .database()
+        .ref(`/notification/${before.hostUid}`)
+        .push(newPost(targetUser.data(), 'like', context.params.eventId, before));
     } catch (error) {
       console.log(error);
     }
@@ -91,12 +135,12 @@ exports.eventUpdated = functions.firestore.document('events/{eventId}').onUpdate
 
 function newPost(user, code, eventId) {
   return {
-    userUid: user.id,
+    userUid: user?.id ?? user.email.split('@')[0],
     code,
-    eventId,
+    eventId: eventId || null,
     photoURL: user.photoURL,
     displayName: user.displayName,
-    date: realDB.ServerValue.TIMESTAMP,
+    date: admin.database.ServerValue.TIMESTAMP,
     isChecked: false,
   };
 }

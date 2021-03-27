@@ -50,8 +50,8 @@ export default function LoginFormText() {
               fullWidth
               label='이메일'
               value={values.email}
-              helperText={errors.email}
               error={touched.email && !!errors.email}
+              helperText={errors.email}
               onChange={handleChange}
               onBlur={handleBlur}
               autoComplete='off'
@@ -64,8 +64,8 @@ export default function LoginFormText() {
               label='패스워드'
               style={{ margin: '25px 0 10px 0' }}
               value={values.password}
-              helperText={errors.password}
               error={touched.password && !!errors.password}
+              helperText={errors.password}
               onChange={handleChange}
               onBlur={handleBlur}
               autoComplete='off'

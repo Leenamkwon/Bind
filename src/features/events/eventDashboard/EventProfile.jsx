@@ -41,7 +41,7 @@ export default memo(function EventProfile({ profile }) {
             className={classes.avatar}
             src={profile?.photoURL || null}
             component={Link}
-            to={profile?.id && `/profile/${profile?.id}`}
+            to={profile?.id ? `/profile/${profile?.id}` : '/events'}
           />
         </CardActions>
         <CardContent className={classes.content}>

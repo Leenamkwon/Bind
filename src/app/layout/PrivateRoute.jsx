@@ -1,9 +1,9 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Route } from 'react-router';
+import { Redirect, Route } from 'react-router';
 
-export default function PrivateRoute({ Component, ...props }) {
+export default function PrivateRoute({ component: Component, ...rest }) {
   const { authenticated } = useSelector((state) => state.auth);
 
-  return <Route {...props} render={(prop) => (authenticated ? <Component {...prop} /> : null)} />;
+  return <Route {...rest} render={(props) => (authenticated ? <Component {...props} /> : <Redirect to='/events' />)} />;
 }
