@@ -118,16 +118,31 @@ export async function userBye() {
       });
     });
 
-    // step 03. 팔로잉 팔로워 삭제
+    // step 04. 이벤트 채팅 삭제
 
-    // step 04. 호스팅 이미지 모두 삭제
+    // step 04. 팔로잉 팔로워 삭제
+    batch.delete(db.collection('following').doc(user.uid));
+
+    // step 05. 호스팅 이미지 모두 삭제
     const storageRef = firebase.storage().ref(user.uid);
     await storageRef.delete();
 
-    // step 05. 유저 스토리지 삭제
+    // step 06. 유저 스토리지 삭제
 
-    // stop 06. 유저 Auth 삭제
+    // stop 07. 유저 Auth 삭제
+
+    await batch.commit();
   } catch (error) {
     throw error;
+  }
+}
+
+export async function firebaseTest() {
+  const user = firebase.auth().currentUser;
+  try {
+    const follower2 = await db.collection('following').doc(user.uid).get();
+    console.log(follower2.data());
+  } catch (error) {
+    console.log(error);
   }
 }

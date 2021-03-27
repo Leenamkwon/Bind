@@ -22,7 +22,7 @@ export function fetchEvents(filter, startDate, limit, lastDocSnapshot) {
       const lastVisible = snapshot.docs[snapshot.docs.length - 1];
       const moreEvents = snapshot.docs.length >= limit;
       const events = snapshot.docs.map((doc) => dataFromSnapshot(doc));
-      console.log(events);
+
       dispatch({ type: FETCH_EVENT, payload: { events, moreEvents, lastVisible } });
       return lastVisible;
     } catch (error) {

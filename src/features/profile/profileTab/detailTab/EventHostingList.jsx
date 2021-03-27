@@ -19,7 +19,8 @@ export default memo(function EventHostingList({ tabIdx, profile }) {
     dispatch(listenToUserEvents(tabIdx, profile, null, 4)).then((_) => {
       initialLoading.current = false;
     });
-  }, [dispatch, profile, tabIdx]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, tabIdx]);
 
   useEffect(() => {
     return () => {

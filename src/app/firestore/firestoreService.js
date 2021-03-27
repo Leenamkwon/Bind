@@ -41,7 +41,23 @@ export function addEventToFirestore(event) {
   });
 }
 
-// 단일 이벤트 패치
+// 모든 이벤트 가져오기
+export function fetchEventsFromFirestore(filter, startDate, limit, lastDocSnapshot = null) {
+  const user = firebase.auth().currentUser;
+
+  const eventsRef = db.collection('events').orderBy('date').startAfter(lastDocSnapshot).limit(limit);
+
+  switch (filter) {
+    case 'isGoing':
+      return eventsRef.where('attendeeIds', 'array-contains', user.uid).where('date', '>=', startDate);
+    case 'isHosting':
+      return eventsRef.where('hostUid', '==', user.uid).where('date', '>=', startDate);
+    default:
+      return eventsRef.where('date', '>=', startDate);
+  }
+}
+
+// 단일 이벤트 가져오기
 export function listenToEventFromFirestore(eventId) {
   return db.collection('events').doc(eventId);
 }
@@ -106,22 +122,6 @@ export async function deleteLikesEvent(eventId) {
     .collection('users')
     .doc(user.uid)
     .update({ likesEvent: firebase.firestore.FieldValue.arrayRemove(eventId) });
-}
-
-// 패치 이벤트
-export function fetchEventsFromFirestore(filter, startDate, limit, lastDocSnapshot = null) {
-  const user = firebase.auth().currentUser;
-
-  const eventsRef = db.collection('events').orderBy('date').startAfter(lastDocSnapshot).limit(limit);
-
-  switch (filter) {
-    case 'isGoing':
-      return eventsRef.where('attendeeIds', 'array-contains', user.uid).where('date', '>=', startDate);
-    case 'isHosting':
-      return eventsRef.where('hostUid', '==', user.uid).where('date', '>=', startDate);
-    default:
-      return eventsRef.where('date', '>=', startDate);
-  }
 }
 
 // 호스팅 이벤트 참가
