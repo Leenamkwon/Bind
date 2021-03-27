@@ -20,7 +20,7 @@ import {
   Divider,
   CardActionArea,
 } from '@material-ui/core';
-import { Favorite, LocationOn, FavoriteBorderOutlined, Share, MoreVert, Group, Title, Class } from '@material-ui/icons';
+import { Favorite, LocationOn, FavoriteBorderOutlined, Share, MoreVert, Group, Title } from '@material-ui/icons';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 

@@ -1,5 +1,5 @@
 import React, { useEffect, memo, useCallback, useRef } from 'react';
-import { Box, Grid } from '@material-ui/core';
+import { Box, CircularProgress, Grid } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import InfiniteScroll from 'react-infinite-scroller';
 
@@ -34,6 +34,8 @@ export default memo(function EventHostingList({ tabIdx, profile }) {
     }
   }, [dispatch, eventLastDocRef, eventMoreEvents, profile, tabIdx]);
 
+  if (loading && initialLoading.current) return <EventTabListItemSke />;
+
   return (
     <Box
       mt={4}
@@ -45,17 +47,18 @@ export default memo(function EventHostingList({ tabIdx, profile }) {
     >
       <InfiniteScroll pageStart={0} loadMore={nextFetch} hasMore={!loading && eventMoreEvents} useWindow={false}>
         <Grid container spacing={4}>
-          {loading && initialLoading.current ? (
-            <EventTabListItemSke />
-          ) : (
-            profileEvents.map((event) => (
-              <Grid item xs={12} sm={6} md={4} key={event.id}>
-                <EventTabItem event={event} />
-              </Grid>
-            ))
-          )}
+          {profileEvents.map((event) => (
+            <Grid item xs={12} sm={6} md={4} key={event.id}>
+              <EventTabItem event={event} />
+            </Grid>
+          ))}
         </Grid>
       </InfiniteScroll>
+      {loading && (
+        <Box display='flex' justifyContent='center' mt={1}>
+          <CircularProgress size={25} />
+        </Box>
+      )}
     </Box>
   );
 });

@@ -1,4 +1,5 @@
 import firebase from '../config/firebase';
+import { deleteNotification } from './firebaseNotification';
 import { setUserProfileData } from './firestoreService';
 
 const db = firebase.firestore();
@@ -127,7 +128,10 @@ export async function userBye() {
     const storageRef = firebase.storage().ref(user.uid);
     await storageRef.delete();
 
-    // step 06. 유저 스토리지 삭제
+    // 유저 알림 삭제
+    await deleteNotification(user);
+
+    // step 06. 유저 파이어 스토어 삭제
 
     // stop 07. 유저 Auth 삭제
 
@@ -140,8 +144,9 @@ export async function userBye() {
 export async function firebaseTest() {
   const user = firebase.auth().currentUser;
   try {
-    const follower2 = await db.collection('following').doc(user.uid).get();
-    console.log(follower2.data());
+    const test = await db.collection('following').doc(user.uid).collection('userFollowing').get();
+
+    console.log(test.docs);
   } catch (error) {
     console.log(error);
   }

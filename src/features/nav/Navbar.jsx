@@ -2,7 +2,7 @@ import React from 'react';
 import { AppBar, Button, makeStyles, Toolbar, IconButton, Box, Hidden } from '@material-ui/core';
 import { DonutSmall, Brightness4, Brightness7, Home } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 // COMPONENT
 import { DARK_MODE, LIGHT_MODE } from '../../app/store/themeReducer';
@@ -41,8 +41,6 @@ export default function NavBar() {
   const classes = useStyles();
   const { isThemeMode } = useSelector((state) => state.theme);
   const { authenticated } = useSelector((state) => state.auth);
-  const { initialized } = useSelector((state) => state.async);
-  const { pathname } = useLocation();
   const dispatch = useDispatch();
 
   function changeTheme() {

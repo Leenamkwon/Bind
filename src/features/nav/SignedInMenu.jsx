@@ -1,6 +1,6 @@
 import React, { useEffect, useState, memo } from 'react';
-import { Avatar, makeStyles, Menu, MenuItem, ListItemIcon, ListItemText, Box, IconButton } from '@material-ui/core';
-import { AccountCircle, Settings, ExitToApp, EventAvailable } from '@material-ui/icons';
+import { Avatar, makeStyles, Menu, MenuItem, ListItemIcon, ListItemText, Box, IconButton, Badge } from '@material-ui/core';
+import { AccountCircle, Settings, ExitToApp, EventAvailable, NotificationImportant } from '@material-ui/icons';
 import { useHistory, useLocation } from 'react-router';
 import { NavLink } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
@@ -31,6 +31,7 @@ export default memo(function SignedInMenu() {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const { currentUserProfile } = useSelector((state) => state.profile);
+  const { notification } = useSelector((state) => state.auth);
   const { pathname } = useLocation();
   const history = useHistory();
   const { enqueueSnackbar } = useSnackbar();
@@ -94,6 +95,15 @@ export default memo(function SignedInMenu() {
             <AccountCircle />
           </ListItemIcon>
           <ListItemText primary='프로필' />
+        </MenuItem>
+
+        <MenuItem selected={pathname === '/notification'} component={NavLink} to='/notification'>
+          <ListItemIcon>
+            <Badge badgeContent={notification && notification?.length} color='error'>
+              <NotificationImportant />
+            </Badge>
+          </ListItemIcon>
+          <ListItemText primary='알림' />
         </MenuItem>
 
         <MenuItem selected={pathname === '/account'} component={NavLink} to='/account'>

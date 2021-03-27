@@ -133,6 +133,32 @@ exports.eventUpdated = functions.firestore.document('events/{eventId}').onUpdate
   }
 });
 
+// exports.userDelete = functions.firestore.document('user/{uid}').onDelete(async (snapshot, context) => {
+//   const batch = db.batch();
+//   try {
+//     const follower2 = await db
+//       .collection('following')
+//       .doc()
+//       .collection('userFollowers')
+//       .where('uid', '==', context.params.uid)
+//       .get();
+
+//     const following2 = await db
+//       .collection('following')
+//       .doc()
+//       .collection('userFollowing')
+//       .where('uid', '==', context.params.uid)
+//       .get();
+
+//     if (!follower2.empty) follower2.docs.forEach((docRef) => batch.delete(docRef));
+//     if (!following2.empty) following2.docs.forEach((docRef) => batch.delete(docRef));
+
+//     await batch.commit();
+//   } catch (error) {
+//     console.log(error);
+//   }
+// });
+
 function newPost(user, code, eventId) {
   return {
     userUid: user?.id ?? user.email.split('@')[0],

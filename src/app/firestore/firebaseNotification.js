@@ -11,3 +11,8 @@ export function checkedNotification(notificationID) {
     isChecked: true,
   });
 }
+
+export function deleteNotification(currentUser) {
+  if (!currentUser) return;
+  return firebase.database().ref(`/notification/${currentUser?.uid}`).remove();
+}
