@@ -45,7 +45,9 @@ export default memo(function ProfilePageTab({ profile, userIsMe }) {
         <Tab label='팔로잉' />
       </Tabs>
       {currentTabIndex === 0 && <EventTab value={currentTabIndex} index={0} profile={profile} />}
-      {currentTabIndex === 1 && <GalleryTab value={currentTabIndex} index={1} profile={profile} userIsMe={userIsMe} />}
+      {currentTabIndex === 1 && (
+        <GalleryTab key={profile.id} value={currentTabIndex} index={1} profile={profile} userIsMe={userIsMe} />
+      )}
       {currentTabIndex === 2 && <FollowingTab value={currentTabIndex} index={2} profile={profile} />}
       {currentTabIndex === 3 && <FollowingTab value={currentTabIndex} index={3} profile={profile} />}
     </Paper>

@@ -28,6 +28,7 @@ const initialState = {
   followingUser: false,
   feed: [],
   currentTabIndex: 0,
+  retainState: false,
 };
 
 export default function profileReducer(state = initialState, { type, payload }) {
@@ -88,6 +89,9 @@ export default function profileReducer(state = initialState, { type, payload }) 
         followings: [],
         followingUser: false,
       };
+
+    case 'RETAIN_STATE':
+      return { ...state, retainState: true };
     default:
       return state;
   }

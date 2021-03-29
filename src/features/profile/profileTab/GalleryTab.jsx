@@ -21,7 +21,9 @@ export default memo(function GalleryTab(props) {
 
   useFirestoreCollection({
     query: () => getUserPhotos(profile.id),
-    data: (photos) => dispatch(listenToUserPhotos(photos)),
+    data: (photos) => {
+      dispatch(listenToUserPhotos(photos));
+    },
     deps: [profile.id, dispatch],
   });
 

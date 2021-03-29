@@ -21,7 +21,6 @@ export default function MyDateInput(props) {
         />
       </MuiPickersUtilsProvider>
       {meta.touched && meta.error ? <FormHelperText id={props.label}>{meta.error}</FormHelperText> : null}
-      {meta.touched && !meta.error && <FormHelperText id={props.label}>Success</FormHelperText>}
     </FormControl>
   );
 }

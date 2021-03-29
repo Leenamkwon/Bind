@@ -216,7 +216,7 @@ export default memo(function EventListItem({ event }) {
                 <Tooltip
                   title={joinedUser?.displayName ?? '알 수 없음'}
                   aria-label={joinedUser.displayName}
-                  placement='right'
+                  placement='top'
                   arrow
                 >
                   <Avatar src={joinedUser.photoURL} component={Link} to={`/profile/${joinedUser.id}`} />

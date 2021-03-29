@@ -23,7 +23,6 @@ export default function MytextInput(props) {
         }
       />
       {meta.touched && meta.error ? <FormHelperText>{meta.error}</FormHelperText> : null}
-      {meta.touched && !meta.error && <FormHelperText>Success</FormHelperText>}
     </FormControl>
   );
 }
