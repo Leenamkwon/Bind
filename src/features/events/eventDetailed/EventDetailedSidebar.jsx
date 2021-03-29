@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useCallback } from 'react';
 import {
   makeStyles,
   List,
@@ -13,7 +13,8 @@ import {
   fade,
   Typography,
 } from '@material-ui/core';
-import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -53,6 +54,17 @@ const useStyles = makeStyles((theme) => ({
 
 export default memo(function AlignItemsList({ event }) {
   const classes = useStyles();
+  const history = useHistory();
+  const { authenticated } = useSelector((state) => state.auth);
+
+  const goUserProfile = useCallback(
+    (attendeeId) => () => {
+      if (!authenticated) return history.push('/login');
+
+      history.push(`/profile/${attendeeId}`);
+    },
+    [authenticated, history]
+  );
 
   return (
     <Card raised={true}>
@@ -63,7 +75,7 @@ export default memo(function AlignItemsList({ event }) {
           <div key={attendee.id}>
             <ListItem alignItems='center'>
               <ListItemAvatar>
-                <IconButton size='small' component={Link} to={`/profile/${attendee.id}`}>
+                <IconButton size='small' onClick={goUserProfile(attendee.id)}>
                   <Avatar alt={attendee.displayName} src={attendee.photoURL || null} />
                 </IconButton>
               </ListItemAvatar>

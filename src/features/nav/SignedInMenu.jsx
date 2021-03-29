@@ -1,6 +1,6 @@
 import React, { useEffect, useState, memo } from 'react';
 import { Avatar, makeStyles, Menu, MenuItem, ListItemIcon, ListItemText, Box, IconButton, Badge } from '@material-ui/core';
-import { AccountCircle, Settings, ExitToApp, EventAvailable, NotificationImportant } from '@material-ui/icons';
+import { AccountCircle, Settings, ExitToApp, EventAvailable, NotificationImportant, Chat } from '@material-ui/icons';
 import { useHistory, useLocation } from 'react-router';
 import { NavLink } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
@@ -104,6 +104,15 @@ export default memo(function SignedInMenu() {
             </Badge>
           </ListItemIcon>
           <ListItemText primary='알림' />
+        </MenuItem>
+
+        <MenuItem selected={pathname === '/message'} component={NavLink} to='/message'>
+          <ListItemIcon>
+            <Badge badgeContent={notification && notification?.length} color='error'>
+              <Chat />
+            </Badge>
+          </ListItemIcon>
+          <ListItemText primary='채팅' />
         </MenuItem>
 
         <MenuItem selected={pathname === '/account'} component={NavLink} to='/account'>

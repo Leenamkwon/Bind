@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Box, TextField, Typography } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { modalClose } from '../../app/common/modal/modalReducer';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
@@ -10,9 +10,12 @@ import * as Yup from 'yup';
 import SocialLogin from './SocialLogin';
 import { registerInFirebase } from '../../app/firestore/firebaseService';
 import ButtonComponent from '../../app/layout/ButtonComponent';
+import { useHistory } from 'react-router';
 
-export default function LoginFormText() {
+export default function RegisterFormText({ type = 'modal' }) {
   const dispatch = useDispatch();
+  const history = useHistory();
+  const { prevLocation } = useSelector((state) => state.auth);
   const initialValues = useMemo(() => ({ displayName: '', email: '', password: '', confirmPassword: '' }), []);
   const validation = useMemo(
     () =>
@@ -36,9 +39,13 @@ export default function LoginFormText() {
           try {
             await registerInFirebase(values);
             setSubmitting(false);
-            dispatch(modalClose());
+            if (type === 'modal') {
+              dispatch(modalClose());
+              history.push('/events');
+            } else {
+              history.push(prevLocation?.pathname ?? '/events');
+            }
           } catch (error) {
-            console.log(error);
             setErrors({ auth: error.message });
             setSubmitting(false);
           }

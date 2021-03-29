@@ -20,9 +20,11 @@ import AccountPage from '../../features/auth/AccountPage';
 import ProfilePage from '../../features/profile/profilepage/ProfilePage';
 import LightBox from './LightBox';
 import LoadingComponent from './LoadingComponent';
-import Login from '../../features/Login/Login';
 import Error from '../../app/common/errors/Error';
 import GalleryLightBox from './GalleryLightBox';
+import ChatPage from '../../features/Chat/ChatPage';
+import LoginPage from '../../features/Login/LoginPage';
+import PublicRoute from './PublicRoute';
 
 export default function App() {
   const theme = themeStyle();
@@ -53,18 +55,17 @@ export default function App() {
                   minHeight: '100vh',
                 }}
               >
-                <Navbar />
+                {location.pathname === '/login' ? <PublicRoute exact path='/login' component={LoginPage} /> : <Navbar />}
                 <Container maxWidth='lg' style={{ height: '100%', paddingTop: '6rem', marginBottom: '3rem' }}>
                   <Switch location={background || location}>
-                    <Route exact path='/login' component={Login} />
                     <PrivateRoute path='/account' component={AccountPage} />
                     <Route exact path='/events' component={EventDashboard} />
                     <Route path='/events/:id' component={EventDetailedPage} />
                     <PrivateRoute exact path={['/createEvent', '/manage/:id']} key={location.key} component={EventForm} />
                     <PrivateRoute path='/profile/:id' component={ProfilePage} key={location.key} />
                     <PrivateRoute path='/notification' component={NotificationPage} />
+                    <PrivateRoute path='/chat' component={ChatPage} />
                     <Route path='/error' component={Error} />
-                    {/* <Route path='/*' component={Error} /> */}
                   </Switch>
                 </Container>
 

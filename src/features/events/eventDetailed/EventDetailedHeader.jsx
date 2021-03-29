@@ -16,14 +16,13 @@ import {
 } from '@material-ui/core';
 import { Favorite, FavoriteBorderOutlined, MoreVert, Share } from '@material-ui/icons';
 import { Link, useHistory } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 // COMPONENT
 import ButtonComponent from '../../../app/layout/ButtonComponent';
 import Prompt from '../../../app/common/dialog/Prompt';
 import { useTargetClick } from '../../../app/hooks/useTargetClick';
 import { useToggleClick } from '../../../app/hooks/useToggleClick';
-import { modalOpen } from '../../../app/common/modal/modalReducer';
 import {
   deleteLikesEvent,
   eventParticipateFirestore,
@@ -66,7 +65,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default memo(function EventDetailedHeader({ event, isHost, isGoing }) {
-  const dispatch = useDispatch();
   const classes = useStyles();
   const history = useHistory();
   const { currentUserProfile } = useSelector((state) => state.profile);
@@ -87,17 +85,17 @@ export default memo(function EventDetailedHeader({ event, isHost, isGoing }) {
   }
 
   const handleLike = useCallback(async () => {
-    if (!currentUserProfile) return dispatch(modalOpen('LoginForm'));
+    if (!currentUserProfile) return history.push('/login');
 
     if (currentUserProfile && currentUserProfile?.likesEvent.indexOf(event.id) !== -1) {
       await deleteLikesEvent(event.id);
     } else {
       await likesEvent(event.id);
     }
-  }, [currentUserProfile, dispatch, event.id]);
+  }, [currentUserProfile, event.id, history]);
 
   const eventParticapate = useCallback(async () => {
-    if (!authenticated) return dispatch(modalOpen('LoginForm'));
+    if (!authenticated) return history.push('/login');
 
     setLoading(true);
     try {
@@ -108,7 +106,7 @@ export default memo(function EventDetailedHeader({ event, isHost, isGoing }) {
     } finally {
       setLoading(false);
     }
-  }, [authenticated, dispatch, enqueueSnackbar, event.id]);
+  }, [authenticated, enqueueSnackbar, event.id, history]);
 
   const eventOut = useCallback(async () => {
     setLoading(true);

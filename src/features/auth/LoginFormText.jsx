@@ -3,7 +3,7 @@ import { Box, TextField, Typography } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 
 import ButtonComponent from '../../app/layout/ButtonComponent';
@@ -11,9 +11,10 @@ import { signInWithEmail } from '../../app/firestore/firebaseService';
 import { modalClose } from '../../app/common/modal/modalReducer';
 import SocialLogin from './SocialLogin';
 
-export default function LoginFormText() {
+export default function LoginFormText({ type = 'modal' }) {
   const history = useHistory();
   const dispatch = useDispatch();
+  const { prevLocation } = useSelector((state) => state.auth);
   const initialValues = useMemo(() => ({ email: '', password: '' }), []);
   const validation = useMemo(
     () =>
@@ -33,8 +34,12 @@ export default function LoginFormText() {
           try {
             await signInWithEmail(values);
             setSubmitting(false);
-            dispatch(modalClose());
-            history.push('/events');
+            if (type === 'modal') {
+              dispatch(modalClose());
+              history.push('/events');
+            } else {
+              history.push(prevLocation?.pathname ?? '/events');
+            }
           } catch (error) {
             setErrors({ auth: '이메일 또는 비밀번호가 맞지 않습니다.' });
             setSubmitting(false);
@@ -42,7 +47,7 @@ export default function LoginFormText() {
         }}
       >
         {({ values, handleChange, handleBlur, touched, isSubmitting, dirty, isValid, errors }) => (
-          <Form>
+          <Form style={{ width: '100%' }}>
             <TextField
               type='email'
               name='email'
@@ -87,7 +92,7 @@ export default function LoginFormText() {
                 OR
               </Typography>
             </Box>
-            <SocialLogin />
+            <SocialLogin type='route' />
           </Form>
         )}
       </Formik>

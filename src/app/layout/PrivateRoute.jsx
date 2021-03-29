@@ -5,5 +5,5 @@ import { Redirect, Route } from 'react-router';
 export default function PrivateRoute({ component: Component, ...rest }) {
   const { authenticated } = useSelector((state) => state.auth);
 
-  return <Route {...rest} render={(props) => (authenticated ? <Component {...props} /> : <Redirect to='/events' />)} />;
+  return <Route {...rest} render={(props) => (authenticated ? <Component {...props} /> : <Redirect to='/login' />)} />;
 }

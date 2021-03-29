@@ -20,7 +20,7 @@ export default function RegisterForm() {
       <Card style={{ height: 800 }}>
         <Box display='flex' style={{ height: '100%' }}>
           <Hidden smDown>
-            <Box width='45%'>
+            <Box width='40%'>
               <img
                 src={modalImages[Math.floor(Math.random() * modalImages.length)]}
                 alt='Login'

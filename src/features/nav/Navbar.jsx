@@ -1,6 +1,6 @@
 import React from 'react';
-import { AppBar, Button, makeStyles, Toolbar, IconButton, Box, Hidden } from '@material-ui/core';
-import { DonutSmall, Brightness4, Brightness7, Home } from '@material-ui/icons';
+import { AppBar, makeStyles, Toolbar, IconButton, Box, Hidden } from '@material-ui/core';
+import { DonutSmall, Brightness4, Brightness7 } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
@@ -72,14 +72,4 @@ export default function NavBar() {
       </Toolbar>
     </AppBar>
   );
-}
-
-{
-  /* <Hidden mdDown>
-<Box className={classes.tabs} display='flex'>
-  <Button variant='text' startIcon={<Home />} color='inherit'>
-    홈{pathname === '/events' && <div className='indicator' aria-label='indicator'></div>}
-  </Button>
-</Box>
-</Hidden> */
 }
