@@ -10,6 +10,7 @@ import {
   useTheme,
 } from '@material-ui/core';
 import { ImageRounded, Face, Delete } from '@material-ui/icons';
+import { Link, useLocation } from 'react-router-dom';
 
 import formatDate from '../../../../app/util/util';
 import IconButtonComponent from '../../../../app/layout/IconButtonComponent';
@@ -33,6 +34,7 @@ const useStyles = makeStyles(() => ({
 export default memo(function PhotoList({ photos, userIsMe, profile }) {
   const classes = useStyles();
   const theme = useTheme();
+  const location = useLocation();
   const [open, setOpen] = useState(false);
   const xsMatches = useMediaQuery(theme.breakpoints.down('xs'));
   const smMatches = useMediaQuery(theme.breakpoints.down('sm'));
@@ -56,7 +58,20 @@ export default memo(function PhotoList({ photos, userIsMe, profile }) {
     <GridList cellHeight={360} cols={gridColsResponsive}>
       {photos.map((photo) => (
         <GridListTile key={photo.url} className={classes.root}>
-          <img src={photo.url} alt={photo.name} loading='lazy' />
+          <Link
+            to={{
+              pathname: `/gallery/${photo.id}`,
+              state: { gallery: { ...location, profileId: profile.id } },
+            }}
+            style={{ display: 'block' }}
+          >
+            <img
+              src={photo.url}
+              alt={photo.name}
+              loading='lazy'
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
+          </Link>
           <GridListTileBar
             subtitle={formatDate(photo?.createdAt, 'yyyy년 MM월 dd일')}
             actionIcon={

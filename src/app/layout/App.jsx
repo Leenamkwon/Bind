@@ -12,6 +12,7 @@ import HomePage from '../../features/home/HomePage';
 import Navbar from '../../features/nav/Navbar';
 import EventDashboard from '../../features/events/eventDashboard/EventDashboard';
 import EventDetailedPage from '../../features/events/eventDetailed/EventDetailedPage';
+import NotificationPage from '../../features/Notification/NotificationPage';
 import PrivateRoute from './PrivateRoute';
 import ModalManager from '../common/modal/ModalManager';
 import EventForm from '../../features/events/eventForm/EventForm';
@@ -21,12 +22,14 @@ import LightBox from './LightBox';
 import LoadingComponent from './LoadingComponent';
 import Login from '../../features/Login/Login';
 import Error from '../../app/common/errors/Error';
+import GalleryLightBox from './GalleryLightBox';
 
 export default function App() {
   const theme = themeStyle();
   const location = useLocation();
   const { initialized } = useSelector((state) => state.async);
   let background = location.state && location.state.background;
+  let gallery = location.state && location.state.gallery;
 
   useEffect(() => {
     document.querySelector('body').style.backgroundColor = theme.palette.background.default;
@@ -59,12 +62,13 @@ export default function App() {
                     <Route path='/events/:id' component={EventDetailedPage} />
                     <PrivateRoute exact path={['/createEvent', '/manage/:id']} key={location.key} component={EventForm} />
                     <PrivateRoute path='/profile/:id' component={ProfilePage} />
-                    <PrivateRoute path='/notification' component={Error} />
+                    <PrivateRoute path='/notification' component={NotificationPage} />
                     <Route path='/error' component={Error} />
                   </Switch>
                 </Container>
 
                 {background && <Route path='/img/:id' children={<LightBox />} />}
+                {gallery && <Route path='/gallery/:id' children={<GalleryLightBox />} />}
               </Box>
             )}
           />

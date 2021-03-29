@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { Box } from '@material-ui/core';
 import { PhotoCamera, PhotoLibrary } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
@@ -24,6 +24,15 @@ export default memo(function GalleryTab(props) {
     data: (photos) => dispatch(listenToUserPhotos(photos)),
     deps: [profile.id, dispatch],
   });
+
+  useEffect(() => {
+    if (!loading) {
+      window.scrollTo({
+        top: window.innerHeight,
+        behavior: 'instant',
+      });
+    }
+  }, [loading]);
 
   return (
     <div role='tabpanel' hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`}>

@@ -8,7 +8,7 @@ export default memo(function EventTabListItemSke() {
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6} md={4}>
           <Card>
-            <Skeleton animation='wave' variant='rect' height={200} />
+            <Skeleton animation='wave' variant='rect' height={320} />
             <CardContent>
               <Skeleton animation='wave' />
               <Skeleton animation='wave' width='60%' />
@@ -17,7 +17,7 @@ export default memo(function EventTabListItemSke() {
         </Grid>
         <Grid item xs={12} sm={6} md={4}>
           <Card>
-            <Skeleton animation='wave' variant='rect' height={200} />
+            <Skeleton animation='wave' variant='rect' height={320} />
             <CardContent>
               <Skeleton animation='wave' />
               <Skeleton animation='wave' width='60%' />
@@ -26,7 +26,7 @@ export default memo(function EventTabListItemSke() {
         </Grid>
         <Grid item xs={12} sm={6} md={4}>
           <Card>
-            <Skeleton animation='wave' variant='rect' height={200} />
+            <Skeleton animation='wave' variant='rect' height={320} />
             <CardContent>
               <Skeleton animation='wave' />
               <Skeleton animation='wave' width='60%' />

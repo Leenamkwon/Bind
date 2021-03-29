@@ -1,9 +1,12 @@
-import React, { useState, memo } from 'react';
+import React, { memo } from 'react';
 import { makeStyles, Paper, Tabs, Tab } from '@material-ui/core';
+
+// COMPONENT
 import EventTab from './EventTab';
 import GalleryTab from './GalleryTab';
 import FollowingTab from './FollowingTab';
-import FollowerTab from './FollowerTab';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectCurrentTab } from '../profileActions';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -18,16 +21,17 @@ const useStyles = makeStyles((theme) => ({
 
 export default memo(function ProfilePageTab({ profile, userIsMe }) {
   const classes = useStyles();
-  const [value, setValue] = useState(0);
+  const dispatch = useDispatch();
+  const { currentTabIndex } = useSelector((state) => state.profile);
 
   const handleChange = (event, newValue) => {
-    setValue(newValue);
+    dispatch(selectCurrentTab(newValue));
   };
 
   return (
     <Paper className={classes.root}>
       <Tabs
-        value={value}
+        value={currentTabIndex}
         onChange={handleChange}
         indicatorColor='primary'
         textColor='primary'
@@ -40,10 +44,10 @@ export default memo(function ProfilePageTab({ profile, userIsMe }) {
         <Tab label='팔로워' />
         <Tab label='팔로잉' />
       </Tabs>
-      {value === 0 && <EventTab value={value} index={0} profile={profile} />}
-      {value === 1 && <GalleryTab value={value} index={1} profile={profile} userIsMe={userIsMe} />}
-      {value === 2 && <FollowerTab value={value} index={2} profile={profile} />}
-      {value === 3 && <FollowingTab value={value} index={3} profile={profile} />}
+      {currentTabIndex === 0 && <EventTab value={currentTabIndex} index={0} profile={profile} />}
+      {currentTabIndex === 1 && <GalleryTab value={currentTabIndex} index={1} profile={profile} userIsMe={userIsMe} />}
+      {currentTabIndex === 2 && <FollowingTab value={currentTabIndex} index={2} profile={profile} />}
+      {currentTabIndex === 3 && <FollowingTab value={currentTabIndex} index={3} profile={profile} />}
     </Paper>
   );
 });

@@ -165,7 +165,7 @@ export function setUserProfileData(user) {
     .doc(user.uid)
     .set({
       id: user.uid,
-      displayName: user.displayName || user.email.split('@')[0],
+      displayName: user?.displayName || user.email.split('@')[0],
       email: user.email,
       photoURL: user.photoURL || null,
       providerId: user.providerData[0].providerId,
@@ -342,6 +342,16 @@ export async function userProfilePhotoUpdate(url) {
   } catch (error) {
     throw error;
   }
+}
+
+// 팔로워 정보 모두 가져오기
+export function getFollowerscollection(profileId) {
+  return db.collection('following').doc(profileId).collection('userFollowers');
+}
+
+// 팔로잉 정보 모두 가져오기
+export function getFollowingcollection(profileId) {
+  return db.collection('following').doc(profileId).collection('userFollowing');
 }
 
 // 팔로우한 유저 1명 정보 가져오기

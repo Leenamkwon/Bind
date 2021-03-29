@@ -205,9 +205,11 @@ export default function EventForm({ match }) {
                   showPreviews={true}
                   maxFileSize={3000000}
                   filesLimit={1}
-                  getFileAddedMessage={(fileName) => `이미지 ${fileName}이 추가되었습니다.`}
-                  getFileLimitExceedMessage={(filesLimit) => `허용된 용량을 초과하였습니다. ${filesLimit}이하만 가능합니다`}
-                  getFileRemovedMessage={(fileName) => `파일 ${fileName}이 제거되었습니다.`}
+                  getFileAddedMessage={(fileName) => `이미지 ${fileName}가 추가되었습니다.`}
+                  getFileLimitExceedMessage={(filesLimit) =>
+                    `허용된 용량(3MB)를 초과하였습니다. ${filesLimit}이하만 가능합니다`
+                  }
+                  getFileRemovedMessage={(fileName) => `이미지 ${fileName}가 제거되었습니다.`}
                 />
 
                 <Box display='flex' flexDirection='row-reverse'>

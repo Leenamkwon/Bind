@@ -40,7 +40,7 @@ export default memo(function LightBox() {
     history.push('/events');
   };
 
-  if (!events[currentIdx]) return <Redirect to='/error' />;
+  if (!events[currentIdx] || currentIdx === -1) return <Redirect to='/error' />;
 
   return (
     <Dialog fullWidth={true} maxWidth='lg' onClose={back} open={true}>

@@ -12,6 +12,7 @@ import {
   RETAIN_EVENT,
   CLEAN_UP_EVENT,
   CLEAN_UP_ALL,
+  SELECT_CURRENT_TAB,
 } from './profileConstants';
 
 const initialState = {
@@ -26,10 +27,14 @@ const initialState = {
   followings: [],
   followingUser: false,
   feed: [],
+  currentTabIndex: 0,
 };
 
 export default function profileReducer(state = initialState, { type, payload }) {
   switch (type) {
+    case SELECT_CURRENT_TAB:
+      return { ...state, currentTabIndex: payload };
+
     case LISTEN_TO_CURRENT_USER_PROFILE:
       return { ...state, currentUserProfile: payload };
 

@@ -9,7 +9,12 @@ import {
   LISTEN_TO_FOLLOWINGS,
   SET_FOLLOW_USER,
   SET_UNFOLLOW_USER,
+  SELECT_CURRENT_TAB,
 } from './profileConstants';
+
+export function selectCurrentTab(tabIndex) {
+  return { type: SELECT_CURRENT_TAB, payload: tabIndex };
+}
 
 export function listenToCurrentUserProfile(profile) {
   return {

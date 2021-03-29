@@ -1,5 +1,5 @@
 import React, { useEffect, memo, useCallback, useRef } from 'react';
-import { Box, CircularProgress, Grid } from '@material-ui/core';
+import { Box, CircularProgress, Grid, Typography } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import InfiniteScroll from 'react-infinite-scroller';
 
@@ -43,18 +43,24 @@ export default memo(function EventHostingList({ tabIdx, profile }) {
       role='tabpanel'
       id={`vertical-tabpanel-${tabIdx}`}
       aria-labelledby={`vertical-tab-${tabIdx}`}
-      style={{ minHeight: 370, overflowY: 'auto' }}
+      style={{ minHeight: 340, overflowY: 'auto' }}
     >
       <InfiniteScroll pageStart={0} loadMore={nextFetch} hasMore={!loading && eventMoreEvents} useWindow={false}>
         <Grid container spacing={4}>
-          {profileEvents.map((event) => (
-            <Grid item xs={12} sm={6} md={4} key={event.id}>
-              <EventTabItem event={event} />
-            </Grid>
-          ))}
+          {profileEvents.length > 0 ? (
+            profileEvents.map((event) => (
+              <Grid item xs={12} sm={6} md={4} key={event.id}>
+                <EventTabItem event={event} />
+              </Grid>
+            ))
+          ) : (
+            <Box p={2}>
+              <Typography variant='body1'>이벤트가 없습니다.</Typography>
+            </Box>
+          )}
         </Grid>
       </InfiniteScroll>
-      {loading && (
+      {loading && !initialLoading.current && (
         <Box display='flex' justifyContent='center' mt={1}>
           <CircularProgress size={25} />
         </Box>

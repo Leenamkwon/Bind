@@ -1,4 +1,4 @@
-import { SIGN_IN_USER, SIGN_OUT_USER, LISTEN_TO_NOTIFICATION } from './authConstants';
+import { SIGN_IN_USER, SIGN_OUT_USER, LISTEN_TO_NOTIFICATION, LISTEN_TO_ALL_NOTIFICATION } from './authConstants';
 import { LOCATION_CHANGE } from 'connected-react-router';
 
 const initialState = {
@@ -7,6 +7,7 @@ const initialState = {
   prevLocation: null,
   currentLocation: null,
   notification: [],
+  AllNotification: [],
 };
 
 export default function authReducer(state = initialState, { type, payload }) {
@@ -26,13 +27,16 @@ export default function authReducer(state = initialState, { type, payload }) {
         },
       };
     case SIGN_OUT_USER:
-      return { ...state, authenticated: false, currentUser: null, notification: [] };
+      return { ...state, authenticated: false, currentUser: null, notification: [], AllNotification: [] };
 
     case LOCATION_CHANGE:
       return { ...state, prevLocation: state.currentLocation, currentLocation: payload.location };
 
     case LISTEN_TO_NOTIFICATION:
       return { ...state, notification: payload };
+
+    case LISTEN_TO_ALL_NOTIFICATION:
+      return { ...state, AllNotification: payload };
     default:
       return { ...state };
   }

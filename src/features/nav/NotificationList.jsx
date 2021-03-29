@@ -9,6 +9,7 @@ import {
   Divider,
   ListItemSecondaryAction,
   IconButton,
+  Tooltip,
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import HighlightOffRoundedIcon from '@material-ui/icons/HighlightOffRounded';
@@ -81,12 +82,21 @@ export default function NotificationList({ notification }) {
               {`${notification.displayName}님이`} {render()}
             </Typography>
           }
-          secondary={<Typography variant='caption'>{formatDateDistance(notification.date)}</Typography>}
+          secondary={<Typography variant='caption'>{formatDateDistance(notification.date) + ' 전'}</Typography>}
         />
         <ListItemSecondaryAction>
-          <IconButton size='small' color='inherit' onClick={() => checkedNotification(notification.id)}>
-            <HighlightOffRoundedIcon />
-          </IconButton>
+          <Tooltip title='읽음 표시 하기' arrow placement='top'>
+            <div>
+              <IconButton
+                disabled={notification.isChecked}
+                size='small'
+                color='inherit'
+                onClick={() => checkedNotification(notification.id)}
+              >
+                <HighlightOffRoundedIcon />
+              </IconButton>
+            </div>
+          </Tooltip>
         </ListItemSecondaryAction>
       </ListItem>
       <Divider component='li' light={true} variant='middle' />

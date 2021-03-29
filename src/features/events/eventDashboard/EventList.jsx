@@ -12,7 +12,6 @@ export default memo(function EventList({ events, getNextEvents, loading, moreEve
           pageStart={0}
           loadMore={() => getNextEvents()}
           hasMore={!loading && moreEvents}
-          initialLoad={true}
           style={{ width: '100%' }}
         >
           {events.map((event) => (
