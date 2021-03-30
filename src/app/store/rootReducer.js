@@ -6,6 +6,7 @@ import { modalReducer } from '../common/modal/modalReducer';
 import { themeReducer } from './themeReducer';
 import profileReducer from '../../features/profile/profileReducer';
 import eventReducer from '../../features/events/eventReducer';
+import { chatReducer } from '../../features/Chat/chatReducer';
 
 const rootReducer = (history) =>
   combineReducers({
@@ -16,6 +17,7 @@ const rootReducer = (history) =>
     auth: authReducer,
     async: asyncReducer,
     profile: profileReducer,
+    chat: chatReducer,
   });
 
 export default rootReducer;

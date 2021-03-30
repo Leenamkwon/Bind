@@ -1,30 +1,73 @@
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { List, ListItem, ListItemAvatar, Avatar, ListItemText, Divider, Box, Typography } from '@material-ui/core';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { fetchChatList } from './chatAction';
 
 export default function ChatList() {
+  const dispatch = useDispatch();
+  const { currentUser } = useSelector((state) => state.auth);
+  const { chatList } = useSelector((state) => state.chat);
+  const location = useLocation();
+
+  const matchParams = location.pathname.split('/').filter((x) => x)[1];
+
+  useEffect(() => {
+    dispatch(fetchChatList());
+  }, [dispatch, location.pathname]);
+
+  const anotherUser = useCallback(
+    (list) => {
+      return list.filter((item) => item.id !== currentUser.uid)[0];
+    },
+    [currentUser.uid]
+  );
+
   return (
     <Box>
       <List>
-        {new Array(30).fill(false).map((_, i) => (
-          <div key={i}>
-            <ListItem button alignItems='flex-start' component={Link} to='/chat/dasdad'>
+        {chatList.map((list, index) => (
+          <div key={list.id}>
+            <ListItem
+              button
+              alignItems='flex-start'
+              component={Link}
+              to={`/chat/${list.id}`}
+              selected={matchParams === list.id}
+            >
               <ListItemAvatar>
-                <Avatar alt='Remy Sharp' src='/static/images/avatar/1.jpg' />
+                <Avatar src={anotherUser(list.chatUsers).photoURL || null} />
               </ListItemAvatar>
               <ListItemText
                 primary={
                   <Typography variant='subtitle1' color='textPrimary'>
-                    이남권
+                    {anotherUser(list.chatUsers).displayName}
                   </Typography>
                 }
-                secondary={<React.Fragment>{"I'll be in your neighborhood doing errands this…"}</React.Fragment>}
+                secondary={<React.Fragment>{list?.lastMessage}</React.Fragment>}
               />
             </ListItem>
-            <Divider variant='inset' component='li' />
+            {chatList.length - 1 !== index && <Divider variant='inset' component='li' />}
           </div>
         ))}
       </List>
     </Box>
   );
 }
+
+// async function testChat() {
+//   try {
+//     createChat(
+//       {
+//         id: 'T0F7ZpMIbORSJWZLiTdloGFk2Pl1',
+//         displayName: '이남권',
+//         photoURL:
+//           'https://firebasestorage.googleapis.com/v0/b/bind-5d6a6.appspot.com/o/T0F7ZpMIbORSJWZLiTdloGFk2Pl1%2Fuser_image%2Fckmo08lwq00003f6ai0qijvmu.jpg?alt=media&token=9051e31b-b035-44b4-9ede-44715d1dcdf0',
+//       },
+//       history
+//     );
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
