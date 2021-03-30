@@ -106,7 +106,7 @@ export default memo(function SignedInMenu() {
           <ListItemText primary='알림' />
         </MenuItem>
 
-        <MenuItem selected={pathname === '/message'} component={NavLink} to='/message'>
+        <MenuItem selected={pathname === '/chat'} component={NavLink} to='/chat'>
           <ListItemIcon>
             <Badge badgeContent={notification && notification?.length} color='error'>
               <Chat />

@@ -14,7 +14,7 @@ import {
   Badge,
 } from '@material-ui/core';
 import { HighlightOffRounded } from '@material-ui/icons';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { FixedSizeList } from 'react-window';
@@ -24,31 +24,38 @@ import { firebaseObjectToArray } from '../../app/firestore/firebaseEventChat';
 import { checkedNotification, getNotificationCollctionAll } from '../../app/firestore/firebaseNotification';
 import { formatDateDistance } from '../../app/util/util';
 import { listenToAllNotification } from '../auth/authAction';
+import NotificationSkeleton from './NotificationSkeleton';
 
 export default function NotificationPage() {
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
   const { currentUser, AllNotification } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    if (!currentUser) return;
-
+    if (!currentUser || AllNotification.length > 0) return;
+    setLoading(true);
     const unsubscribe = getNotificationCollctionAll(currentUser).on('value', (snapshot) => {
-      if (!snapshot.exists()) return;
+      if (!snapshot.exists()) return setLoading(false);
       const filtering = firebaseObjectToArray(snapshot.val());
       dispatch(listenToAllNotification(filtering));
+      setLoading(false);
     });
 
     return () => getNotificationCollctionAll(currentUser).off('value', unsubscribe);
-  }, [currentUser, dispatch]);
+  }, [AllNotification.length, currentUser, dispatch]);
 
   return (
     <Card raised>
       <CardHeader title='알림' />
       <Divider />
       <CardContent>
-        <FixedSizeList height={380} itemSize={70} itemData={AllNotification} itemCount={AllNotification.length}>
-          {renderRow}
-        </FixedSizeList>
+        {loading && !AllNotification.length ? (
+          <NotificationSkeleton />
+        ) : (
+          <FixedSizeList height={380} itemSize={70} itemData={AllNotification} itemCount={AllNotification.length}>
+            {renderRow}
+          </FixedSizeList>
+        )}
       </CardContent>
     </Card>
   );

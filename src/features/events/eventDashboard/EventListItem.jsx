@@ -31,6 +31,7 @@ import { useTargetClick } from '../../../app/hooks/useTargetClick';
 import formatDate from '../../../app/util/util';
 import { modalOpen } from '../../../app/common/modal/modalReducer';
 import { deleteLikesEvent, likesEvent } from '../../../app/firestore/firestoreService';
+import ShareDialog from '../../../app/layout/ShareDialog';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -98,6 +99,7 @@ export default memo(function EventListItem({ event }) {
   const { currentUserProfile } = useSelector((state) => state.profile);
   const [expanded, setExpanded] = useToggleClick(false);
   const [dialogOpen, setDialogOpen] = useToggleClick(false);
+  const [shareOpen, setShareOpen] = useToggleClick(false);
   const [anchorEl, setAnchorEl] = useTargetClick(null);
 
   const DialogClose = useCallback(() => {
@@ -195,7 +197,7 @@ export default memo(function EventListItem({ event }) {
               <FavoriteBorderOutlined color='primary' />
             )}
           </IconButton>
-          <IconButton aria-label='share'>
+          <IconButton aria-label='share' onClick={setShareOpen}>
             <Share className={classes.subIcon} />
           </IconButton>
 
@@ -226,6 +228,7 @@ export default memo(function EventListItem({ event }) {
           </CardActions>
         </Collapse>
       </Card>
+      <ShareDialog open={shareOpen} onClose={setShareOpen} eventId={event.id} />
     </Grid>
   );
 });
