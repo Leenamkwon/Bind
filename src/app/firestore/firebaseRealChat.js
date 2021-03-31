@@ -13,11 +13,13 @@ export async function createChat(otherUser, history) {
         id: user.uid,
         displayName: user.displayName,
         photoURL: user.photoURL || null,
+        isRead: false,
       },
       {
         id: otherUser.id,
         displayName: otherUser.displayName,
         photoURL: otherUser.photoURL || null,
+        isRead: false,
       }
     ),
     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
@@ -40,5 +42,33 @@ export async function createChat(otherUser, history) {
 
 export function getChatList() {
   const user = firebase.auth().currentUser;
-  return db.collection('chat').where('chatUserIds', 'array-contains', user.uid);
+  return db.collection('chat').where('chatUserIds', 'array-contains', user.uid).orderBy('createdAt', 'desc');
+}
+
+export async function sendMessage(chatId, text) {
+  const user = firebase.auth().currentUser;
+
+  try {
+    await db.collection('chat').doc(chatId).update({
+      lastMessage: text,
+    });
+
+    return await db
+      .collection('chat')
+      .doc(chatId)
+      .collection('message')
+      .add({
+        text,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        uid: user.uid,
+        photoURL: user.photoURL || null,
+        displayName: user.displayName || user.email.split('@')[0],
+      });
+  } catch (error) {
+    throw error;
+  }
+}
+
+export function getChatMessageList(chatId) {
+  return db.collection('chat').doc(chatId).collection('message').orderBy('createdAt');
 }

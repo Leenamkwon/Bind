@@ -1,21 +1,12 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import { List, ListItem, ListItemAvatar, Avatar, ListItemText, Divider, Box, Typography } from '@material-ui/core';
 import { Link, useLocation } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import { fetchChatList } from './chatAction';
-
-export default function ChatList() {
-  const dispatch = useDispatch();
+export default function ChatList({ chatList }) {
   const { currentUser } = useSelector((state) => state.auth);
-  const { chatList } = useSelector((state) => state.chat);
   const location = useLocation();
-
   const matchParams = location.pathname.split('/').filter((x) => x)[1];
-
-  useEffect(() => {
-    dispatch(fetchChatList());
-  }, [dispatch, location.pathname]);
 
   const anotherUser = useCallback(
     (list) => {
