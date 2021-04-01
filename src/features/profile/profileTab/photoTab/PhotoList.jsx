@@ -63,7 +63,7 @@ export default memo(function PhotoList({ photos, userIsMe, profile }) {
               pathname: `/gallery/${photo.id}`,
               state: { gallery: { ...location, profileId: profile.id } },
             }}
-            style={{ display: 'block' }}
+            style={{ display: 'block', width: '100%', height: '100%' }}
           >
             <img
               src={photo.url}

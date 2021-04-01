@@ -58,15 +58,17 @@ export async function eventChatPhotoIconUpdate(entryName, updateData) {
 
   try {
     const chatSnap = await chatRef.get();
-    const rootId = Object.entries(chatSnap.val()).map((evt) => ({
-      rootId: evt[0],
-      child: Object.entries(evt[1]).map((item) => ({ id: item[0], ...item[1] })),
-    }));
+    if (chatSnap.exists()) {
+      const rootId = Object.entries(chatSnap.val()).map((evt) => ({
+        rootId: evt[0],
+        child: Object.entries(evt[1]).map((item) => ({ id: item[0], ...item[1] })),
+      }));
 
-    rootId.forEach((item) => {
-      const refPath = firebase.database().ref(`chat/${item.rootId}`);
-      item.child.forEach((item) => item.uid === userUid && refPath.child(item.id).update(updateData));
-    });
+      rootId.forEach((item) => {
+        const refPath = firebase.database().ref(`chat/${item.rootId}`);
+        item.child.forEach((item) => item.uid === userUid && refPath.child(item.id).update(updateData));
+      });
+    }
   } catch (error) {
     throw error;
   }

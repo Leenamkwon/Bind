@@ -2,8 +2,6 @@ import React from 'react';
 import { Box, Button, Card, CardContent, Hidden, Typography } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 
-import { firebaseTest } from '../../firestore/firebaseService';
-
 export default function Error() {
   return (
     <Card>
@@ -31,8 +29,6 @@ export default function Error() {
             </div>
           </Hidden>
         </Box>
-
-        <div onClick={firebaseTest}>test</div>
       </CardContent>
     </Card>
   );

@@ -111,3 +111,35 @@ export async function particapateChat(chatId, type) {
     });
   }
 }
+
+// 채팅 아바타 업데이트
+export async function realChatPhotoIconUpdate(root, photoData) {
+  const userUid = firebase.auth().currentUser.uid;
+  const chatRef = firebase.database().ref(root);
+
+  try {
+    const chatSnap = await chatRef.get();
+    if (chatSnap.exists()) {
+      const rootId = Object.entries(chatSnap.val()).map((evt) => evt[0]);
+
+      if (rootId.length) {
+        for (let val of rootId) {
+          const childRef = chatRef.child(val);
+          const data = await childRef.get();
+          const key = Object.keys(data.val());
+
+          for (let val of key) {
+            const test = childRef.child(val);
+            const data = await test.get();
+
+            if (data.val().uid === userUid) {
+              test.ref.update(photoData);
+            }
+          }
+        }
+      }
+    }
+  } catch (error) {
+    throw error;
+  }
+}

@@ -19,7 +19,7 @@ export default memo(function PhotoListSkeleton() {
       {Array.from({ length: 3 }).map((_, i) => (
         <GridListTile key={i}>
           <Skeleton variant='rect' height={300} animation='wave' />
-          <Skeleton variant='text' width={'70%'} />
+          <Skeleton variant='text' width={'70%'} animation='wave' />
         </GridListTile>
       ))}
     </GridList>

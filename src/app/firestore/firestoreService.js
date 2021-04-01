@@ -1,6 +1,8 @@
 import firebase from '../config/firebase';
 import { deleteStorageImage } from './fireStorageService';
 import { eventChatPhotoIconUpdate } from './firebaseEventChat';
+import { realChatPhotoIconUpdate } from './firebaseRealChat';
+import { NotificationPhotoUpdate } from './firebaseNotification';
 
 const db = firebase.firestore();
 
@@ -263,8 +265,9 @@ export async function updateUserGalleryPhoto(downloadURL, filename) {
     const userDoc = await userDocRef.get();
 
     if (!userDoc.data().photoURL) {
-      await userDocRef.update({ photoURL: downloadURL });
-      await user.updateProfile({ photoURL: downloadURL });
+      // await userDocRef.update({ photoURL: downloadURL });
+      // await user.updateProfile({ photoURL: downloadURL });
+      await userProfilePhotoUpdate(downloadURL);
     }
 
     return await db.collection('users').doc(user.uid).collection('photos').add({
@@ -300,6 +303,7 @@ export function userBackgroundUpdate(values) {
 export async function userProfilePhotoUpdate(url) {
   const user = firebase.auth().currentUser;
   const eventDocQuery = db.collection('events').where('attendeeIds', 'array-contains', user.uid);
+  const eventChatQuery = db.collection('chat').where('chatUserIds', 'array-contains', user.uid);
   const batch = db.batch();
 
   try {
@@ -327,6 +331,26 @@ export async function userProfilePhotoUpdate(url) {
         }),
       });
     }
+    // 실시간 채팅 아바타 업데이트
+    const realChatData = await eventChatQuery.get();
+    for (let i = 0; i < realChatData.docs.length; i++) {
+      let chatDoc = realChatData.docs[i];
+
+      batch.update(chatDoc.ref, {
+        chatUsers: chatDoc.data().chatUsers.map((chatUser) => {
+          if (chatUser.id === user.uid) {
+            return { ...chatUser, photoURL: url };
+          }
+          return chatUser;
+        }),
+      });
+    }
+
+    // 알림 아바타 업데이트
+    await NotificationPhotoUpdate({ photoURL: url });
+
+    // 리얼 채팅 아바타 업데이트
+    await realChatPhotoIconUpdate('message', { photoURL: url });
 
     // 채팅 아바타 업데이트
     await eventChatPhotoIconUpdate('chat', { photoURL: url });

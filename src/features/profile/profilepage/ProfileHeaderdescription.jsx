@@ -4,7 +4,7 @@ import { PersonPinCircle, InsertLink, PermContactCalendar } from '@material-ui/i
 
 // COMPONENT
 import ProfileHeaderForm from './ProfileHeaderForm';
-import formatDate, { extractURL } from '../../../app/util/util';
+import formatDate from '../../../app/util/util';
 
 const useStyle = makeStyles((theme) => ({
   icon: {
@@ -57,20 +57,25 @@ export default function ProfileHeaderdescription({ edit, handleEdit, userIsMe, p
             </Box>
             {profile?.links && (
               <Box display='flex' alignItems='center' mr={1}>
-                <InsertLink className={classes.icon} />
-                <Typography variant='subtitle2' display='inline' color='textSecondary'>
-                  {profile?.links?.map((link) => (
-                    <Link
-                      rel='noopener noreferrer'
-                      target='_blank'
-                      href={isHttpcontains(link)}
-                      key={link.key}
-                      style={{ marginRight: 8 }}
-                    >
-                      {extractURL(link['link'])}
-                    </Link>
-                  ))}
-                </Typography>
+                {profile?.links?.map((link) => {
+                  if (link.link.length) {
+                    return (
+                      <Typography variant='subtitle2' display='inline' color='textSecondary' key={link.key}>
+                        <Link
+                          rel='noopener noreferrer'
+                          target='_blank'
+                          href={isHttpcontains(link)}
+                          style={{ marginRight: 8, display: 'flex', alignItems: 'center' }}
+                        >
+                          <InsertLink className={classes.icon} />
+                          {link['link']}
+                        </Link>
+                      </Typography>
+                    );
+                  } else {
+                    return null;
+                  }
+                })}
               </Box>
             )}
           </Box>

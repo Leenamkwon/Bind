@@ -66,7 +66,7 @@ export const matchURLRegex = (value) => {
 };
 
 export function extractURL(url) {
-  if (!url) return;
+  if (!url) return '';
 
   const http = url.indexOf('www');
   const com = url.lastIndexOf('com');

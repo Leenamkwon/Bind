@@ -1,12 +1,15 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Grid, makeStyles, useMediaQuery, useTheme } from '@material-ui/core';
-import { Route, useLocation } from 'react-router';
+import { useLocation } from 'react-router';
+import { useDispatch, useSelector } from 'react-redux';
+
+// COMPONENT
 import ChatList from './ChatList';
 import ChatLogPage from './ChatLogPage';
 import { getChatList } from '../../app/firestore/firebaseRealChat';
-import { useDispatch, useSelector } from 'react-redux';
 import { fetchChatList2 } from './chatAction';
 import { dataFromSnapshot } from '../../app/firestore/firestoreService';
+import PrivateRoute from '../../app/layout/PrivateRoute';
 
 const useStyles = makeStyles((theme) => ({
   rootItem: {
@@ -59,7 +62,7 @@ export default function ChatPage() {
       )}
 
       <Grid className={classes.rootItem} item xs={12} sm={12} md={8}>
-        <Route exact path='/chat/:id' component={ChatLogPage} key={location.key} />
+        <PrivateRoute exact path='/chat/:id' component={ChatLogPage} key={location.key} />
       </Grid>
     </Grid>
   );

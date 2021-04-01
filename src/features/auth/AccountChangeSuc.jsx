@@ -13,7 +13,7 @@ export default function AccountChangeSuc() {
       <Typography variant='subtitle1' paragraph>
         업데이트가 완료되었습니다!
       </Typography>
-      <Typography variant='subtitle2'>많은 활동 부탁드려요. - Bind Team</Typography>
+      <Typography variant='subtitle2'>많은 활동 부탁드려요 - 남권</Typography>
     </Box>
   );
 }
