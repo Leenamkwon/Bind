@@ -45,7 +45,7 @@ export default function LoginForm() {
               )}
             </Box>
             {/* FORM  */}
-            {!forgotPassword ? <LoginFormText /> : <ForgotPassword />}
+            {!forgotPassword ? <LoginFormText type='modal' /> : <ForgotPassword />}
             {!forgotPassword ? (
               <>
                 <Typography variant='subtitle2' color='textSecondary'>

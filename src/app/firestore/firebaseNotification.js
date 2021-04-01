@@ -7,7 +7,7 @@ export function getNotificationCollction(currentUser) {
 
 export function getNotificationCollctionAll(currentUser) {
   if (!currentUser) return;
-  return firebase.database().ref(`/notification/${currentUser?.uid}`);
+  return firebase.database().ref(`/notification/${currentUser?.uid}`).orderByKey();
 }
 
 export function checkedNotification(notificationID) {

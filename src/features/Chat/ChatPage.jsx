@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Grid, makeStyles, useMediaQuery, useTheme } from '@material-ui/core';
 import { Route, useLocation } from 'react-router';
 import ChatList from './ChatList';
 import ChatLogPage from './ChatLogPage';
-import useFirestoreCollection from '../../app/hooks/useFirestoreCollection';
 import { getChatList } from '../../app/firestore/firebaseRealChat';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchChatList2 } from './chatAction';
+import { dataFromSnapshot } from '../../app/firestore/firestoreService';
 
 const useStyles = makeStyles((theme) => ({
   rootItem: {
@@ -19,16 +19,26 @@ export default function ChatPage() {
   const location = useLocation();
   const classes = useStyles();
   const theme = useTheme();
-  const matchesXS = useMediaQuery(theme.breakpoints.down('sm'));
   const dispatch = useDispatch();
+  const matchesXS = useMediaQuery(theme.breakpoints.down('sm'));
   const { chatList } = useSelector((state) => state.chat);
-  const isChat = location.pathname.split('/').filter((x) => x)[1];
+  const isChat = useMemo(() => location.pathname.split('/').filter((x) => x)[1], [location.pathname]);
+  const [initialLoading, setInitialLoading] = useState(true);
 
-  useFirestoreCollection({
-    query: () => getChatList(),
-    data: (data) => dispatch(fetchChatList2(data)),
-    deps: [location.pathname],
-  });
+  useEffect(() => {
+    const unsubsribe = getChatList().onSnapshot(
+      (snapshot) => {
+        const EventsData = snapshot.docs?.map(dataFromSnapshot);
+        dispatch(fetchChatList2(EventsData));
+        setInitialLoading(false);
+      },
+      (error) => {}
+    );
+
+    return unsubsribe;
+  }, [dispatch]);
+
+  if (initialLoading) return <div></div>;
 
   return (
     <Grid container>

@@ -26,15 +26,15 @@ export async function createChat(otherUser, history) {
   };
 
   try {
-    const chatDoc = db.collection('chat').where('chatUserIds', 'array-contains', otherUser.id).limit(1);
+    const chatDoc = db.collection('chat').where('chatUserIds', 'array-contains', otherUser.id, user.uid).limit(1);
     const isEmpty = await chatDoc.get();
 
-    if (isEmpty.empty) {
+    if (isEmpty.docs.length === 0) {
       const docRef = await db.collection('chat').add(data);
       return history.push(`/chat/${docRef.id}`);
+    } else {
+      history.push(`/chat/${isEmpty.docs[0].id}`);
     }
-
-    history.push(`/chat/${isEmpty.docs[0].id}`);
   } catch (error) {
     throw error;
   }
@@ -46,23 +46,40 @@ export function getChatList() {
 }
 
 export async function sendMessage(chatId, text) {
-  const user = firebase.auth().currentUser;
+  const currentUser = firebase.auth().currentUser;
+  const docRef = db.collection('chat').doc(chatId);
 
   try {
-    await db.collection('chat').doc(chatId).update({
+    const docRefData = await docRef.get();
+
+    function badgeCount(count) {
+      if (docRefData.data().particapate.length === 2) {
+        return count;
+      }
+      return count + 1;
+    }
+
+    await docRef.update({
       lastMessage: text,
+      lastMessageTime: firebase.firestore.FieldValue.serverTimestamp(),
+      chatUsers: docRefData.data().chatUsers.map((user) => {
+        if (user.id !== currentUser.uid) {
+          return { ...user, isRead: badgeCount(user.isRead) };
+        } else {
+          return user;
+        }
+      }),
     });
 
-    return await db
-      .collection('chat')
-      .doc(chatId)
-      .collection('message')
-      .add({
+    return firebase
+      .database()
+      .ref(`message/${chatId}`)
+      .push({
         text,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        uid: user.uid,
-        photoURL: user.photoURL || null,
-        displayName: user.displayName || user.email.split('@')[0],
+        createdAt: firebase.database.ServerValue.TIMESTAMP,
+        uid: currentUser.uid,
+        photoURL: currentUser.photoURL || null,
+        displayName: currentUser.displayName || currentUser.email.split('@')[0],
       });
   } catch (error) {
     throw error;
@@ -70,5 +87,27 @@ export async function sendMessage(chatId, text) {
 }
 
 export function getChatMessageList(chatId) {
-  return db.collection('chat').doc(chatId).collection('message').orderBy('createdAt');
+  return firebase.database().ref(`message/${chatId}`).orderByKey();
+}
+
+export async function particapateChat(chatId, type) {
+  const user = firebase.auth().currentUser;
+  const chatDocRef = db.collection('chat').doc(chatId);
+  const chatDocRefData = await chatDocRef.get();
+
+  if (type === 'participate') {
+    return chatDocRef.update({
+      particapate: firebase.firestore.FieldValue.arrayUnion(user.uid),
+      chatUsers: chatDocRefData.data().chatUsers.map((anotherUser) => {
+        if (anotherUser.id === user.uid) {
+          return { ...anotherUser, isRead: 0 };
+        }
+        return anotherUser;
+      }),
+    });
+  } else {
+    return chatDocRef.update({
+      particapate: firebase.firestore.FieldValue.arrayRemove(user.uid),
+    });
+  }
 }

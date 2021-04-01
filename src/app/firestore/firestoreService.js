@@ -12,7 +12,6 @@ export function dataFromSnapshot(snapshot) {
   for (let key in data) {
     if (data[key] instanceof firebase.firestore.Timestamp) {
       data[key] = data[key].toDate();
-      break;
     }
   }
 
@@ -171,9 +170,7 @@ export function setUserProfileData(user) {
       providerId: user.providerData[0].providerId,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       likesEvent: [],
-      backgroundURL: ['culture, drinks, film, food, game, hobby, music, play, study, travel'][
-        Math.floor(Math.random() * 10)
-      ],
+      backgroundURL: null,
     });
 }
 

@@ -22,7 +22,7 @@ const share = [
 ];
 
 const useStyles = makeStyles(() => ({
-  socialButton: { display: 'flex', alignItems: 'center', padding: 10 },
+  socialButton: { display: 'flex', alignItems: 'center' },
   socialIcon: { fontSize: 25, marginRight: 5 },
 }));
 
@@ -35,15 +35,18 @@ export default memo(function ShareDialog({ open = true, onClose, eventId }) {
     <Dialog open={open} onClose={onClose}>
       <DialogTitle id='simple-dialog-title'>공유</DialogTitle>
       <Box p={2}>
-        <Box display='flex'>
+        <Box display='flex' justifyContent='space-between' width='100%'>
           {share.map((social) => (
-            <social.Component className={classes.socialButton} url={url} key={social.title}>
-              {<social.Icon className={classes.socialIcon} style={{ color: social.color }} />}
-              <Typography variant='subtitle2'>{social.title}</Typography>
-            </social.Component>
+            <Box px={1} key={social.title}>
+              <social.Component className={classes.socialButton} url={url}>
+                {<social.Icon className={classes.socialIcon} style={{ color: social.color }} />}
+                <Typography variant='subtitle2'>{social.title}</Typography>
+              </social.Component>
+            </Box>
           ))}
         </Box>
         <OutlinedInput
+          style={{ marginTop: 10 }}
           value={url}
           disabled={true}
           fullWidth

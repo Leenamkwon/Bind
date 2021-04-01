@@ -34,8 +34,8 @@ export default function LoginFormText({ type = 'modal' }) {
           try {
             await signInWithEmail(values);
             setSubmitting(false);
+            dispatch(modalClose());
             if (type === 'modal') {
-              dispatch(modalClose());
               history.push('/events');
             } else {
               history.push(prevLocation?.pathname ?? '/events');

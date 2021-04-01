@@ -40,7 +40,7 @@ export default function profileReducer(state = initialState, { type, payload }) 
       return { ...state, currentUserProfile: payload };
 
     case SIGN_OUT_USER:
-      return { ...state, currentUserProfile: null };
+      return initialState;
 
     case LISTEN_TO_SELECT_USER_PROFILE:
       return { ...state, selectUserProfile: payload };

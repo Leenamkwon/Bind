@@ -1,4 +1,4 @@
-import React, { useEffect, useState, memo } from 'react';
+import React, { useEffect, useState, memo, useRef } from 'react';
 import { Avatar, makeStyles, Menu, MenuItem, ListItemIcon, ListItemText, Box, IconButton, Badge } from '@material-ui/core';
 import { AccountCircle, Settings, ExitToApp, EventAvailable, NotificationImportant, Chat } from '@material-ui/icons';
 import { useHistory, useLocation } from 'react-router';
@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 import Notification from './Notification';
 import { signOutFirebase } from '../../app/firestore/firebaseService';
 import UserSearch from './UserSearch';
+import { getChatList } from '../../app/firestore/firebaseRealChat';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -36,6 +37,8 @@ export default memo(function SignedInMenu() {
   const history = useHistory();
   const { enqueueSnackbar } = useSnackbar();
 
+  const badgeCount = useRef(0);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -58,6 +61,20 @@ export default memo(function SignedInMenu() {
     handleClose();
   }, [pathname]);
 
+  useEffect(() => {
+    (async function () {
+      const count = await getChatList().get();
+      if (!count.empty) {
+        const data = count.docs
+          .flatMap((item) => item.data().chatUsers)
+          .filter((item) => item.id === currentUserProfile?.id)
+          .reduce((acc, item) => acc + item.isRead, 0);
+
+        badgeCount.current = data;
+      }
+    })();
+  }, [currentUserProfile?.id, pathname]);
+
   if (!currentUserProfile) return null;
 
   return (
@@ -65,15 +82,23 @@ export default memo(function SignedInMenu() {
       <UserSearch />
       <Notification />
       <IconButton onClick={handleClick}>
-        <Avatar
-          src={currentUserProfile?.photoURL || null}
-          className={classes.avatar}
-          aria-controls='avatar'
-          aria-haspopup='true'
-        />
+        <Badge
+          overlap='circle'
+          color='error'
+          variant='dot'
+          invisible={badgeCount.current === 0 && notification.length === 0}
+        >
+          <Avatar
+            src={currentUserProfile?.photoURL || null}
+            className={classes.avatar}
+            aria-controls='avatar'
+            aria-haspopup='true'
+          />
+        </Badge>
       </IconButton>
       <Menu
         className={classes.menu}
+        keepMounted={false}
         open={Boolean(anchorEl)}
         onClose={handleClose}
         anchorEl={anchorEl}
@@ -108,7 +133,7 @@ export default memo(function SignedInMenu() {
 
         <MenuItem selected={pathname === '/chat'} component={NavLink} to='/chat'>
           <ListItemIcon>
-            <Badge badgeContent={notification && notification?.length} color='error'>
+            <Badge badgeContent={badgeCount.current} color='error'>
               <Chat />
             </Badge>
           </ListItemIcon>

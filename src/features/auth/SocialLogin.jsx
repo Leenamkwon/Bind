@@ -25,8 +25,8 @@ export default function SocialLogin({ register = false, type = 'modal' }) {
   async function handleSocialLogin(provider) {
     try {
       await socialLoginFirebase(provider);
+      dispatch(modalClose());
       if (type === 'modal') {
-        dispatch(modalClose());
         history.push('/events');
       } else {
         history.push(prevLocation?.pathname ?? '/events');

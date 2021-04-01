@@ -52,7 +52,7 @@ export default function App() {
                 style={{
                   background: theme.palette.background.default,
                   width: '100vw',
-                  minHeight: '100vh',
+                  height: '100vh',
                 }}
               >
                 {location.pathname === '/login' ? <PublicRoute exact path='/login' component={LoginPage} /> : <Navbar />}

@@ -1,13 +1,13 @@
-import React, { useLayoutEffect, useRef } from 'react';
-import { Avatar, Box, ListSubheader, makeStyles, Typography, useMediaQuery, useTheme } from '@material-ui/core';
+import React, { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
+import { Avatar, Box, makeStyles, Typography, useMediaQuery, useTheme } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import ChatLogForm from './ChatLogForm';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { getChatMessageList } from '../../app/firestore/firebaseRealChat';
-import useFirestoreCollection from '../../app/hooks/useFirestoreCollection';
+import { getChatMessageList, particapateChat } from '../../app/firestore/firebaseRealChat';
 import { fetchChatMessageList } from './chatAction';
 import formatDate from '../../app/util/util';
+import { firebaseObjectToArray } from '../../app/firestore/firebaseEventChat';
 
 const useStyles = makeStyles(() => ({
   root: { display: 'flex', height: '88vh', flexDirection: 'column', justifyContent: 'space-between' },
@@ -18,6 +18,7 @@ const useStyles = makeStyles(() => ({
     '&::-webkit-scrollbar': {
       display: 'none',
     },
+    padding: 10,
   },
   li: { display: 'flex', margin: '5px 5px 0 5px' },
   avatar: ({ matchesXS }) => ({
@@ -35,33 +36,36 @@ export default function ChatLogPage({ match }) {
   const { chatMessageLog } = useSelector((state) => state.chat);
   const containerEl = useRef();
 
-  useLayoutEffect(() => {}, []);
+  useLayoutEffect(() => {
+    async function participate(id, type) {
+      await particapateChat(id, type);
+    }
+    participate(match.params.id, 'participate');
 
-  useFirestoreCollection({
-    query: () => getChatMessageList(match.params.id),
-    data: (data) => dispatch(fetchChatMessageList(data)),
-    deps: [dispatch, match.params.id],
-  });
+    return () => participate(match.params.id, 'chat-out');
+  }, [match.params.id]);
 
-  function lastNode(node) {
+  useEffect(() => {
+    const unsubscribe = getChatMessageList(match.params.id).on('value', (snapshot) => {
+      dispatch(fetchChatMessageList(firebaseObjectToArray(snapshot.val())));
+    });
+
+    return () => {
+      getChatMessageList(match.params.id).off('value', unsubscribe);
+    };
+  }, [dispatch, match.params.id]);
+
+  const lastNode = useCallback((node) => {
     if (!node || !containerEl.current) return;
     containerEl.current.scroll({
       top: node.offsetTop,
     });
-  }
+  }, []);
 
   return (
     <Box className={classes.root}>
       <ul ref={containerEl} className={classes.ul}>
-        <ListSubheader disableGutters>
-          <Box py={1} style={{ backgroundColor: theme.palette.background.default, opacity: 0.8 }}>
-            <Typography variant='subtitle1' align='center' color='textPrimary'>
-              이승후
-            </Typography>
-          </Box>
-        </ListSubheader>
-
-        {chatMessageLog.map((message, i) => (
+        {chatMessageLog?.map((message, i) => (
           <li
             ref={chatMessageLog.length - 1 === i ? (node) => lastNode(node) : null}
             className={classes.li}
@@ -69,31 +73,33 @@ export default function ChatLogPage({ match }) {
             style={{ flexDirection: currentUser.uid !== message.uid ? 'row' : 'row-reverse' }}
           >
             {currentUser.uid !== message.uid && (
-              <Avatar className={classes.avatar} component={Link} to={`/profile/${message.uid}`} />
+              <Avatar src={message.photoURL} className={classes.avatar} component={Link} to={`/profile/${message.uid}`} />
             )}
 
-            <Box display='inline' ml={1}>
+            <Box display='flex' flexDirection='column' ml={1}>
               {currentUser.uid !== message.uid && (
                 <Typography color='textSecondary' variant='subtitle2'>
                   {message.displayName}
                 </Typography>
               )}
               <Box
+                display='inline-block'
                 borderRadius={10}
                 p={1}
-                mt={1}
                 bgcolor={currentUser.uid !== message.uid ? 'background.default' : 'success.main'}
+                alignSelf={currentUser.uid !== message.uid ? 'flex-start' : 'flex-end'}
               >
-                <Typography
-                  align={currentUser.uid !== message.uid ? 'left' : 'right'}
-                  variant='subtitle1'
-                  color='textPrimary'
-                >
-                  {message.text}
+                <Typography variant='subtitle1' component='p' color='textPrimary' display='block'>
+                  {message.text.split('\n').map((chatTxt, i) => (
+                    <span key={i}>
+                      {chatTxt}
+                      <br />
+                    </span>
+                  ))}
                 </Typography>
               </Box>
-              <Typography variant='caption' color='textSecondary'>
-                {formatDate(message.createdAt, 'HH:MM')}
+              <Typography display='block' variant='caption' color='textSecondary'>
+                {formatDate(message.createdAt, 'aaa hh:mm')}
               </Typography>
             </Box>
           </li>

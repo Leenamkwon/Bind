@@ -1,11 +1,14 @@
 import React from 'react';
-import { Avatar, Box, CardContent, CardMedia, makeStyles } from '@material-ui/core';
+import { Avatar, Box, CardContent, CardMedia, Fab, makeStyles } from '@material-ui/core';
+import ForumIcon from '@material-ui/icons/Forum';
 
 // COMPONENT
 import ButtonComponent from '../../../app/layout/ButtonComponent';
 import ProfileHeaderdescription from './ProfileHeaderdescription';
 import { useTargetClick } from '../../../app/hooks/useTargetClick';
 import ProfileFollower from './ProfileFollower';
+import { createChat } from '../../../app/firestore/firebaseRealChat';
+import { useHistory } from 'react-router';
 
 const useStyle = makeStyles((theme) => ({
   media: {
@@ -30,6 +33,7 @@ const useStyle = makeStyles((theme) => ({
 
 export default function ProfileHeader({ userIsMe, profile }) {
   const classes = useStyle();
+  const history = useHistory();
   const [edit, handleEdit] = useTargetClick(false);
 
   return (
@@ -42,6 +46,11 @@ export default function ProfileHeader({ userIsMe, profile }) {
           <div className={classes.button}>
             {!edit && userIsMe && (
               <ButtonComponent variant='outlined' color='primary' content='수정' onClick={() => handleEdit(true)} />
+            )}
+            {!userIsMe && (
+              <Fab color='primary' aria-label='add' onClick={() => createChat(profile, history)}>
+                <ForumIcon />
+              </Fab>
             )}
           </div>
         </Box>

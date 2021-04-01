@@ -1,16 +1,24 @@
 import React, { useCallback } from 'react';
-import { List, ListItem, ListItemAvatar, Avatar, ListItemText, Divider, Box, Typography } from '@material-ui/core';
+import { List, ListItem, ListItemAvatar, Avatar, ListItemText, Divider, Box, Typography, Badge } from '@material-ui/core';
 import { Link, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import formatDate from '../../app/util/util';
 
 export default function ChatList({ chatList }) {
-  const { currentUser } = useSelector((state) => state.auth);
   const location = useLocation();
   const matchParams = location.pathname.split('/').filter((x) => x)[1];
+  const { currentUser } = useSelector((state) => state.auth);
 
   const anotherUser = useCallback(
     (list) => {
       return list.filter((item) => item.id !== currentUser.uid)[0];
+    },
+    [currentUser.uid]
+  );
+
+  const BadgeCount = useCallback(
+    (list) => {
+      return list.find((user) => user.id === currentUser.uid);
     },
     [currentUser.uid]
   );
@@ -28,13 +36,20 @@ export default function ChatList({ chatList }) {
               selected={matchParams === list.id}
             >
               <ListItemAvatar>
-                <Avatar src={anotherUser(list.chatUsers).photoURL || null} />
+                <Badge badgeContent={BadgeCount(list.chatUsers).isRead} color='error'>
+                  <Avatar src={anotherUser(list.chatUsers).photoURL || null} />
+                </Badge>
               </ListItemAvatar>
               <ListItemText
                 primary={
-                  <Typography variant='subtitle1' color='textPrimary'>
-                    {anotherUser(list.chatUsers).displayName}
-                  </Typography>
+                  <Box display='flex' justifyContent='space-between'>
+                    <Typography variant='subtitle1' color='textPrimary'>
+                      {anotherUser(list.chatUsers).displayName}
+                    </Typography>
+                    <Typography variant='caption' color='textSecondary'>
+                      {formatDate(list?.lastMessageTime ?? new Date())}
+                    </Typography>
+                  </Box>
                 }
                 secondary={<React.Fragment>{list?.lastMessage}</React.Fragment>}
               />

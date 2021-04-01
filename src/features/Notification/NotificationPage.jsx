@@ -32,11 +32,11 @@ export default function NotificationPage() {
   const { currentUser, AllNotification } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    if (!currentUser || AllNotification.length > 0) return;
+    if (!currentUser) return;
     setLoading(true);
     const unsubscribe = getNotificationCollctionAll(currentUser).on('value', (snapshot) => {
       if (!snapshot.exists()) return setLoading(false);
-      const filtering = firebaseObjectToArray(snapshot.val());
+      const filtering = firebaseObjectToArray(snapshot.val()).reverse();
       dispatch(listenToAllNotification(filtering));
       setLoading(false);
     });
