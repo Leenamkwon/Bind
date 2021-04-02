@@ -30,6 +30,7 @@ import {
   likesEvent,
 } from '../../../app/firestore/firestoreService';
 import { useSnackbar } from 'notistack';
+import ShareDialog from '../../../app/layout/ShareDialog';
 
 const StyledMenu = withStyles({
   paper: {
@@ -72,6 +73,7 @@ export default memo(function EventDetailedHeader({ event, isHost, isGoing }) {
   const [anchorEl, setAnchorEl] = useTargetClick(null);
   const [dialogOpen, setDialogOpen] = useToggleClick(false);
   const [loading, setLoading] = useState(false);
+  const [shareOpen, setShareOpen] = useToggleClick(false);
   const { enqueueSnackbar } = useSnackbar();
 
   const DialogClose = useCallback(() => {
@@ -178,7 +180,7 @@ export default memo(function EventDetailedHeader({ event, isHost, isGoing }) {
                   </IconButton>
                   {event.likes > 0 ? event.likes : ''}
                 </Box>
-                <IconButton aria-label='share'>
+                <IconButton aria-label='share' onClick={() => setShareOpen(true)}>
                   <Share />
                 </IconButton>
               </Box>
@@ -205,6 +207,7 @@ export default memo(function EventDetailedHeader({ event, isHost, isGoing }) {
             </Box>
           </Box>
         </Card>
+        <ShareDialog open={shareOpen} onClose={setShareOpen} eventId={event.id} />
       </Grid>
     </Grid>
   );

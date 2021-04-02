@@ -1,17 +1,18 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, memo, useMemo } from 'react';
 import { List, ListItem, ListItemAvatar, Avatar, ListItemText, Divider, Box, Typography, Badge } from '@material-ui/core';
 import { Link, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import formatDate from '../../app/util/util';
 
-export default function ChatList({ chatList }) {
+export default memo(function ChatList({ chatList }) {
   const location = useLocation();
-  const matchParams = location.pathname.split('/').filter((x) => x)[1];
+  const matchParams = useMemo(() => location.pathname.split('/').filter((x) => x)[1], [location.pathname]);
   const { currentUser } = useSelector((state) => state.auth);
 
   const anotherUser = useCallback(
     (list) => {
-      return list.filter((item) => item.id !== currentUser.uid)[0];
+      const anotherUser = list.filter((item) => item.id !== currentUser.uid)[0];
+      return anotherUser;
     },
     [currentUser.uid]
   );
@@ -60,20 +61,4 @@ export default function ChatList({ chatList }) {
       </List>
     </Box>
   );
-}
-
-// async function testChat() {
-//   try {
-//     createChat(
-//       {
-//         id: 'T0F7ZpMIbORSJWZLiTdloGFk2Pl1',
-//         displayName: '이남권',
-//         photoURL:
-//           'https://firebasestorage.googleapis.com/v0/b/bind-5d6a6.appspot.com/o/T0F7ZpMIbORSJWZLiTdloGFk2Pl1%2Fuser_image%2Fckmo08lwq00003f6ai0qijvmu.jpg?alt=media&token=9051e31b-b035-44b4-9ede-44715d1dcdf0',
-//       },
-//       history
-//     );
-//   } catch (error) {
-//     console.log(error);
-//   }
-// }
+});

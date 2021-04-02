@@ -1,7 +1,7 @@
 import { asyncActionError, asyncActionFinish, asyncActionStart } from '../../app/async/asyncReducer';
 import { getChatList } from '../../app/firestore/firebaseRealChat';
 import { dataFromSnapshot } from '../../app/firestore/firestoreService';
-import { FETCH_CHAT_LIST, FETCH_CHAT_MESSAGE } from './chatConstants';
+import { CHAT_CURRENT_USER, FETCH_CHAT_LIST, FETCH_CHAT_MESSAGE } from './chatConstants';
 
 export function fetchChatList() {
   return async function (dispatch) {
@@ -16,6 +16,10 @@ export function fetchChatList() {
       dispatch(asyncActionFinish());
     }
   };
+}
+
+export function currentChatUser(anotherUser) {
+  return { type: CHAT_CURRENT_USER, payload: anotherUser };
 }
 
 export function fetchChatList2(chatList) {

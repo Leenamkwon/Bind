@@ -19,7 +19,7 @@ export function checkedNotification(notificationID) {
 
 export function deleteNotification(currentUser) {
   if (!currentUser) return;
-  return firebase.database().ref(`/notification/${currentUser?.uid}`).remove();
+  return firebase.database().ref(`notification/${currentUser?.uid}`).remove();
 }
 
 export async function NotificationPhotoUpdate(photoData) {

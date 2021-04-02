@@ -226,7 +226,7 @@ export async function searchUserFirebase(query) {
 
   if (query === '') return;
 
-  const allUser = await db.collection('users').where('displayName', 'in', [query]).limit(5).get();
+  const allUser = await db.collection('users').where('displayName', '>=', query).limit(5).get();
 
   const userMap = allUser.docs.map((user) => {
     const userInfo = user.data();
@@ -304,6 +304,8 @@ export async function userProfilePhotoUpdate(url) {
   const user = firebase.auth().currentUser;
   const eventDocQuery = db.collection('events').where('attendeeIds', 'array-contains', user.uid);
   const eventChatQuery = db.collection('chat').where('chatUserIds', 'array-contains', user.uid);
+  const userFollowingRef = db.collection('following').doc(user.uid).collection('userFollowing');
+  const userFollowerRef = db.collection('following').doc(user.uid).collection('userFollowers');
   const batch = db.batch();
 
   try {
@@ -345,6 +347,25 @@ export async function userProfilePhotoUpdate(url) {
         }),
       });
     }
+
+    // 팔로워 팔로윙 사진 업데이트
+    const userFollowingSnap = await userFollowerRef.get();
+    userFollowingSnap.docs.forEach((docRef) => {
+      const followingDocRef = db.collection('following').doc(docRef.id).collection('userFollowing').doc(user.uid);
+
+      batch.update(followingDocRef, {
+        photoURL: url,
+      });
+    });
+
+    const userFollowerSnap = await userFollowingRef.get();
+    userFollowerSnap.docs.forEach((docRef) => {
+      const followerDocRef = db.collection('following').doc(docRef.id).collection('userFollowers').doc(user.uid);
+
+      batch.update(followerDocRef, {
+        photoURL: url,
+      });
+    });
 
     // 알림 아바타 업데이트
     await NotificationPhotoUpdate({ photoURL: url });

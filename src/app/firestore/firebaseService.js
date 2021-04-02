@@ -1,5 +1,6 @@
 import firebase from '../config/firebase';
 import { deleteNotification } from './firebaseNotification';
+import { realChatPhotoIconUpdate } from './firebaseRealChat';
 import { setUserProfileData } from './firestoreService';
 
 const db = firebase.firestore();
@@ -91,17 +92,14 @@ export async function userBye() {
 
   const userDocRef = await db.collection('events').where('hostUid', '==', user.uid).get();
   const userParticipateEvents = await db.collection('events').where('attendeeIds', 'array-contains', user.uid).get();
+  const userFollowingRef = db.collection('following').doc(user.uid).collection('userFollowing');
+  const userFollowerRef = db.collection('following').doc(user.uid).collection('userFollowers');
 
   try {
     // step 01. 이벤트, 스토리지 이미지 파일 전부 삭제
     userDocRef.docs.forEach(async (docRef) => {
       if (!docRef.exists) return;
 
-      const userEvent = docRef.data();
-
-      if (userEvent.thumbnailURL !== null) {
-        promise.push(firebase.storage().refFromURL(userEvent.thumbnailURL).delete());
-      }
       batch.delete(docRef);
     });
 
@@ -122,32 +120,58 @@ export async function userBye() {
     // step 04. 이벤트 채팅 삭제
 
     // step 04. 팔로잉 팔로워 삭제
+    const userFollowingSnap = await userFollowerRef.get();
+    userFollowingSnap.docs.forEach((docRef) => {
+      const followingDocRef = db.collection('following').doc(docRef.id).collection('userFollowing').doc(user.uid);
+
+      batch.update(db.collection('users').doc(docRef.id), {
+        followingCount: firebase.firestore.FieldValue.increment(-1),
+      });
+
+      batch.delete(followingDocRef);
+    });
+
+    const userFollowerSnap = await userFollowingRef.get();
+    userFollowerSnap.docs.forEach((docRef) => {
+      const followerDocRef = db.collection('following').doc(docRef.id).collection('userFollowers').doc(user.uid);
+
+      batch.update(db.collection('users').doc(docRef.id), {
+        followerCount: firebase.firestore.FieldValue.increment(-1),
+      });
+
+      batch.delete(followerDocRef);
+    });
+
     batch.delete(db.collection('following').doc(user.uid));
 
     // step 05. 호스팅 이미지 모두 삭제
-    const storageRef = firebase.storage().ref(user.uid);
-    await storageRef.delete();
+    await firebase
+      .storage()
+      .ref(`${user.uid}/user_image/`)
+      .listAll()
+      .then((res) => {
+        res.items.forEach(function (itemRef) {
+          itemRef.delete();
+        });
+      })
+      .catch((error) => {
+        throw error;
+      });
 
     // 유저 알림 삭제
     await deleteNotification(user);
 
-    // step 06. 유저 파이어 스토어 삭제
+    // 채팅 삭제
+    await realChatPhotoIconUpdate('message', { photoURL: null, displayName: '알 수 없음', uid: null });
 
-    // stop 07. 유저 Auth 삭제
+    // step 06. 유저 파이어 스토어 삭제
+    batch.delete(db.collection('users').doc(user.uid));
 
     await batch.commit();
+
+    // stop 07. 유저 Auth 삭제
+    return await firebase.auth().currentUser.delete();
   } catch (error) {
     throw error;
-  }
-}
-
-export async function firebaseTest() {
-  const user = firebase.auth().currentUser;
-  try {
-    const test = await db.collection('following').doc(user.uid).collection('userFollowing').get();
-
-    console.log(test.docs);
-  } catch (error) {
-    console.log(error);
   }
 }

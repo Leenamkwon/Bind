@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, memo, useEffect } from 'react';
 import { TextField, Grid, Typography, makeStyles, Avatar } from '@material-ui/core';
 import { SearchRounded } from '@material-ui/icons';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -15,19 +15,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function UserSearch() {
+export default memo(function UserSearch() {
   const classes = useStyles();
-  const [inputValue, setInputValue] = useDebounce('');
+  const [inputValue, setInputValue] = useDebounce('', 200);
   const [value, setValue] = useState(null);
   const [options, setOptions] = useState([]);
   const history = useHistory();
 
-  React.useEffect(() => {
+  useEffect(() => {
     let active = true;
 
     if (inputValue === '') {
       setOptions(value ? [value] : []);
-      return undefined;
+      return;
     }
 
     (async () => {
@@ -83,7 +83,7 @@ export default function UserSearch() {
             ...params.InputProps,
             startAdornment: (
               <React.Fragment>
-                <SearchRounded />
+                <SearchRounded color='action' />
               </React.Fragment>
             ),
           }}
@@ -105,4 +105,4 @@ export default function UserSearch() {
       }}
     />
   );
-}
+});

@@ -26,10 +26,12 @@ export async function createChat(otherUser, history) {
   };
 
   try {
-    const chatDoc = db.collection('chat').where('chatUserIds', 'array-contains', otherUser.id, user.uid).limit(1);
+    const chatDoc = db.collection('chat').where('chatUserIds', 'array-contains', otherUser.id);
     const isEmpty = await chatDoc.get();
 
-    if (isEmpty.docs.length === 0) {
+    const some = isEmpty.docs.some((item) => item.data().chatUserIds.indexOf(user.uid) !== -1);
+
+    if (!some) {
       const docRef = await db.collection('chat').add(data);
       return history.push(`/chat/${docRef.id}`);
     } else {

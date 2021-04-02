@@ -206,7 +206,7 @@ export default memo(function EventListItem({ event }) {
               <Group className={classes.subIcon} />
             </IconButton>
             <Button color='primary' component={Link} to={`/events/${event.id}`} variant='contained'>
-              더 보기
+              더보기
             </Button>
           </Box>
         </CardActions>

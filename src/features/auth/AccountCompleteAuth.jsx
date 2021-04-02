@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { Box, TextField, Typography } from '@material-ui/core';
+import React, { useMemo, useState } from 'react';
+import { Box, Button, TextField, Typography } from '@material-ui/core';
 import InfoIcon from '@material-ui/icons/Info';
 import Alert from '@material-ui/lab/Alert';
 import { Form, Formik } from 'formik';
@@ -9,9 +9,11 @@ import { useSnackbar } from 'notistack';
 // COMPONENT
 import ButtonComponent from '../../app/layout/ButtonComponent';
 import { emailAndPasswordChange } from '../../app/firestore/firebaseService';
+import AuthDelete from '../../app/common/dialog/AuthDelete';
 
 export default function AccountCompleteAuth({ setAuthstep }) {
   const { enqueueSnackbar } = useSnackbar();
+  const [open, setOpen] = useState(false);
 
   const initialValues = useMemo(() => ({ email: '', password: '', confirmPassword: '' }), []);
   const validation = useMemo(
@@ -101,7 +103,10 @@ export default function AccountCompleteAuth({ setAuthstep }) {
               </Typography>
             </Box>
 
-            <ButtonComponent color='primary' type='button' content='회원 탈퇴' />
+            <Button color='primary' type='button' onClick={() => setOpen(true)}>
+              회원 탈퇴
+            </Button>
+            <AuthDelete open={open} setOpen={setOpen} />
           </Box>
         </Form>
       )}

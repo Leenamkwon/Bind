@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef, memo } from 'react';
 import { Avatar, Box, makeStyles, Typography, useMediaQuery, useTheme } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import ChatLogForm from './ChatLogForm';
@@ -27,7 +27,7 @@ const useStyles = makeStyles(() => ({
   }),
 }));
 
-export default function ChatLogPage({ match }) {
+export default memo(function ChatLogPage({ match }) {
   const theme = useTheme();
   const matchesXS = useMediaQuery(theme.breakpoints.down('xs'));
   const classes = useStyles(matchesXS);
@@ -98,8 +98,13 @@ export default function ChatLogPage({ match }) {
                   ))}
                 </Typography>
               </Box>
-              <Typography display='block' variant='caption' color='textSecondary'>
-                {formatDate(message.createdAt, 'aaa hh:mm')}
+              <Typography
+                display='block'
+                variant='caption'
+                color='textSecondary'
+                align={currentUser.uid !== message.uid ? 'right' : 'left'}
+              >
+                {formatDate(message.createdAt, 'M월d일 hh:mm aaa')}
               </Typography>
             </Box>
           </li>
@@ -110,4 +115,4 @@ export default function ChatLogPage({ match }) {
       </Box>
     </Box>
   );
-}
+});

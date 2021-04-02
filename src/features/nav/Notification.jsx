@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, memo } from 'react';
 import { Badge, IconButton, Menu, List, makeStyles, ListItem, ListItemText, ListItemAvatar } from '@material-ui/core';
 import { Notifications, NotificationsPaused } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Notification() {
+export default memo(function Notification() {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const dispatch = useDispatch();
@@ -83,4 +83,4 @@ export default function Notification() {
       </IconButton>
     </>
   );
-}
+});
