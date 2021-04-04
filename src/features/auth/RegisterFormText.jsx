@@ -46,8 +46,8 @@ export default function RegisterFormText({ type = 'modal' }) {
               history.push(prevLocation?.pathname ?? '/events');
             }
           } catch (error) {
-            setErrors({ auth: error.message });
             setSubmitting(false);
+            setErrors({ auth: error.message });
           }
         }}
       >

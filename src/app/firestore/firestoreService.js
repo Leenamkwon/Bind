@@ -3,6 +3,7 @@ import { deleteStorageImage } from './fireStorageService';
 import { eventChatPhotoIconUpdate } from './firebaseEventChat';
 import { realChatPhotoIconUpdate } from './firebaseRealChat';
 import { NotificationPhotoUpdate } from './firebaseNotification';
+import { Imagerandom } from '../api/categoryOption';
 
 const db = firebase.firestore();
 
@@ -172,7 +173,7 @@ export function setUserProfileData(user) {
       providerId: user.providerData[0].providerId,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       likesEvent: [],
-      backgroundURL: null,
+      backgroundURL: `/assets/categoryImages/${Imagerandom()}.jpg`,
     });
 }
 

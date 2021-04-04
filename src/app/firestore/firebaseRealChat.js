@@ -92,10 +92,13 @@ export function getChatMessageList(chatId) {
   return firebase.database().ref(`message/${chatId}`).orderByKey();
 }
 
-export async function particapateChat(chatId, type) {
+export async function particapateChat(chatId, type, history) {
   const user = firebase.auth().currentUser;
   const chatDocRef = db.collection('chat').doc(chatId);
   const chatDocRefData = await chatDocRef.get();
+
+  if (!chatDocRefData.exists) return history.push('/chat');
+  if (chatDocRefData.data().chatUserIds.indexOf(user.uid) === -1) return history.push('/chat');
 
   if (type === 'participate') {
     return chatDocRef.update({

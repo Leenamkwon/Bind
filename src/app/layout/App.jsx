@@ -62,13 +62,12 @@ export default function App() {
                     <Route exact path='/events' component={EventDashboard} />
                     <Route path='/events/:id' component={EventDetailedPage} />
                     <PrivateRoute exact path={['/createEvent', '/manage/:id']} key={location.key} component={EventForm} />
-                    <PrivateRoute path='/profile/:id' component={ProfilePage} key={location.key} />
+                    <PrivateRoute exact path='/profile/:id' component={ProfilePage} key={location.key} />
                     <PrivateRoute path='/notification' component={NotificationPage} />
                     <PrivateRoute path='/chat' component={ChatPage} />
                     <Route path='/error' component={Error} />
                   </Switch>
                 </Container>
-
                 {background && <Route exact path='/img/:id' children={<LightBox />} />}
                 {gallery && <Route exact path='/gallery/:id' children={<GalleryLightBox />} />}
               </Box>

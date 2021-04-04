@@ -92,6 +92,7 @@ export async function userBye() {
 
   const userDocRef = await db.collection('events').where('hostUid', '==', user.uid).get();
   const userParticipateEvents = await db.collection('events').where('attendeeIds', 'array-contains', user.uid).get();
+  const photos = await db.collection('users').doc(user.uid).collection('photos').get();
   const userFollowingRef = db.collection('following').doc(user.uid).collection('userFollowing');
   const userFollowerRef = db.collection('following').doc(user.uid).collection('userFollowers');
 
@@ -165,6 +166,8 @@ export async function userBye() {
     await realChatPhotoIconUpdate('message', { photoURL: null, displayName: '알 수 없음', uid: null });
 
     // step 06. 유저 파이어 스토어 삭제
+    if (!photos.empty) photos.forEach((photoRef) => batch.delete(photoRef));
+
     batch.delete(db.collection('users').doc(user.uid));
 
     await batch.commit();

@@ -29,12 +29,12 @@ const useStyles = makeStyles({
 
 export default memo(function LightBox() {
   const classes = useStyles();
-  const location = useLocation();
+  // const location = useLocation();
   let history = useHistory();
   let { id } = useParams();
   const { events } = useSelector((state) => state.event);
   const currentIdx = events.findIndex((item) => item.id === id);
-  const eventsLength = events.length - 1;
+  // const eventsLength = events.length - 1;
 
   let back = () => {
     history.push('/events');
@@ -71,11 +71,11 @@ export default memo(function LightBox() {
           }
         />
 
-        <IconButton
+        {/* <IconButton
           component={Link}
           to={{
             pathname: `/img/${events[currentIdx - 1]?.id}`,
-            state: { background: location },
+            state: { background: { ...location } },
           }}
           className={clsx(classes.button, classes.left)}
           disabled={currentIdx === 0}
@@ -86,13 +86,13 @@ export default memo(function LightBox() {
           component={Link}
           to={{
             pathname: `/img/${events[currentIdx + 1]?.id}`,
-            state: { background: location },
+            state: { background: { ...location } },
           }}
           className={clsx(classes.button, classes.right)}
           disabled={currentIdx === eventsLength}
         >
           <ArrowForwardIos color={currentIdx === eventsLength ? 'disabled' : 'inherit'} />
-        </IconButton>
+        </IconButton> */}
       </Card>
     </Dialog>
   );

@@ -41,8 +41,8 @@ export default function LoginFormText({ type = 'modal' }) {
               history.push(prevLocation?.pathname ?? '/events');
             }
           } catch (error) {
-            setErrors({ auth: '이메일 또는 비밀번호가 맞지 않습니다.' });
             setSubmitting(false);
+            setErrors({ auth: '이메일 또는 비밀번호가 맞지 않습니다.' });
           }
         }}
       >

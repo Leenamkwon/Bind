@@ -34,6 +34,7 @@ export default function eventReducer(state = initialState, { type, payload }) {
         moreEvents: payload.moreEvents,
         lastVisible: payload.lastVisible,
       };
+
     case DELETE_EVENT:
       return {
         ...state,

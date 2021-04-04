@@ -48,7 +48,12 @@ export default function ProfileHeader({ userIsMe, profile }) {
               <ButtonComponent variant='outlined' color='primary' content='수정' onClick={() => handleEdit(true)} />
             )}
             {!userIsMe && (
-              <Fab color='primary' aria-label='add' onClick={() => createChat(profile, history)}>
+              <Fab
+                color='primary'
+                aria-label='add'
+                onClick={() => createChat(profile, history)}
+                style={{ marginBottom: 30 }}
+              >
                 <ForumIcon />
               </Fab>
             )}

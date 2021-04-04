@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Link, makeStyles, Typography } from '@material-ui/core';
+import { Box, Link, makeStyles, Typography, useMediaQuery, useTheme } from '@material-ui/core';
 import { PersonPinCircle, InsertLink, PermContactCalendar } from '@material-ui/icons';
 
 // COMPONENT
@@ -15,6 +15,8 @@ const useStyle = makeStyles((theme) => ({
 
 export default function ProfileHeaderdescription({ edit, handleEdit, userIsMe, profile }) {
   const classes = useStyle();
+  const theme = useTheme();
+  const matchesXS = useMediaQuery(theme.breakpoints.down('xs'));
 
   function isHttpcontains(link) {
     return link['link'].includes('http') ? link['link'] : `https://${link['link']}`;
@@ -40,7 +42,7 @@ export default function ProfileHeaderdescription({ edit, handleEdit, userIsMe, p
               {profile?.description ?? ''}
             </Typography>
           </Box>
-          <Box mt={3} display='flex'>
+          <Box mt={3} display={matchesXS ? 'block' : 'flex'}>
             {profile?.home && (
               <Box display='flex' alignItems='center' mr={1}>
                 <PersonPinCircle className={classes.icon} />
@@ -56,7 +58,7 @@ export default function ProfileHeaderdescription({ edit, handleEdit, userIsMe, p
               </Typography>
             </Box>
             {profile?.links && (
-              <Box display='flex' alignItems='center' mr={1}>
+              <Box display={matchesXS ? 'block' : 'flex'} alignItems='center' mr={1}>
                 {profile?.links?.map((link) => {
                   if (link.link.length) {
                     return (

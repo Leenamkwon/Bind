@@ -1,5 +1,5 @@
 import React, { useState, memo, useEffect, useCallback } from 'react';
-import { Box, Typography } from '@material-ui/core';
+import { Box, Typography, useMediaQuery, useTheme } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 
 // COMPONENT
@@ -10,6 +10,8 @@ import { useSnackbar } from 'notistack';
 import { CLEAR_FOLLOWINGS } from '../profileConstants';
 
 export default memo(function ProfileFollower({ profile, userIsMe }) {
+  const theme = useTheme();
+  const matchesXS = useMediaQuery(theme.breakpoints.down('xs'));
   const [loading, setLoading] = useState(false);
   const { followingUser } = useSelector((state) => state.profile);
   const { enqueueSnackbar } = useSnackbar();
@@ -59,10 +61,10 @@ export default memo(function ProfileFollower({ profile, userIsMe }) {
   }, [dispatch, enqueueSnackbar, profile]);
 
   return (
-    <Box mt={2} display='flex' alignItems='center' justifyContent='space-between'>
+    <Box mt={2} display={matchesXS ? 'block' : 'flex'} alignItems='center' justifyContent='space-between'>
       <Box>
         <Typography variant='subtitle1' display='inline' color='textPrimary' style={{ fontWeight: 500, marginRight: 5 }}>
-          0
+          {profile?.followingCount ?? 0}
         </Typography>
         <Typography variant='subtitle2' display='inline' color='textSecondary' style={{ marginRight: 10 }}>
           팔로잉

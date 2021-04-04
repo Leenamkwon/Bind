@@ -10,3 +10,8 @@ export const categoryData = [
 ];
 
 export const memberData = Array.from({ length: 5 }, (_, i) => ({ key: i + 1, text: i + 1, value: i + 1 }));
+
+export const Imagerandom = () => {
+  const random = Math.floor(Math.random() * categoryData.length);
+  return categoryData[random].key;
+};

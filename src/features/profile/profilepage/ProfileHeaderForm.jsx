@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Box, TextField, Fab } from '@material-ui/core';
+import { Box, TextField, Fab, useTheme, useMediaQuery } from '@material-ui/core';
 import { Add, Delete } from '@material-ui/icons';
 import { FieldArray, Form, Formik } from 'formik';
 import * as Yup from 'yup';
@@ -11,6 +11,8 @@ import { userUpdate } from '../../../app/firestore/firestoreService';
 import { matchURLRegex } from '../../../app/util/util';
 
 export default function ProfileHeaderForm({ handleEdit, profile }) {
+  const theme = useTheme();
+  const matchesXS = useMediaQuery(theme.breakpoints.down('xs'));
   const initialValues = useMemo(() => {
     return {
       description: profile?.description || '',
@@ -41,7 +43,6 @@ export default function ProfileHeaderForm({ handleEdit, profile }) {
         }}
       >
         {({ values, handleChange, isSubmitting, dirty }) => {
-          console.log();
           return (
             <Form style={{ width: '100%' }}>
               <TextField
@@ -55,7 +56,7 @@ export default function ProfileHeaderForm({ handleEdit, profile }) {
                 fullWidth
                 label='소개'
               />
-              <Box mt={2} display='flex' alignItems='center'>
+              <Box mt={2} display={matchesXS ? 'block' : 'flex'} alignItems='center'>
                 <TextField
                   name='home'
                   value={values.home}
@@ -68,7 +69,12 @@ export default function ProfileHeaderForm({ handleEdit, profile }) {
                 />
                 <FieldArray name='links'>
                   {({ push, remove }) => (
-                    <Box display='flex' alignItems='center' p={1} style={{ height: 70 }}>
+                    <Box
+                      display={matchesXS ? 'block' : 'flex'}
+                      alignItems='center'
+                      pt={matchesXS ? '1' : '0'}
+                      style={{ height: 70 }}
+                    >
                       {values.links.map((link, index) => (
                         <div key={index}>
                           <TextField

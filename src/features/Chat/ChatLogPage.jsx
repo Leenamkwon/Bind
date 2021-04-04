@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useLayoutEffect, useRef, memo } from 'react';
 import { Avatar, Box, makeStyles, Typography, useMediaQuery, useTheme } from '@material-ui/core';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import ChatLogForm from './ChatLogForm';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -28,6 +28,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 export default memo(function ChatLogPage({ match }) {
+  const history = useHistory();
   const theme = useTheme();
   const matchesXS = useMediaQuery(theme.breakpoints.down('xs'));
   const classes = useStyles(matchesXS);
@@ -38,12 +39,12 @@ export default memo(function ChatLogPage({ match }) {
 
   useLayoutEffect(() => {
     async function participate(id, type) {
-      await particapateChat(id, type);
+      await particapateChat(id, type, history);
     }
     participate(match.params.id, 'participate');
 
     return () => participate(match.params.id, 'chat-out');
-  }, [match.params.id]);
+  }, [match.params.id, history]);
 
   useEffect(() => {
     const unsubscribe = getChatMessageList(match.params.id).on('value', (snapshot) => {
