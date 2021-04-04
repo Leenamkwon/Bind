@@ -34,17 +34,83 @@ These instructions will get you a copy of the project up and running on your loc
 
 <h2 align="center">
   <img src="https://github.com/Leenamkwon/Bind/blob/main/example/login.png" alt="login" width="700px" />
-  <br>
+  
 </h2>
-로그인
+로그인 컴포넌트
 
 <h2 align="center">
-  <img src="https://github.com/Leenamkwon/Bind/blob/main/example/login.png" alt="login" width="700px" />
-  <br>
+  <img src="https://github.com/Leenamkwon/Bind/blob/main/example/password.png" alt="login" width="700px" />
 </h2>
-비밀번호 찾기
+비밀번호 찾기 컴포넌트
 
-### 이벤트 폼
+### 이벤트 게시 폼
+
+<h2 align="center">
+  <img src="https://github.com/Leenamkwon/Bind/blob/main/example/eventForm.png" alt="login" width="700px" />
+</h2>
+
+**NOTE**: _구글 Place API, GeoCode API 일일 할당량 100_
+
+<br>
+
+### 이벤트 디테일
+
+<h2 align="center">
+  <img src="https://github.com/Leenamkwon/Bind/blob/main/example/eventDetailed.png" alt="login" width="700px" />
+</h2>
+<h2 align="center">
+  <img src="https://github.com/Leenamkwon/Bind/blob/main/example/eventDetailed2.png" alt="login" width="700px" />
+</h2>
+
+<br/>
+
+### 알림 리스트
+
+<h2 align="center">
+  <img src="https://github.com/Leenamkwon/Bind/blob/main/example/alram.png" alt="login" width="700px" />
+</h2>
+
+<br/>
+
+### 프로필
+
+<h2 align="center">
+  <img src="https://github.com/Leenamkwon/Bind/blob/main/example/profile.png" alt="login" width="700px" />
+</h2>
+
+<h2 align="center">
+  <img src="https://github.com/Leenamkwon/Bind/blob/main/example/profile_events.png" alt="login" width="700px" />
+</h2>
+
+<h2 align="center">
+  <img src="https://github.com/Leenamkwon/Bind/blob/main/example/profile_gallery.png" alt="login" width="700px" />
+</h2>
+
+<h2 align="center">
+  <img src="https://github.com/Leenamkwon/Bind/blob/main/example/profile_follower.png" alt="login" width="700px" />
+</h2>
+
+<br/>
+
+### 채팅
+
+<h2 align="center">
+  <img src="https://github.com/Leenamkwon/Bind/blob/main/example/profile_chat2.png" alt="login" width="700px" />
+</h2>
+
+<h2 align="center">
+  <img src="https://github.com/Leenamkwon/Bind/blob/main/example/profile_chat.png" alt="login" width="700px" />
+</h2>
+
+<br/>
+
+### 계정 설정
+
+<h2 align="center">
+  <img src="https://github.com/Leenamkwon/Bind/blob/main/example/auth.png" alt="login" width="700px" />
+</h2>
+
+---
 
 ## 베포 📦
 
