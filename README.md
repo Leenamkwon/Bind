@@ -24,9 +24,7 @@
 
 <!-- 라이브로 보기, **[클릭](https://bind-5d6a6.firebaseapp.com/)** -->
 
----
-
-## 컴포넌트 🚀
+<!-- ## 컴포넌트 🚀
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
@@ -34,7 +32,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 <h2 align="center">
   <img src="https://github.com/Leenamkwon/Bind/blob/main/example/login.png" alt="login" width="700px" />
-  
+
 </h2>
 로그인 컴포넌트
 
@@ -108,7 +106,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 <h2 align="center">
   <img src="https://github.com/Leenamkwon/Bind/blob/main/example/auth.png" alt="login" width="700px" />
-</h2>
+</h2> -->
 
 ---
 
