@@ -2,6 +2,13 @@
 
 ## 지인과 익명의 사람들과 소통하고 만나 추억을 쌓아보세요.
 
+바인드는 지인 또는 익명의 사람들과 소통하고 대면하기 위한 앱입니다.\
+게시물을 작성하고 장소를 선택하여 사람들과 만날 수 있습니다.\
+게시물에 대해서 댓글로 궁금한 점이나 토론을 할 수도 있고 개인으로 채팅도 가능합니다.\
+자신의 사진을 프로필에 올려 매력을 뽐내고 마음에 드는 상대방을 팔로워 해보세요!.
+
+모두가 더 나은 공동체🌍가 되었으면 좋겠습니다!
+
 <h2 align="center">
   <img src="https://github.com/Leenamkwon/Bind/blob/main/example/main_dark.png" alt="main_white" width="700px" />
 </h2>
@@ -47,7 +54,7 @@ These instructions will get you a copy of the project up and running on your loc
   <img src="https://github.com/Leenamkwon/Bind/blob/main/example/eventForm.png" alt="login" width="700px" />
 </h2>
 
-**NOTE**: _구글 Place API, GeoCode API 일일 할당량 100_
+
 
 <br>
 
@@ -108,13 +115,17 @@ These instructions will get you a copy of the project up and running on your loc
   <img src="https://github.com/Leenamkwon/Bind/blob/main/example/auth.png" alt="login" width="700px" />
 </h2> -->
 
+**!IMPORTANT NOTE**:
+**_구글 Place API, GeoCode API 일일 할당량 100_,
+_이미지 업로드 1MB 이하만 가능 ~~종량제....~~_**
+
 ---
 
 ## 베포 📦
 
 [Firebase Hosting](https://www.firebase.com/)
 
-## 사용된 기술 🛠️
+## 기술 🛠️
 
 - [Firebase](https://www.firebase.com) - 구글의 앱 개발 플랫폼
 - [Redux](https://ko.redux.js.org/introduction/getting-started/) - 상태 관리 라이브러리
