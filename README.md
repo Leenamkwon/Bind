@@ -3,7 +3,7 @@
 ## 지인과 익명의 사람들과 소통하고 만나 추억을 쌓아보세요.
 
 <h2 align="center">
-  <img src="/build/assets/categoryImages/culture.jpg" alt="Bind" width="600px" />
+  <img src="https://github.com/Leenamkwon/Bind/blob/main/example/main_dark.png" alt="Bind" width="600px" />
   <br>
 </h2>
 
@@ -19,7 +19,7 @@
 ⚡️ Firebase Cloud Function을 이용한 실시간 알림 기능\
 ⚡️ Firebase RealTime Database로 실시간 채팅에 최적화된 채팅, 댓글 기능
 
-라이브로 보기, **[클릭](https://bind-5d6a6.firebaseapp.com/)**
+<!-- 라이브로 보기, **[클릭](https://bind-5d6a6.firebaseapp.com/)** -->
 
 ---
 
