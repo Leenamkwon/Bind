@@ -3,7 +3,10 @@
 ## 지인과 익명의 사람들과 소통하고 만나 추억을 쌓아보세요.
 
 <h2 align="center">
-  <img src="https://github.com/Leenamkwon/Bind/blob/main/example/main_dark.png" alt="Bind" width="600px" />
+  <img src="https://github.com/Leenamkwon/Bind/blob/main/example/main_dark.png" alt="main_white" width="700px" />
+</h2>
+<h2 align="center">
+  <img src="https://github.com/Leenamkwon/Bind/blob/main/example/main_white.png" alt="main_dark" width="700px" />
   <br>
 </h2>
 
@@ -23,9 +26,25 @@
 
 ---
 
-## 각 페이지 컴포넌트 🚀
+## 컴포넌트 🚀
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+
+### 로그인 폼
+
+<h2 align="center">
+  <img src="https://github.com/Leenamkwon/Bind/blob/main/example/login.png" alt="login" width="700px" />
+  <br>
+</h2>
+로그인
+
+<h2 align="center">
+  <img src="https://github.com/Leenamkwon/Bind/blob/main/example/login.png" alt="login" width="700px" />
+  <br>
+</h2>
+비밀번호 찾기
+
+### 이벤트 폼
 
 ## 베포 📦
 
