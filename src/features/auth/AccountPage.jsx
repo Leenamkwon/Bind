@@ -7,6 +7,7 @@ import { VpnKey, Update, CheckCircle } from '@material-ui/icons';
 import AccountReAuth from './AccountReAuth';
 import AccountCompleteAuth from './AccountCompleteAuth';
 import AccountChangeSuc from './AccountChangeSuc';
+import { outChatList } from '../../app/firestore/firebaseRealChat';
 
 export default function AccountPage() {
   const { currentUser } = useSelector((state) => state.auth);
@@ -113,6 +114,7 @@ export default function AccountPage() {
           </CardContent>
         </Card>
       </Grid>
+      <h1 onClick={async () => await outChatList('FjBcpVMcHqtucz56YtZ1')}> test </h1>
     </Grid>
   );
 }

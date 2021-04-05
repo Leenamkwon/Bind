@@ -6,6 +6,7 @@ export async function createChat(otherUser, history) {
 
   let data = {
     lastMessage: '',
+    lastMessageTime: firebase.firestore.FieldValue.serverTimestamp(),
     particapate: [],
     chatUserIds: firebase.firestore.FieldValue.arrayUnion(user.uid, otherUser.id),
     chatUsers: firebase.firestore.FieldValue.arrayUnion(
@@ -44,7 +45,7 @@ export async function createChat(otherUser, history) {
 
 export function getChatList() {
   const user = firebase.auth().currentUser;
-  return db.collection('chat').where('chatUserIds', 'array-contains', user.uid).orderBy('createdAt', 'desc');
+  return db.collection('chat').where('chatUserIds', 'array-contains', user.uid).orderBy('lastMessageTime', 'desc');
 }
 
 export async function sendMessage(chatId, text) {
@@ -53,6 +54,14 @@ export async function sendMessage(chatId, text) {
 
   try {
     const docRefData = await docRef.get();
+
+    if (docRefData.data().chatUserIds.length === 1) {
+      const anotherUser = docRefData.data().chatUsers.filter((user) => user.id !== currentUser.uid)[0];
+
+      await docRef.update({
+        chatUserIds: firebase.firestore.FieldValue.arrayUnion(anotherUser.id),
+      });
+    }
 
     function badgeCount(count) {
       if (docRefData.data().particapate.length === 2) {
@@ -66,7 +75,10 @@ export async function sendMessage(chatId, text) {
       lastMessageTime: firebase.firestore.FieldValue.serverTimestamp(),
       chatUsers: docRefData.data().chatUsers.map((user) => {
         if (user.id !== currentUser.uid) {
-          return { ...user, isRead: badgeCount(user.isRead) };
+          return {
+            ...user,
+            isRead: badgeCount(user.isRead),
+          };
         } else {
           return user;
         }
@@ -83,6 +95,29 @@ export async function sendMessage(chatId, text) {
         photoURL: currentUser.photoURL || null,
         displayName: currentUser.displayName || currentUser.email.split('@')[0],
       });
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function outChatList(chatId) {
+  const currentUser = firebase.auth().currentUser;
+  const docRef = db.collection('chat').doc(chatId);
+  const rootRef = firebase.database().ref(`message`);
+
+  try {
+    const docRefData = await docRef.get();
+
+    if (docRefData.data().chatUserIds.length === 2) {
+      return await docRef.update({
+        particapate: firebase.firestore.FieldValue.arrayRemove(currentUser.uid),
+        chatUserIds: firebase.firestore.FieldValue.arrayRemove(currentUser.uid),
+        chatUsers: docRefData.data().chatUsers.map((user) => (user.id === currentUser.uid ? { ...user, isRead: 0 } : user)),
+      });
+    } else {
+      await db.collection('chat').doc(chatId).delete();
+      return await rootRef.child(chatId).remove();
+    }
   } catch (error) {
     throw error;
   }

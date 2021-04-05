@@ -14,7 +14,7 @@ export default memo(function ChatLogForm({ chatId }) {
       validationSchema={Yup.object({ chatForm: Yup.string().min(1).required() })}
       onSubmit={async (values, { resetForm }) => {
         try {
-          sendMessage(chatId, values.chatForm);
+          await sendMessage(chatId, values.chatForm);
           resetForm();
         } catch (error) {}
       }}
