@@ -31,7 +31,7 @@
 
 <!-- 라이브로 보기, **[클릭](https://bind-5d6a6.firebaseapp.com/)** -->
 
-<!-- ## 컴포넌트 🚀
+## 컴포넌트 🚀
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
@@ -39,7 +39,6 @@ These instructions will get you a copy of the project up and running on your loc
 
 <h2 align="center">
   <img src="https://github.com/Leenamkwon/Bind/blob/main/example/login.png" alt="login" width="700px" />
-
 </h2>
 로그인 컴포넌트
 
@@ -54,7 +53,10 @@ These instructions will get you a copy of the project up and running on your loc
   <img src="https://github.com/Leenamkwon/Bind/blob/main/example/eventForm.png" alt="login" width="700px" />
 </h2>
 
-
+**!중요 사항**:\
+유료 기능이라 불가피하게 한도를 최대한 낮게 하였습니다. \
+**_구글 Place API, GeoCode API 일일 할당량 100_,
+_Firebase Storage 이미지 업로드 3MB 이하만 가능_**
 
 <br>
 
@@ -113,11 +115,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 <h2 align="center">
   <img src="https://github.com/Leenamkwon/Bind/blob/main/example/auth.png" alt="login" width="700px" />
-</h2> -->
-
-**!IMPORTANT NOTE**:
-**_구글 Place API, GeoCode API 일일 할당량 100_,
-_이미지 업로드 1MB 이하만 가능 ~~종량제....~~_**
+</h2>
 
 ---
 
