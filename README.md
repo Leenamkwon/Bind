@@ -39,7 +39,7 @@
 
 <br/>
 
-### 이벤트 대시보드
+### 이벤트 대시보드(홈)
 
 <h2 align="center">
   <img src="https://github.com/Leenamkwon/Bind/blob/main/example/main_dark.png" alt="main_white" width="700px" />
@@ -98,6 +98,8 @@ _Firebase Storage 이미지 업로드 3MB 이하만 가능_**
 </h2>
 프로필 상단
 
+<br/>
+
 <h2 align="center">
   <img src="https://github.com/Leenamkwon/Bind/blob/main/example/profile_events.png" alt="login" width="700px" />
 </h2>
@@ -105,6 +107,7 @@ _Firebase Storage 이미지 업로드 3MB 이하만 가능_**
 
 **최적화**:\
 [react-infinite-scroller](https://www.npmjs.com/package/react-infinite-scroller)를 사용해 마운트 시 데이터 요청을 적게하여 렌더링을 빠르게 하였습니다.
+<br/>
 
 <h2 align="center">
   <img src="https://github.com/Leenamkwon/Bind/blob/main/example/profile_gallery.png" alt="login" width="700px" />
@@ -113,6 +116,7 @@ _Firebase Storage 이미지 업로드 3MB 이하만 가능_**
 
 **최적화**:\
 [react-infinite-scroller](https://www.npmjs.com/package/react-infinite-scroller) 라이브러리를 사용해 마운트 시 데이터 요청을 적게하여 렌더링을 빠르게 하였습니다.
+<br/>
 
 <h2 align="center">
   <img src="https://github.com/Leenamkwon/Bind/blob/main/example/profile_follower.png" alt="login" width="700px" />
@@ -144,6 +148,36 @@ _Firebase Storage 이미지 업로드 3MB 이하만 가능_**
 
 <h2 align="center">
   <img src="https://github.com/Leenamkwon/Bind/blob/main/example/auth.png" alt="login" width="700px" />
+</h2>
+
+<h2 align="center">
+  <img src="https://github.com/Leenamkwon/Bind/blob/main/example/auth_no.png" alt="login" width="700px" />
+</h2>
+Auth 제공자가 다른 기업인 경우
+
+<h2 align="center">
+  <img src="https://github.com/Leenamkwon/Bind/blob/main/example/auth2.png" alt="login" width="700px" />
+</h2>
+
+<h2 align="center">
+  <img src="https://github.com/Leenamkwon/Bind/blob/main/example/auth3.png" alt="login" width="700px" />
+</h2>
+
+<br/>
+
+### 유저 검색
+
+<h2 align="center">
+  <img src="https://github.com/Leenamkwon/Bind/blob/main/example/search.png" alt="login" width="700px" />
+</h2>
+
+**최적화**:\
+디바운스 훅을 사용하여 요청 수를 줄였습니다.
+
+### 404 Page
+
+<h2 align="center">
+  <img src="https://github.com/Leenamkwon/Bind/blob/main/example/error.png" alt="login" width="700px" />
 </h2>
 
 ---

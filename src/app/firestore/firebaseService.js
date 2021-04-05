@@ -118,8 +118,6 @@ export async function userBye() {
       });
     });
 
-    // step 04. 이벤트 채팅 삭제
-
     // step 04. 팔로잉 팔로워 삭제
     const userFollowingSnap = await userFollowerRef.get();
     userFollowingSnap.docs.forEach((docRef) => {
