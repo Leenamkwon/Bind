@@ -27,7 +27,7 @@ const useStyles = makeStyles(() => ({
   }),
 }));
 
-export default memo(function ChatLogPage({ match }) {
+export default memo(function ChatLogList({ match }) {
   const history = useHistory();
   const theme = useTheme();
   const matchesXS = useMediaQuery(theme.breakpoints.down('xs'));

@@ -28,15 +28,25 @@ export async function createChat(otherUser, history) {
 
   try {
     const chatDoc = db.collection('chat').where('chatUserIds', 'array-contains', otherUser.id);
-    const isEmpty = await chatDoc.get();
+    const chatDocRef = await chatDoc.get();
 
-    const some = isEmpty.docs.some((item) => item.data().chatUserIds.indexOf(user.uid) !== -1);
+    const some = chatDocRef.docs.some((item) => item.data().chatUserIds.indexOf(user.uid) !== -1);
+    const isLeave = chatDocRef.docs.findIndex((item) =>
+      item.data().chatUsers.every((data) => data.id === otherUser.id || data.id === user.uid)
+    );
 
-    if (!some) {
+    console.log('asd');
+
+    if (!some && isLeave === -1) {
       const docRef = await db.collection('chat').add(data);
       return history.push(`/chat/${docRef.id}`);
+    } else if (!some && isLeave !== -1) {
+      await chatDocRef.docs[isLeave].ref.update({
+        chatUserIds: firebase.firestore.FieldValue.arrayUnion(user.uid),
+      });
+      return history.push(`/chat/${chatDocRef.docs[isLeave].id}`);
     } else {
-      history.push(`/chat/${isEmpty.docs[0].id}`);
+      history.push(`/chat/${chatDocRef.docs[0].id}`);
     }
   } catch (error) {
     throw error;

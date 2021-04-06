@@ -17,7 +17,7 @@ export default function FollowingTab(props) {
   useFirestoreCollection({
     query: value === 2 ? () => getFollowerscollection(profile.id) : () => getFollowingcollection(profile.id),
     data: (data) => (value === 2 ? dispatch(listenToFollowers(data)) : dispatch(listenToFollowings(data))),
-    deps: [dispatch, profile.id],
+    deps: [dispatch, profile.id, value],
   });
 
   useEffect(() => {

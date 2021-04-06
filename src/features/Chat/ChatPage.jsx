@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 // COMPONENT
 import ChatList from './ChatList';
-import ChatLogPage from './ChatLogPage';
+import ChatLogList from './ChatLogList';
 import { getChatList } from '../../app/firestore/firebaseRealChat';
 import { fetchChatList2 } from './chatAction';
 import { dataFromSnapshot } from '../../app/firestore/firestoreService';
@@ -62,7 +62,7 @@ export default function ChatPage() {
       )}
 
       <Grid className={classes.rootItem} item xs={12} sm={12} md={8}>
-        <PrivateRoute exact path='/chat/:id' component={ChatLogPage} key={location.key} />
+        <PrivateRoute exact path='/chat/:id' component={ChatLogList} key={location.key} />
       </Grid>
     </Grid>
   );

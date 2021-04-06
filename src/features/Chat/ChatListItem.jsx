@@ -28,18 +28,18 @@ export default memo(function ChatListItem({ list }) {
   return (
     <ListItem button alignItems='flex-start' component={Link} to={`/chat/${list.id}`} selected={matchParams === list.id}>
       <ListItemAvatar>
-        <Badge badgeContent={BadgeCount(list.chatUsers).isRead} color='error'>
-          <Avatar src={anotherUser(list.chatUsers).photoURL || null} />
+        <Badge badgeContent={BadgeCount(list.chatUsers)?.isRead || 0} color='error'>
+          <Avatar src={anotherUser(list.chatUsers)?.photoURL || null} />
         </Badge>
       </ListItemAvatar>
       <ListItemText
         primary={
           <Box display='flex' justifyContent='space-between'>
             <Typography variant='subtitle1' color='textPrimary'>
-              {anotherUser(list.chatUsers).displayName}
+              {anotherUser(list.chatUsers)?.displayName}
             </Typography>
             <Typography variant='caption' color='textSecondary'>
-              {formatDate(list?.lastMessageTime ?? new Date())}
+              {formatDate(list?.lastMessageTime ?? new Date(), 'MM월 dd일 hh:mm aaa')}
             </Typography>
           </Box>
         }
