@@ -56,7 +56,7 @@ export default function App() {
                 }}
               >
                 {location.pathname === '/login' ? <PublicRoute exact path='/login' component={LoginPage} /> : <Navbar />}
-                <Container maxWidth='lg' style={{ height: '100%', paddingTop: '6rem', marginBottom: '3rem' }}>
+                <Container maxWidth='lg' style={{ paddingTop: '6rem', marginBottom: '3rem' }}>
                   <Switch location={background || location}>
                     <PrivateRoute path='/account' component={AccountPage} />
                     <Route exact path='/events' component={EventDashboard} />

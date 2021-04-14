@@ -47,9 +47,11 @@ export default function EventProfileFollowing({ profile }) {
       </CardContent>
       <Divider />
       <CardContent>
-        <Typography variant='subtitle2' color='textSecondary' gutterBottom>
-          갤러리
-        </Typography>
+        {photos.length > 0 && (
+          <Typography variant='subtitle2' color='textSecondary' gutterBottom>
+            갤러리
+          </Typography>
+        )}
         <GridList cellHeight={80} cols={3}>
           {photos.map((photo) => (
             <GridListTile key={photo.url}>

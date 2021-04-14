@@ -18,8 +18,8 @@ export default memo(function Prompt({ open, setOpen, eventId }) {
     deleteEventInFireStore(eventId)
       .then((_) => {
         setOpen(false);
-        dispatch(deleteSelectEvent(eventId));
         history.push('/events');
+        dispatch(deleteSelectEvent(eventId));
       })
       .catch((error) => {
         enqueueSnackbar(error.message, { variant: 'error' });
